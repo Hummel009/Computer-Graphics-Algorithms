@@ -1,15 +1,37 @@
 package hummel
 
 import java.awt.Color
+import java.awt.EventQueue
 import java.awt.Graphics
-import java.awt.event.WindowAdapter
-import java.awt.event.WindowEvent
 import java.io.BufferedReader
 import java.io.File
 import java.io.FileReader
 import javax.swing.JFrame
 import javax.swing.JPanel
-import kotlin.system.exitProcess
+
+fun main() {
+	EventQueue.invokeLater {
+		try {
+			val objViewer = OBJViewer("test.obj")
+			val frame = GUI(objViewer)
+			frame.isVisible = true
+		} catch (e: Exception) {
+			e.printStackTrace()
+		}
+	}
+}
+
+class GUI(objViewer: JPanel) : JFrame() {
+	init {
+		title = "Hummel009's OBJ Viewer"
+		defaultCloseOperation = EXIT_ON_CLOSE
+		setSize(800, 600)
+
+		contentPane.add(objViewer)
+
+		setLocationRelativeTo(null)
+	}
+}
 
 class OBJViewer(private val objFilePath: String) : JPanel() {
 	private val coords: MutableList<FloatArray> = mutableListOf()
@@ -82,19 +104,4 @@ class OBJViewer(private val objFilePath: String) : JPanel() {
 			g.drawLine(x3, y3, x1, y1)
 		}
 	}
-}
-
-fun main() {
-	val frame = JFrame("Hummel009's OBJ Viewer")
-	val objViewer = OBJViewer("test.obj")
-
-	frame.defaultCloseOperation = JFrame.EXIT_ON_CLOSE
-	frame.contentPane.add(objViewer)
-	frame.setSize(800, 600)
-	frame.isVisible = true
-	frame.addWindowListener(object : WindowAdapter() {
-		override fun windowClosing(e: WindowEvent) {
-			exitProcess(0)
-		}
-	})
 }
