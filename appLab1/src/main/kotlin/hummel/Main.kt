@@ -95,6 +95,7 @@ class OBJViewer(private val objFilePath: String) : JPanel() {
 		val scaleX = width.toFloat() / (maxX - minX)
 		val scaleY = height.toFloat() / (maxY - minY)
 
+		//преобразование координат вершин полигона в координаты окна приложения
 		for (polygon in polygons) {
 			//индексы в obj начинаются с 1
 			//поэтому вычитаем 1
@@ -103,8 +104,16 @@ class OBJViewer(private val objFilePath: String) : JPanel() {
 			val v2 = coords[polygon[1] - 1]
 			val v3 = coords[polygon[2] - 1]
 
+			//Из координаты x вершины вычитается minX, чтобы сместить все вершины налево.
+			//Результат умножается на коэффициент масштабирования scaleX.
 			val x1 = ((v1[0] - minX) * scaleX).toInt()
+
+			//Из координаты y вершины вычитается minY, чтобы сместить все вершины вверх.
+			//Из-за особенностей JFrame нужно инвертировать низ и верх, поэтому вычитаем из высоты.
+			//Результат умножается на коэффициент масштабирования scaleX.
 			val y1 = height - ((v1[1] - minY) * scaleY).toInt()
+
+			//далее по аналогии
 			val x2 = ((v2[0] - minX) * scaleX).toInt()
 			val y2 = height - ((v2[1] - minY) * scaleY).toInt()
 			val x3 = ((v3[0] - minX) * scaleX).toInt()
