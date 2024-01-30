@@ -74,10 +74,18 @@ class OBJViewer(private val objFilePath: String) : JPanel() {
 	}
 
 	private fun updateBounds(coord: FloatArray) {
-		if (coord[0] < minX) minX = coord[0]
-		if (coord[0] > maxX) maxX = coord[0]
-		if (coord[1] < minY) minY = coord[1]
-		if (coord[1] > maxY) maxY = coord[1]
+		if (coord[0] < minX) {
+			minX = coord[0]
+		}
+		if (coord[0] > maxX) {
+			maxX = coord[0]
+		}
+		if (coord[1] < minY) {
+			minY = coord[1]
+		}
+		if (coord[1] > maxY) {
+			maxY = coord[1]
+		}
 	}
 
 	override fun paintComponent(g: Graphics) {
