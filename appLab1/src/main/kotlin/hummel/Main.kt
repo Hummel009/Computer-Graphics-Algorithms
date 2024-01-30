@@ -95,10 +95,10 @@ class OBJViewer(private val objFilePath: String) : JPanel() {
 		val scaleX = width.toFloat() / (maxX - minX)
 		val scaleY = height.toFloat() / (maxY - minY)
 
-		for (face in polygons) {
-			val v1 = coords[face[0] - 1]
-			val v2 = coords[face[1] - 1]
-			val v3 = coords[face[2] - 1]
+		for (polygon in polygons) {
+			val v1 = coords[polygon[0] - 1]
+			val v2 = coords[polygon[1] - 1]
+			val v3 = coords[polygon[2] - 1]
 
 			val x1 = ((v1[0] - minX) * scaleX).toInt()
 			val y1 = height - ((v1[1] - minY) * scaleY).toInt()
