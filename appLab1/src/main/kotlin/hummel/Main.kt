@@ -12,7 +12,7 @@ import javax.swing.JPanel
 fun main() {
 	EventQueue.invokeLater {
 		try {
-			val objViewer = OBJViewer("test.obj")
+			val objViewer = OBJViewer("teapot.obj")
 			val frame = GUI(objViewer)
 			frame.isVisible = true
 		} catch (e: Exception) {
