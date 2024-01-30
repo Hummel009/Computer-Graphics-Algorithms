@@ -51,11 +51,11 @@ class OBJViewer(private val objFilePath: String) : JPanel() {
 		}
 	}
 
-	private fun updateBounds(vertex: FloatArray) {
-		if (vertex[0] < minX) minX = vertex[0]
-		if (vertex[0] > maxX) maxX = vertex[0]
-		if (vertex[1] < minY) minY = vertex[1]
-		if (vertex[1] > maxY) maxY = vertex[1]
+	private fun updateBounds(coord: FloatArray) {
+		if (coord[0] < minX) minX = coord[0]
+		if (coord[0] > maxX) maxX = coord[0]
+		if (coord[1] < minY) minY = coord[1]
+		if (coord[1] > maxY) maxY = coord[1]
 	}
 
 	override fun paintComponent(g: Graphics) {
@@ -85,7 +85,7 @@ class OBJViewer(private val objFilePath: String) : JPanel() {
 }
 
 fun main() {
-	val frame = JFrame("OBJ Viewer")
+	val frame = JFrame("Hummel009's OBJ Viewer")
 	val objViewer = OBJViewer("test.obj")
 
 	frame.defaultCloseOperation = JFrame.EXIT_ON_CLOSE
