@@ -56,18 +56,18 @@ class OBJViewer(private val objFilePath: String) : JPanel() {
 		}.forEach {
 			when (it[0]) {
 				"v" -> { // координаты точки: x, y, z
-					val vertex = floatArrayOf(
+					val coord = floatArrayOf(
 						it[1].toFloat(), it[2].toFloat(), it[3].toFloat()
 					)
-					coords.add(vertex)
-					updateBounds(vertex)
+					coords.add(coord)
+					updateBounds(coord)
 				}
 
 				"f" -> { //полигон: вершины через запятую
-					val face = intArrayOf(
+					val polygon = intArrayOf(
 						it[1].split("/")[0].toInt(), it[2].split("/")[0].toInt(), it[3].split("/")[0].toInt()
 					)
-					polygons.add(face)
+					polygons.add(polygon)
 				}
 			}
 		}
