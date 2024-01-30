@@ -96,6 +96,9 @@ class OBJViewer(private val objFilePath: String) : JPanel() {
 		val scaleY = height.toFloat() / (maxY - minY)
 
 		for (polygon in polygons) {
+			//индексы в obj начинаются с 1
+			//поэтому вычитаем 1
+			//получаем вершины полигона уже в виде координат
 			val v1 = coords[polygon[0] - 1]
 			val v2 = coords[polygon[1] - 1]
 			val v3 = coords[polygon[2] - 1]
