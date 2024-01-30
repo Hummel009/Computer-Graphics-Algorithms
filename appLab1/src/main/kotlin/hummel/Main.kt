@@ -107,10 +107,11 @@ class OBJViewer(private val objFilePath: String) : JPanel() {
 			val x3 = ((v3[0] - minX) * scaleX).toInt()
 			val y3 = height - ((v3[1] - minY) * scaleY).toInt()
 
-			// все полигоны у нас трёхвершинные
-			g.drawLine(x1, y1, x2, y2) //линия между 1 и 2 вершиной полигона
-			g.drawLine(x2, y2, x3, y3) //линия между 2 и 3 вершиной полигона
-			g.drawLine(x3, y3, x1, y1) //линия между 3 и 1 вершиной полигона
+			//линии от вершины до вершины полигона, хвост замыкается на голове
+			//итого - каёмка полигона
+			g.drawLine(x1, y1, x2, y2)
+			g.drawLine(x2, y2, x3, y3)
+			g.drawLine(x3, y3, x1, y1)
 		}
 	}
 }
