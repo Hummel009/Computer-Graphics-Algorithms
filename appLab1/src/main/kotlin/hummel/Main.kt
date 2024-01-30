@@ -12,8 +12,9 @@ import javax.swing.JPanel
 import kotlin.system.exitProcess
 
 class OBJViewer(private val objFilePath: String) : JPanel() {
-	private val vertices: MutableList<FloatArray> = mutableListOf()
-	private val faces: MutableList<IntArray> = mutableListOf()
+	private val coords: MutableList<FloatArray> = mutableListOf()
+	private val polygons: MutableList<IntArray> = mutableListOf()
+
 	private var minX = Float.POSITIVE_INFINITY
 	private var minY = Float.POSITIVE_INFINITY
 	private var maxX = Float.NEGATIVE_INFINITY
@@ -32,19 +33,19 @@ class OBJViewer(private val objFilePath: String) : JPanel() {
 			it.trim().split("\\s+".toRegex()).toTypedArray()
 		}.forEach {
 			when (it[0]) {
-				"v" -> {
+				"v" -> { // координаты точки: x, y, z
 					val vertex = floatArrayOf(
 						it[1].toFloat(), it[2].toFloat(), it[3].toFloat()
 					)
-					vertices.add(vertex)
+					coords.add(vertex)
 					updateBounds(vertex)
 				}
 
-				"f" -> {
+				"f" -> { //полигон: вершины через запятую
 					val face = intArrayOf(
 						it[1].split("/")[0].toInt(), it[2].split("/")[0].toInt(), it[3].split("/")[0].toInt()
 					)
-					faces.add(face)
+					polygons.add(face)
 				}
 			}
 		}
@@ -64,10 +65,10 @@ class OBJViewer(private val objFilePath: String) : JPanel() {
 		val scaleX = width.toFloat() / (maxX - minX)
 		val scaleY = height.toFloat() / (maxY - minY)
 
-		for (face in faces) {
-			val v1 = vertices[face[0] - 1]
-			val v2 = vertices[face[1] - 1]
-			val v3 = vertices[face[2] - 1]
+		for (face in polygons) {
+			val v1 = coords[face[0] - 1]
+			val v2 = coords[face[1] - 1]
+			val v3 = coords[face[2] - 1]
 
 			val x1 = ((v1[0] - minX) * scaleX).toInt()
 			val y1 = height - ((v1[1] - minY) * scaleY).toInt()
