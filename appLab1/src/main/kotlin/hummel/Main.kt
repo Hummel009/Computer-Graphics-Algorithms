@@ -100,9 +100,9 @@ class OBJViewer(private val objFilePath: String) : JPanel() {
 			//индексы в obj начинаются с 1
 			//поэтому вычитаем 1
 			//получаем вершины полигона уже в виде координат
-			val v1 = coords[polygon[0] - 1]
-			val v2 = coords[polygon[1] - 1]
-			val v3 = coords[polygon[2] - 1]
+			val v1 = coords deobj polygon[0]
+			val v2 = coords deobj polygon[1]
+			val v3 = coords deobj polygon[2]
 
 			//Из координаты x вершины вычитается minX, чтобы сместить все вершины налево.
 			//Результат умножается на коэффициент масштабирования scaleX.
@@ -128,6 +128,3 @@ class OBJViewer(private val objFilePath: String) : JPanel() {
 	}
 }
 
-private infix fun Float.transformX(pair: Pair<Float, Float>): Int = ((this - pair.first) * pair.second).toInt()
-private infix fun Float.transformY(pair: Pair<Float, Float>): Int = ((this - pair.first) * pair.second).toInt()
-private infix fun Int.invertAxisY(int: Int): Int = this - int
