@@ -106,18 +106,18 @@ class OBJViewer(private val objFilePath: String) : JPanel() {
 
 			//Из координаты x вершины вычитается minX, чтобы сместить все вершины налево.
 			//Результат умножается на коэффициент масштабирования scaleX.
-			val x1 = ((v1[0] - minX) * scaleX).toInt()
+			val x1 = v1[0] transformX (minX to scaleX)
 
 			//Из координаты y вершины вычитается minY, чтобы сместить все вершины вверх.
 			//Из-за особенностей JFrame нужно инвертировать низ и верх, поэтому вычитаем из высоты.
 			//Результат умножается на коэффициент масштабирования scaleX.
-			val y1 = height - ((v1[1] - minY) * scaleY).toInt()
+			val y1 = height invertAxisY (v1[1] transformY (minY to scaleY))
 
 			//далее по аналогии
-			val x2 = ((v2[0] - minX) * scaleX).toInt()
-			val y2 = height - ((v2[1] - minY) * scaleY).toInt()
-			val x3 = ((v3[0] - minX) * scaleX).toInt()
-			val y3 = height - ((v3[1] - minY) * scaleY).toInt()
+			val x2 = v2[0] transformX (minX to scaleX)
+			val y2 = height invertAxisY (v2[1] transformY (minY to scaleY))
+			val x3 = v3[0] transformX (minX to scaleX)
+			val y3 = height invertAxisY (v3[1] transformY (minY to scaleY))
 
 			//линии от вершины до вершины полигона, хвост замыкается на голове
 			//итого - каёмка полигона
@@ -127,3 +127,7 @@ class OBJViewer(private val objFilePath: String) : JPanel() {
 		}
 	}
 }
+
+private infix fun Float.transformX(pair: Pair<Float, Float>): Int = ((this - pair.first) * pair.second).toInt()
+private infix fun Float.transformY(pair: Pair<Float, Float>): Int = ((this - pair.first) * pair.second).toInt()
+private infix fun Int.invertAxisY(int: Int): Int = this - int
