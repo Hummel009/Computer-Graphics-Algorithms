@@ -1,4 +1,4 @@
-package hummel
+package com.github.hummel.cga.lab1
 
 import java.awt.Color
 import java.awt.EventQueue

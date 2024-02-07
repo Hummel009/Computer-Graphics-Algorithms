@@ -1,4 +1,4 @@
-package hummel
+package com.github.hummel.cga.lab1
 
 infix fun List<FloatArray>.of(i: Int): FloatArray = this[i - 1]
 infix fun Float.transformX(pair: Pair<Float, Float>): Int = ((this - pair.first) * pair.second).toInt()
