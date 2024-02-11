@@ -171,10 +171,9 @@ private fun wndProc(window: HWND?, msg: UINT, wParam: WPARAM, lParam: LPARAM): L
 						}
 					}
 
-					for ((v11, v21, v31) in faces) {
+					for ((v11, v21, _) in faces) {
 						val v1 = vertices[v11 - 1]
 						val v2 = vertices[v21 - 1]
-						val v3 = vertices[v31 - 1]
 
 						drawLineDDA(
 							(v1.x * n + 500).toInt(),
@@ -182,6 +181,11 @@ private fun wndProc(window: HWND?, msg: UINT, wParam: WPARAM, lParam: LPARAM): L
 							(v2.x * n + 500).toInt(),
 							(680 - (v2.y * n) - 550 + (n)).toInt()
 						)
+					}
+
+					for ((_, v21, v31) in faces) {
+						val v2 = vertices[v21 - 1]
+						val v3 = vertices[v31 - 1]
 
 						drawLineDDA(
 							(v2.x * n + 500).toInt(),
@@ -189,6 +193,11 @@ private fun wndProc(window: HWND?, msg: UINT, wParam: WPARAM, lParam: LPARAM): L
 							(v3.x * n + 500).toInt(),
 							(680 - (v3.y * n) - 550 + (n)).toInt()
 						)
+					}
+
+					for ((v11, _, v31) in faces) {
+						val v1 = vertices[v11 - 1]
+						val v3 = vertices[v31 - 1]
 
 						drawLineDDA(
 							(v3.x * n + 500).toInt(),
@@ -234,7 +243,7 @@ fun drawLineDDA(x1: Int, y1: Int, x2: Int, y2: Int) {
 	var x = x1.toFloat()
 	var y = y1.toFloat()
 
-	for (i in 0..steps step 2) {
+	for (i in 0..steps) {
 		//IF THE OBJECT IS OUT OF BOUNDS, IT SHOULDN'T BE DISPLAYED
 		if (x > width - 1 || x < 0 || y > height - 1 || y < 0) {
 			x += xIncrement
