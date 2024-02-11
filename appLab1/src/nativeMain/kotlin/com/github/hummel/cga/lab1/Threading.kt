@@ -6,7 +6,7 @@ import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.round
 
-private var n: Int = 100
+private const val n: Int = 100
 
 @Suppress("UNUSED_PARAMETER")
 fun drawLines12(lpParameter: LPVOID?): DWORD {
