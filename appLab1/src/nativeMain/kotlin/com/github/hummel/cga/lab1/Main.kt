@@ -105,118 +105,116 @@ fun main() {
 }
 
 private fun wndProc(window: HWND?, msg: UINT, wParam: WPARAM, lParam: LPARAM): LRESULT {
-	memScoped {
-		when (msg.toInt()) {
-			WM_CREATE -> {
-				initializeBackBuffer(window, 1040, 580)
-			}
-
-			WM_KEYDOWN -> {
-				when (wParam.toInt()) {
-					VK_Z -> {
-						rotateVerticesAroundZ()
-						InvalidateRect(window, null, FALSE)
-					}
-
-					VK_X -> {
-						rotateVerticesAroundX()
-						InvalidateRect(window, null, FALSE)
-					}
-
-					VK_C -> {
-						rotateVerticesAroundY()
-						InvalidateRect(window, null, FALSE)
-					}
-
-					VK_LEFT -> {
-						translateVertices(-0.05f, 0.0f)
-						InvalidateRect(window, null, FALSE)
-					}
-
-					VK_RIGHT -> {
-						translateVertices(0.05f, 0.0f)
-						InvalidateRect(window, null, FALSE)
-					}
-
-					VK_UP -> {
-						translateVertices(0.0f, 0.05f)
-						InvalidateRect(window, null, FALSE)
-					}
-
-					VK_DOWN -> {
-						translateVertices(0.0f, -0.05f)
-						InvalidateRect(window, null, FALSE)
-					}
-
-					VK_OEM_PLUS, VK_ADD -> {
-						scaleVertices(1.1f)
-						InvalidateRect(window, null, FALSE)
-					}
-
-					VK_OEM_MINUS, VK_SUBTRACT -> {
-						scaleVertices(1 / 1.1f)
-						InvalidateRect(window, null, FALSE)
-					}
-
-					else -> {}
-				}
-			}
-
-			WM_PAINT -> {
-				memScoped {
-					val time = measureTime {
-						val ps = alloc<PAINTSTRUCT>()
-						PatBlt(hdcBack, 0, 0, 1040, 580, WHITENESS)
-						for ((v11, v21, v31) in faces) {
-							val v1 = vertices[v11 - 1]
-							val v2 = vertices[v21 - 1]
-							val v3 = vertices[v31 - 1]
-
-							drawLineDDA(
-								hdcBack!!,
-								(v1.x * n + 500).toInt(),
-								(680 - (v1.y * n) - 550 + (n)).toInt(),
-								(v2.x * n + 500).toInt(),
-								(680 - (v2.y * n) - 550 + (n)).toInt()
-							)
-							drawLineDDA(
-								hdcBack!!,
-								(v2.x * n + 500).toInt(),
-								(680 - (v2.y * n) - 550 + (n)).toInt(),
-								(v3.x * n + 500).toInt(),
-								(680 - (v3.y * n) - 550 + (n)).toInt()
-							)
-							drawLineDDA(
-								hdcBack!!,
-								(v3.x * n + 500).toInt(),
-								(680 - (v3.y * n) - 550 + (n)).toInt(),
-								(v1.x * n + 500).toInt(),
-								(680 - (v1.y * n) - 550 + (n)).toInt()
-							)
-						}
-
-						val hdc = BeginPaint(window, ps.ptr)
-						BitBlt(hdc, 0, 0, 1040, 580, hdcBack, 0, 0, SRCCOPY)
-						EndPaint(window, ps.ptr)
-					}.inWholeNanoseconds
-					println(time)
-				}
-			}
-
-			WM_SIZE -> {
-				finalizeBackBuffer()
-				initializeBackBuffer(window, 1040, 580)
-			}
-
-			WM_CLOSE -> DestroyWindow(window)
-
-			WM_DESTROY -> {
-				finalizeBackBuffer()
-				PostQuitMessage(0)
-			}
-
-			else -> {}
+	when (msg.toInt()) {
+		WM_CREATE -> {
+			initializeBackBuffer(window, 1040, 580)
 		}
+
+		WM_KEYDOWN -> {
+			when (wParam.toInt()) {
+				VK_Z -> {
+					rotateVerticesAroundZ()
+					InvalidateRect(window, null, FALSE)
+				}
+
+				VK_X -> {
+					rotateVerticesAroundX()
+					InvalidateRect(window, null, FALSE)
+				}
+
+				VK_C -> {
+					rotateVerticesAroundY()
+					InvalidateRect(window, null, FALSE)
+				}
+
+				VK_LEFT -> {
+					translateVertices(-0.05f, 0.0f)
+					InvalidateRect(window, null, FALSE)
+				}
+
+				VK_RIGHT -> {
+					translateVertices(0.05f, 0.0f)
+					InvalidateRect(window, null, FALSE)
+				}
+
+				VK_UP -> {
+					translateVertices(0.0f, 0.05f)
+					InvalidateRect(window, null, FALSE)
+				}
+
+				VK_DOWN -> {
+					translateVertices(0.0f, -0.05f)
+					InvalidateRect(window, null, FALSE)
+				}
+
+				VK_OEM_PLUS, VK_ADD -> {
+					scaleVertices(1.1f)
+					InvalidateRect(window, null, FALSE)
+				}
+
+				VK_OEM_MINUS, VK_SUBTRACT -> {
+					scaleVertices(1 / 1.1f)
+					InvalidateRect(window, null, FALSE)
+				}
+
+				else -> {}
+			}
+		}
+
+		WM_PAINT -> {
+			memScoped {
+				val time = measureTime {
+					val ps = alloc<PAINTSTRUCT>()
+					PatBlt(hdcBack, 0, 0, 1040, 580, WHITENESS)
+					for ((v11, v21, v31) in faces) {
+						val v1 = vertices[v11 - 1]
+						val v2 = vertices[v21 - 1]
+						val v3 = vertices[v31 - 1]
+
+						drawLineDDA(
+							hdcBack!!,
+							(v1.x * n + 500).toInt(),
+							(680 - (v1.y * n) - 550 + (n)).toInt(),
+							(v2.x * n + 500).toInt(),
+							(680 - (v2.y * n) - 550 + (n)).toInt()
+						)
+						drawLineDDA(
+							hdcBack!!,
+							(v2.x * n + 500).toInt(),
+							(680 - (v2.y * n) - 550 + (n)).toInt(),
+							(v3.x * n + 500).toInt(),
+							(680 - (v3.y * n) - 550 + (n)).toInt()
+						)
+						drawLineDDA(
+							hdcBack!!,
+							(v3.x * n + 500).toInt(),
+							(680 - (v3.y * n) - 550 + (n)).toInt(),
+							(v1.x * n + 500).toInt(),
+							(680 - (v1.y * n) - 550 + (n)).toInt()
+						)
+					}
+
+					val hdc = BeginPaint(window, ps.ptr)
+					BitBlt(hdc, 0, 0, 1040, 580, hdcBack, 0, 0, SRCCOPY)
+					EndPaint(window, ps.ptr)
+				}.inWholeNanoseconds
+				println(time)
+			}
+		}
+
+		WM_SIZE -> {
+			finalizeBackBuffer()
+			initializeBackBuffer(window, 1040, 580)
+		}
+
+		WM_CLOSE -> DestroyWindow(window)
+
+		WM_DESTROY -> {
+			finalizeBackBuffer()
+			PostQuitMessage(0)
+		}
+
+		else -> {}
 	}
 	return DefWindowProcW(window, msg, wParam, lParam)
 }
