@@ -27,19 +27,19 @@ abstract class Vector {
 }
 
 open class CoordinateVector : Vector {
-	var X: Float
+	var x: Float
 		get() = coordinates[0]
 		set(value) {
 			coordinates[0] = value
 		}
 
-	var Y: Float
+	var y: Float
 		get() = coordinates[1]
 		set(value) {
 			coordinates[1] = value
 		}
 
-	var Z: Float
+	var z: Float
 		get() = coordinates[2]
 		set(value) {
 			coordinates[2] = value
@@ -53,7 +53,7 @@ open class CoordinateVector : Vector {
 }
 
 class GeometricVertex : CoordinateVector {
-	var W: Float
+	var w: Float
 		get() = coordinates[3]
 		set(value) {
 			coordinates[3] = value

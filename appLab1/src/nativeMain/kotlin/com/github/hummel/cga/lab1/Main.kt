@@ -6,9 +6,7 @@ import platform.posix.fgets
 import platform.posix.fopen
 import platform.windows.*
 import kotlin.math.abs
-import kotlin.math.cos
 import kotlin.math.max
-import kotlin.math.sin
 
 var rotationAngleX: Float = 0.0f
 const val rotationSpeedX: Float = 0.2f
@@ -120,17 +118,27 @@ private fun wndProc(window: HWND?, msg: UINT, wParam: WPARAM, lParam: LPARAM): L
 			WM_KEYDOWN -> {
 				when (wParam.toInt()) {
 					VK_LEFT, VK_X -> {
-						rotateModelX()
+						rotateVectorsAroundX()
 						InvalidateRect(window, null, FALSE)
 					}
 
 					VK_UP, VK_C -> {
-						rotateModelY()
+						rotateVectorsAroundY()
 						InvalidateRect(window, null, FALSE)
 					}
 
 					VK_RIGHT, VK_Z -> {
-						rotateModelZ()
+						rotateVectorsAroundZ()
+						InvalidateRect(window, null, FALSE)
+					}
+
+					VK_OEM_PLUS, VK_ADD -> {
+						scaleVectors(1.1f)
+						InvalidateRect(window, null, FALSE)
+					}
+
+					VK_OEM_MINUS, VK_SUBTRACT -> {
+						scaleVectors(1.1f)
 						InvalidateRect(window, null, FALSE)
 					}
 
@@ -211,36 +219,6 @@ fun drawLineDDA(hdc: HDC, vertex1: Vertex, vertex2: Vertex) {
 		x += xIncrement
 		y += yIncrement
 	}
-}
-
-fun rotateModelX() {
-	for (vertex in vertices) {
-		val y = vertex.y
-		val z = vertex.z
-		vertex.y = y * cos(rotationSpeedX) - z * sin(rotationSpeedX)
-		vertex.z = y * sin(rotationSpeedX) + z * cos(rotationSpeedX)
-	}
-	rotationAngleX += rotationSpeedX
-}
-
-fun rotateModelY() {
-	for (vertex in vertices) {
-		val x = vertex.x
-		val z = vertex.z
-		vertex.x = x * cos(rotationSpeedY) + z * sin(rotationSpeedY)
-		vertex.z = -x * sin(rotationSpeedY) + z * cos(rotationSpeedY)
-	}
-	rotationAngleY += rotationSpeedY
-}
-
-fun rotateModelZ() {
-	for (vertex in vertices) {
-		val x = vertex.x
-		val y = vertex.y
-		vertex.x = x * cos(rotationSpeedZ) - y * sin(rotationSpeedZ)
-		vertex.y = x * sin(rotationSpeedZ) + y * cos(rotationSpeedZ)
-	}
-	rotationAngleZ += rotationSpeedZ
 }
 
 fun initializeBackBuffer(hWnd: HWND?, w: Int, h: Int) {

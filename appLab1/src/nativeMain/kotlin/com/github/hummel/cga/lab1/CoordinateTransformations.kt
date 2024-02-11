@@ -3,113 +3,83 @@ package com.github.hummel.cga.lab1
 import kotlin.math.cos
 import kotlin.math.sin
 
-private const int MAX_SIZE_MATRIX = 4;
+fun multiplyVectorAndMatrixAsMatrices(vector: GeometricVertex, matrix1: Array<FloatArray>): GeometricVertex {
+	val result = GeometricVertex()
 
-private static float[,] MultiplyMatrices(float[,] matrix1, float[,] matrix2)
-{
-	var result = new float[MAX_SIZE_MATRIX, MAX_SIZE_MATRIX];
+	val matrix2 = arrayOf(
+		floatArrayOf(vector.x, vector.y, vector.z, 0f),
+		floatArrayOf(vector.x, vector.y, vector.z, 0f),
+		floatArrayOf(vector.x, vector.y, vector.z, 0f),
+		floatArrayOf(0f, 0f, 0f, 1f)
+	)
 
-	for (var i = 0; i < MAX_SIZE_MATRIX; i++)
-	{
-		for (var j = 0; j < MAX_SIZE_MATRIX; j++)
-		{
-			result[i, j] = matrix1[i, 0] * matrix2[0, j] + matrix1[i, 1] * matrix2[1, j] + matrix1[i, 2] * matrix2[2, j] + matrix1[i, 3] * matrix2[3, j];
+	val matrixResult = multiplyMatrices(matrix2, matrix1)
+
+	result.x = matrixResult[0][0]
+	result.y = matrixResult[1][1]
+	result.z = matrixResult[2][2]
+	result.w = vector.w
+
+	return result
+}
+
+fun multiplyMatrices(matrix1: Array<FloatArray>, matrix2: Array<FloatArray>): Array<FloatArray> {
+	val result = Array(matrix1.size) { FloatArray(matrix2[0].size) }
+
+	for (i in matrix1.indices) {
+		for (j in matrix2[0].indices) {
+			for (k in matrix2.indices) {
+				result[i][j] += matrix1[i][k] * matrix2[k][j]
+			}
 		}
 	}
 
-	return result;
+	return result
 }
 
-private static GeometricVertex MultiplyVectorAndMatrixAsMatrices(GeometricVertex vector, float[,] matrix1)
-{
-	var result = new GeometricVertex();
+fun rotateVectorsAroundX() {
+	val cos = cos(rotationSpeedX)
+	val sin = sin(rotationSpeedX)
 
-	var matrix2 = new float[,]
-	{
-		{    vector.X,    vector.Y,    vector.Z,           0},
-		{    vector.X,    vector.Y,    vector.Z,           0},
-		{    vector.X,    vector.Y,    vector.Z,           0},
-		{           0,           0,           0,           1},
-	};
-
-	var matrixResult = MultiplyMatrices(matrix2, matrix1);
-
-	result.X = matrixResult[0, 0];
-	result.Y = matrixResult[1, 1];
-	result.Z = matrixResult[2, 2];
-	result.W = vector.W;
-
-	return result;
+	for (vertex in vertices) {
+		val y = vertex.y
+		val z = vertex.z
+		vertex.y = y * cos - z * sin
+		vertex.z = y * sin + z * cos
+	}
+	rotationAngleX += rotationSpeedX
 }
 
-public static void TranslateVectors(GeometricVertex[] vectors, CoordinateVector translation)
-{
-	Parallel.For(0, vectors.Length, i =>
-	{
-		vectors[i].TranslateX += translation.X;
-		vectors[i].TranslateY += translation.Y;
-		vectors[i].TranslateZ += translation.Z;
-	});
+fun rotateVectorsAroundY() {
+	val cos = cos(rotationSpeedZ)
+	val sin = sin(rotationSpeedZ)
+
+	for (vertex in vertices) {
+		val x = vertex.x
+		val z = vertex.z
+		vertex.x = x * cos + z * sin
+		vertex.z = -x * sin + z * cos
+	}
+	rotationAngleY += rotationSpeedY
 }
 
-public static void ScaleVectors(GeometricVertex[] vectors, CoordinateVector scale)
-{
-	Parallel.For(0, vectors.Length, i =>
-	{
-		vectors[i].X *= scale.X;
-		vectors[i].Y *= scale.Y;
-		vectors[i].Z *= scale.Z;
-	});
-}
+fun rotateVectorsAroundZ() {
+	val cos = cos(rotationSpeedZ)
+	val sin = sin(rotationSpeedZ)
 
-public static void RotateVectorsAroundX(GeometricVertex[] vectors, double angle)
-{
-	var cos = (float)Math.Cos(angle);
-	var sin = (float)Math.Sin(angle);
-
-	Parallel.For(0, vectors.Length, i =>
-	{
-		var y = vectors[i].Y;
-
-		vectors[i].Y = y * cos + vectors[i].Z * sin;
-		vectors[i].Z = y * -sin + vectors[i].Z * cos;
-	});
-}
-
-public static void RotateVectorsAroundY(GeometricVertex[] vectors, double angle)
-{
-	var cos = (float)Math.Cos(angle);
-	var sin = (float)Math.Sin(angle);
-
-	Parallel.For(0, vectors.Length, i =>
-	{
-		var x = vectors[i].X;
-
-		vectors[i].X = x * cos + vectors[i].Z * -sin;
-		vectors[i].Z = x * sin + vectors[i].Z * cos;
-	});
-}
-
-public static void RotateVectorsAroundZ(GeometricVertex[] vectors, double angle)
-{
-	var cos = (float)Math.Cos(angle);
-	var sin = (float)Math.Sin(angle);
-
-	Parallel.For(0, vectors.Length, i =>
-	{
-		var x = vectors[i].X;
-
-		vectors[i].X = x * cos + vectors[i].Y * sin;
-		vectors[i].Y = x * -sin + vectors[i].Y * cos;
-	});
-}
-
-fun rotateModelZ() {
 	for (vertex in vertices) {
 		val x = vertex.x
 		val y = vertex.y
-		vertex.x = x * cos(rotationSpeedZ) - y * sin(rotationSpeedZ)
-		vertex.y = x * sin(rotationSpeedZ) + y * cos(rotationSpeedZ)
+		vertex.x = x * cos - y * sin
+		vertex.y = x * sin + y * cos
 	}
 	rotationAngleZ += rotationSpeedZ
+}
+
+fun scaleVectors(scale: Float) {
+	for (vertex in vertices) {
+		vertex.x *= scale
+		vertex.y *= scale
+		vertex.z *= scale
+	}
 }
