@@ -171,41 +171,25 @@ private fun wndProc(window: HWND?, msg: UINT, wParam: WPARAM, lParam: LPARAM): L
 						}
 					}
 
-					for ((v11, v21, _) in faces) {
-						val v1 = vertices[v11 - 1]
-						val v2 = vertices[v21 - 1]
+					val thread1 = CreateThread(
+						null, 0u, staticCFunction(::drawLines12), null, 0u, null
+					)
 
-						drawLineDDA(
-							(v1.x * n + 500).toInt(),
-							(680 - (v1.y * n) - 550 + (n)).toInt(),
-							(v2.x * n + 500).toInt(),
-							(680 - (v2.y * n) - 550 + (n)).toInt()
-						)
-					}
+					val thread2 = CreateThread(
+						null, 0u, staticCFunction(::drawLines23), null, 0u, null
+					)
 
-					for ((_, v21, v31) in faces) {
-						val v2 = vertices[v21 - 1]
-						val v3 = vertices[v31 - 1]
+					val thread3 = CreateThread(
+						null, 0u, staticCFunction(::drawLines31), null, 0u, null
+					)
 
-						drawLineDDA(
-							(v2.x * n + 500).toInt(),
-							(680 - (v2.y * n) - 550 + (n)).toInt(),
-							(v3.x * n + 500).toInt(),
-							(680 - (v3.y * n) - 550 + (n)).toInt()
-						)
-					}
+					WaitForSingleObject(thread1, INFINITE)
+					WaitForSingleObject(thread2, INFINITE)
+					WaitForSingleObject(thread3, INFINITE)
 
-					for ((v11, _, v31) in faces) {
-						val v1 = vertices[v11 - 1]
-						val v3 = vertices[v31 - 1]
-
-						drawLineDDA(
-							(v3.x * n + 500).toInt(),
-							(680 - (v3.y * n) - 550 + (n)).toInt(),
-							(v1.x * n + 500).toInt(),
-							(680 - (v1.y * n) - 550 + (n)).toInt()
-						)
-					}
+					CloseHandle(thread1)
+					CloseHandle(thread2)
+					CloseHandle(thread3)
 
 					val hBitmap = CreateBitmap(width, height, 1u, 32u, bitmapData.refTo(0))
 					val hOldBitmap = SelectObject(hdcMem, hBitmap)
@@ -218,6 +202,7 @@ private fun wndProc(window: HWND?, msg: UINT, wParam: WPARAM, lParam: LPARAM): L
 					DeleteDC(hdcMem)
 					EndPaint(window, ps.ptr)
 				}.inWholeNanoseconds
+
 				println("Draw: $time")
 			}
 		}
@@ -243,7 +228,7 @@ fun drawLineDDA(x1: Int, y1: Int, x2: Int, y2: Int) {
 	var x = x1.toFloat()
 	var y = y1.toFloat()
 
-	for (i in 0..steps) {
+	for (i in 0..steps step 2) {
 		//IF THE OBJECT IS OUT OF BOUNDS, IT SHOULDN'T BE DISPLAYED
 		if (x > width - 1 || x < 0 || y > height - 1 || y < 0) {
 			x += xIncrement
