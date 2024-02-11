@@ -7,6 +7,7 @@ import platform.posix.fopen
 import platform.windows.*
 import kotlin.math.abs
 import kotlin.math.max
+import kotlin.time.measureTime
 
 var rotationAngleX: Float = 0.0f
 const val rotationSpeedX: Float = 0.2f
@@ -117,18 +118,38 @@ private fun wndProc(window: HWND?, msg: UINT, wParam: WPARAM, lParam: LPARAM): L
 
 			WM_KEYDOWN -> {
 				when (wParam.toInt()) {
-					VK_LEFT, VK_X -> {
+					VK_Z -> {
+						rotateVectorsAroundZ()
+						InvalidateRect(window, null, FALSE)
+					}
+
+					VK_X -> {
 						rotateVectorsAroundX()
 						InvalidateRect(window, null, FALSE)
 					}
 
-					VK_UP, VK_C -> {
+					VK_C -> {
 						rotateVectorsAroundY()
 						InvalidateRect(window, null, FALSE)
 					}
 
-					VK_RIGHT, VK_Z -> {
-						rotateVectorsAroundZ()
+					VK_LEFT -> {
+						translateVectors(-0.05f, 0.0f)
+						InvalidateRect(window, null, FALSE)
+					}
+
+					VK_RIGHT -> {
+						translateVectors(0.05f, 0.0f)
+						InvalidateRect(window, null, FALSE)
+					}
+
+					VK_UP -> {
+						translateVectors(0.0f, 0.05f)
+						InvalidateRect(window, null, FALSE)
+					}
+
+					VK_DOWN -> {
+						translateVectors(0.0f, -0.05f)
 						InvalidateRect(window, null, FALSE)
 					}
 
@@ -148,39 +169,42 @@ private fun wndProc(window: HWND?, msg: UINT, wParam: WPARAM, lParam: LPARAM): L
 
 			WM_PAINT -> {
 				memScoped {
-					val ps = alloc<PAINTSTRUCT>()
-					PatBlt(hdcBack, 0, 0, 1040, 580, WHITENESS)
-					for ((v11, v21, v31) in faces) {
-						val v1 = vertices[v11 - 1]
-						val v2 = vertices[v21 - 1]
-						val v3 = vertices[v31 - 1]
+					val time = measureTime {
+						val ps = alloc<PAINTSTRUCT>()
+						PatBlt(hdcBack, 0, 0, 1040, 580, WHITENESS)
+						for ((v11, v21, v31) in faces) {
+							val v1 = vertices[v11 - 1]
+							val v2 = vertices[v21 - 1]
+							val v3 = vertices[v31 - 1]
 
-						drawLineDDA(
-							hdcBack!!,
-							(v1.x * n + 500).toInt(),
-							(680 - (v1.y * n) - 550 + (n)).toInt(),
-							(v2.x * n + 500).toInt(),
-							(680 - (v2.y * n) - 550 + (n)).toInt()
-						)
-						drawLineDDA(
-							hdcBack!!,
-							(v2.x * n + 500).toInt(),
-							(680 - (v2.y * n) - 550 + (n)).toInt(),
-							(v3.x * n + 500).toInt(),
-							(680 - (v3.y * n) - 550 + (n)).toInt()
-						)
-						drawLineDDA(
-							hdcBack!!,
-							(v3.x * n + 500).toInt(),
-							(680 - (v3.y * n) - 550 + (n)).toInt(),
-							(v1.x * n + 500).toInt(),
-							(680 - (v1.y * n) - 550 + (n)).toInt()
-						)
-					}
+							drawLineDDA(
+								hdcBack!!,
+								(v1.x * n + 500).toInt(),
+								(680 - (v1.y * n) - 550 + (n)).toInt(),
+								(v2.x * n + 500).toInt(),
+								(680 - (v2.y * n) - 550 + (n)).toInt()
+							)
+							drawLineDDA(
+								hdcBack!!,
+								(v2.x * n + 500).toInt(),
+								(680 - (v2.y * n) - 550 + (n)).toInt(),
+								(v3.x * n + 500).toInt(),
+								(680 - (v3.y * n) - 550 + (n)).toInt()
+							)
+							drawLineDDA(
+								hdcBack!!,
+								(v3.x * n + 500).toInt(),
+								(680 - (v3.y * n) - 550 + (n)).toInt(),
+								(v1.x * n + 500).toInt(),
+								(680 - (v1.y * n) - 550 + (n)).toInt()
+							)
+						}
 
-					val hdc = BeginPaint(window, ps.ptr)
-					BitBlt(hdc, 0, 0, 1040, 580, hdcBack, 0, 0, SRCCOPY)
-					EndPaint(window, ps.ptr)
+						val hdc = BeginPaint(window, ps.ptr)
+						BitBlt(hdc, 0, 0, 1040, 580, hdcBack, 0, 0, SRCCOPY)
+						EndPaint(window, ps.ptr)
+					}.inWholeNanoseconds
+					println(time)
 				}
 			}
 

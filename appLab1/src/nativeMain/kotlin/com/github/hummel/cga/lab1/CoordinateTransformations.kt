@@ -1,27 +1,9 @@
+@file:Suppress("unused")
+
 package com.github.hummel.cga.lab1
 
 import kotlin.math.cos
 import kotlin.math.sin
-
-fun multiplyVectorAndMatrixAsMatrices(vector: GeometricVertex, matrix1: Array<FloatArray>): GeometricVertex {
-	val result = GeometricVertex()
-
-	val matrix2 = arrayOf(
-		floatArrayOf(vector.x, vector.y, vector.z, 0f),
-		floatArrayOf(vector.x, vector.y, vector.z, 0f),
-		floatArrayOf(vector.x, vector.y, vector.z, 0f),
-		floatArrayOf(0f, 0f, 0f, 1f)
-	)
-
-	val matrixResult = multiplyMatrices(matrix2, matrix1)
-
-	result.x = matrixResult[0][0]
-	result.y = matrixResult[1][1]
-	result.z = matrixResult[2][2]
-	result.w = vector.w
-
-	return result
-}
 
 fun multiplyMatrices(matrix1: Array<FloatArray>, matrix2: Array<FloatArray>): Array<FloatArray> {
 	val result = Array(matrix1.size) { FloatArray(matrix2[0].size) }
@@ -35,6 +17,21 @@ fun multiplyMatrices(matrix1: Array<FloatArray>, matrix2: Array<FloatArray>): Ar
 	}
 
 	return result
+}
+
+fun translateVectors(shiftX: Float, shiftY: Float) {
+	for (vertex in vertices) {
+		vertex.x += shiftX
+		vertex.y += shiftY
+	}
+}
+
+fun scaleVectors(scale: Float) {
+	for (vertex in vertices) {
+		vertex.x *= scale
+		vertex.y *= scale
+		vertex.z *= scale
+	}
 }
 
 fun rotateVectorsAroundX() {
@@ -74,12 +71,4 @@ fun rotateVectorsAroundZ() {
 		vertex.y = x * sin + y * cos
 	}
 	rotationAngleZ += rotationSpeedZ
-}
-
-fun scaleVectors(scale: Float) {
-	for (vertex in vertices) {
-		vertex.x *= scale
-		vertex.y *= scale
-		vertex.z *= scale
-	}
 }
