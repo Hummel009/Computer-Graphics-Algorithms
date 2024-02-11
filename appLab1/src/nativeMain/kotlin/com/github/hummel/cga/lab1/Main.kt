@@ -7,7 +7,6 @@ import platform.posix.fopen
 import platform.windows.*
 import kotlin.math.abs
 import kotlin.math.max
-import kotlin.time.measureTime
 
 const val angleX: Float = 0.2f
 const val angleY: Float = 0.2f
@@ -163,42 +162,32 @@ private fun wndProc(window: HWND?, msg: UINT, wParam: WPARAM, lParam: LPARAM): L
 
 		WM_PAINT -> {
 			memScoped {
-				val time = measureTime {
-					val ps = alloc<PAINTSTRUCT>()
-					PatBlt(hdcBack, 0, 0, 1040, 580, WHITENESS)
-					for ((v11, v21, v31) in faces) {
-						val v1 = vertices[v11 - 1]
-						val v2 = vertices[v21 - 1]
-						val v3 = vertices[v31 - 1]
+				val ps = alloc<PAINTSTRUCT>()
+				PatBlt(hdcBack, 0, 0, 1040, 580, WHITENESS)
 
-						drawLineDDA(
-							hdcBack!!,
-							(v1.x * n + 500).toInt(),
-							(680 - (v1.y * n) - 550 + (n)).toInt(),
-							(v2.x * n + 500).toInt(),
-							(680 - (v2.y * n) - 550 + (n)).toInt()
-						)
-						drawLineDDA(
-							hdcBack!!,
-							(v2.x * n + 500).toInt(),
-							(680 - (v2.y * n) - 550 + (n)).toInt(),
-							(v3.x * n + 500).toInt(),
-							(680 - (v3.y * n) - 550 + (n)).toInt()
-						)
-						drawLineDDA(
-							hdcBack!!,
-							(v3.x * n + 500).toInt(),
-							(680 - (v3.y * n) - 550 + (n)).toInt(),
-							(v1.x * n + 500).toInt(),
-							(680 - (v1.y * n) - 550 + (n)).toInt()
-						)
-					}
+				val threadOperate1 = CreateThread(
+					null, 0u, staticCFunction(::drawLines1), null, 0u, null
+				)
 
-					val hdc = BeginPaint(window, ps.ptr)
-					BitBlt(hdc, 0, 0, 1040, 580, hdcBack, 0, 0, SRCCOPY)
-					EndPaint(window, ps.ptr)
-				}.inWholeNanoseconds
-				println(time)
+				val threadOperate2 = CreateThread(
+					null, 0u, staticCFunction(::drawLines2), null, 0u, null
+				)
+
+				val threadOperate3 = CreateThread(
+					null, 0u, staticCFunction(::drawLines3), null, 0u, null
+				)
+
+				WaitForSingleObject(threadOperate1, INFINITE)
+				WaitForSingleObject(threadOperate2, INFINITE)
+				WaitForSingleObject(threadOperate3, INFINITE)
+
+				CloseHandle(threadOperate1)
+				CloseHandle(threadOperate2)
+				CloseHandle(threadOperate3)
+
+				val hdc = BeginPaint(window, ps.ptr)
+				BitBlt(hdc, 0, 0, 1040, 580, hdcBack, 0, 0, SRCCOPY)
+				EndPaint(window, ps.ptr)
 			}
 		}
 
