@@ -28,7 +28,7 @@ val faces: ArrayList<Face> = ArrayList()
 var hdcBack: HDC? = null
 var hbmBack: HBITMAP? = null
 
-const val VK_W: Int = 0x57
+const val VK_S: Int = 0x53
 const val VK_A: Int = 0x41
 const val VK_D: Int = 0x44
 
@@ -124,7 +124,7 @@ private fun wndProc(window: HWND?, msg: UINT, wParam: WPARAM, lParam: LPARAM): L
 						InvalidateRect(window, null, FALSE)
 					}
 
-					VK_UP, VK_W -> {
+					VK_UP, VK_S -> {
 						rotateModelY()
 						InvalidateRect(window, null, FALSE)
 					}
