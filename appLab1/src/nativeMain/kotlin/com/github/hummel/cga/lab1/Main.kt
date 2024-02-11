@@ -9,20 +9,15 @@ import kotlin.math.abs
 import kotlin.math.max
 import kotlin.time.measureTime
 
-var rotationAngleX: Float = 0.0f
-const val rotationSpeedX: Float = 0.2f
-
-var rotationAngleY: Float = 0.0f
-const val rotationSpeedY: Float = 0.2f
-
-var rotationAngleZ: Float = 0.0f
-const val rotationSpeedZ: Float = 0.2f
+const val angleX: Float = 0.2f
+const val angleY: Float = 0.2f
+const val angleZ: Float = 0.2f
 
 const val width: Int = 960
 const val height: Int = 540
 
-val points: ArrayList<Point> = ArrayList()
-val polygons: ArrayList<Polygon> = ArrayList()
+val vertices: ArrayList<Vertex> = ArrayList()
+val faces: ArrayList<Face> = ArrayList()
 
 var hdcBack: HDC? = null
 var hbmBack: HBITMAP? = null
@@ -84,17 +79,17 @@ fun main() {
 
 			when (array[0]) {
 				"v" -> {
-					val point = Point(
+					val vertex = Vertex(
 						array[1].toFloat(), array[2].toFloat() - 1.5f, array[3].toFloat()
 					)
-					points.add(point)
+					vertices.add(vertex)
 				}
 
 				"f" -> {
-					val polygon = Polygon(
+					val face = Face(
 						array[1].split("/")[0].toInt(), array[2].split("/")[0].toInt(), array[3].split("/")[0].toInt()
 					)
-					polygons.add(polygon)
+					faces.add(face)
 				}
 			}
 		}
@@ -119,47 +114,47 @@ private fun wndProc(window: HWND?, msg: UINT, wParam: WPARAM, lParam: LPARAM): L
 			WM_KEYDOWN -> {
 				when (wParam.toInt()) {
 					VK_Z -> {
-						rotateVectorsAroundZ()
+						rotateVertexsAroundZ()
 						InvalidateRect(window, null, FALSE)
 					}
 
 					VK_X -> {
-						rotateVectorsAroundX()
+						rotateVertexsAroundX()
 						InvalidateRect(window, null, FALSE)
 					}
 
 					VK_C -> {
-						rotateVectorsAroundY()
+						rotateVertexsAroundY()
 						InvalidateRect(window, null, FALSE)
 					}
 
 					VK_LEFT -> {
-						translateVectors(-0.05f, 0.0f)
+						translateVertexs(-0.05f, 0.0f)
 						InvalidateRect(window, null, FALSE)
 					}
 
 					VK_RIGHT -> {
-						translateVectors(0.05f, 0.0f)
+						translateVertexs(0.05f, 0.0f)
 						InvalidateRect(window, null, FALSE)
 					}
 
 					VK_UP -> {
-						translateVectors(0.0f, 0.05f)
+						translateVertexs(0.0f, 0.05f)
 						InvalidateRect(window, null, FALSE)
 					}
 
 					VK_DOWN -> {
-						translateVectors(0.0f, -0.05f)
+						translateVertexs(0.0f, -0.05f)
 						InvalidateRect(window, null, FALSE)
 					}
 
 					VK_OEM_PLUS, VK_ADD -> {
-						scaleVectors(1.1f)
+						scaleVertexs(1.1f)
 						InvalidateRect(window, null, FALSE)
 					}
 
 					VK_OEM_MINUS, VK_SUBTRACT -> {
-						scaleVectors(1 / 1.1f)
+						scaleVertexs(1 / 1.1f)
 						InvalidateRect(window, null, FALSE)
 					}
 
@@ -172,10 +167,10 @@ private fun wndProc(window: HWND?, msg: UINT, wParam: WPARAM, lParam: LPARAM): L
 					val time = measureTime {
 						val ps = alloc<PAINTSTRUCT>()
 						PatBlt(hdcBack, 0, 0, 1040, 580, WHITENESS)
-						for ((v11, v21, v31) in polygons) {
-							val v1 = points[v11 - 1]
-							val v2 = points[v21 - 1]
-							val v3 = points[v31 - 1]
+						for ((v11, v21, v31) in faces) {
+							val v1 = vertices[v11 - 1]
+							val v2 = vertices[v21 - 1]
+							val v3 = vertices[v31 - 1]
 
 							drawLineDDA(
 								hdcBack!!,
