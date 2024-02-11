@@ -13,8 +13,8 @@ const val angleX: Float = 0.2f
 const val angleY: Float = 0.2f
 const val angleZ: Float = 0.2f
 
-const val width: Int = 960
-const val height: Int = 540
+const val width: Int = 1040
+const val height: Int = 580
 
 val vertices: ArrayList<Vertex> = ArrayList()
 val faces: ArrayList<Face> = ArrayList()
@@ -26,6 +26,10 @@ var hdcBack3: HDC? = null
 var hbmBack1: HBITMAP? = null
 var hbmBack2: HBITMAP? = null
 var hbmBack3: HBITMAP? = null
+
+var bitmapData1: ByteArray = ByteArray(width * height * 4)
+var bitmapData2: ByteArray = ByteArray(width * height * 4)
+var bitmapData3: ByteArray = ByteArray(width * height * 4)
 
 const val VK_Z: Int = 0x5A
 const val VK_X: Int = 0x58
@@ -112,7 +116,7 @@ fun main() {
 private fun wndProc(window: HWND?, msg: UINT, wParam: WPARAM, lParam: LPARAM): LRESULT {
 	when (msg.toInt()) {
 		WM_CREATE -> {
-			initializeBackBuffer(window, 1040, 580)
+			initializeBackBuffer(window, width, height)
 		}
 
 		WM_KEYDOWN -> {
@@ -170,9 +174,9 @@ private fun wndProc(window: HWND?, msg: UINT, wParam: WPARAM, lParam: LPARAM): L
 			memScoped {
 				val time = measureTime {
 					val ps = alloc<PAINTSTRUCT>()
-					PatBlt(hdcBack1, 0, 0, 1040, 580, WHITENESS)
-					PatBlt(hdcBack2, 0, 0, 1040, 580, WHITENESS)
-					PatBlt(hdcBack3, 0, 0, 1040, 580, WHITENESS)
+					PatBlt(hdcBack1, 0, 0, width, height, WHITENESS)
+					PatBlt(hdcBack2, 0, 0, width, height, WHITENESS)
+					PatBlt(hdcBack3, 0, 0, width, height, WHITENESS)
 
 					val thread1 = CreateThread(
 						null, 0u, staticCFunction(::drawLines1), null, 0u, null
@@ -195,9 +199,9 @@ private fun wndProc(window: HWND?, msg: UINT, wParam: WPARAM, lParam: LPARAM): L
 					CloseHandle(thread3)
 
 					val hdc = BeginPaint(window, ps.ptr)
-					BitBlt(hdc, 0, 0, 1040, 580, hdcBack1, 0, 0, SRCCOPY)
-					BitBlt(hdc, 0, 0, 1040, 580, hdcBack2, 0, 0, SRCAND)
-					BitBlt(hdc, 0, 0, 1040, 580, hdcBack3, 0, 0, SRCAND)
+					BitBlt(hdc, 0, 0, width, height, hdcBack1, 0, 0, SRCCOPY)
+					BitBlt(hdc, 0, 0, width, height, hdcBack2, 0, 0, SRCAND)
+					BitBlt(hdc, 0, 0, width, height, hdcBack3, 0, 0, SRCAND)
 					EndPaint(window, ps.ptr)
 
 				}.inWholeNanoseconds
@@ -207,7 +211,7 @@ private fun wndProc(window: HWND?, msg: UINT, wParam: WPARAM, lParam: LPARAM): L
 
 		WM_SIZE -> {
 			finalizeBackBuffer()
-			initializeBackBuffer(window, 1040, 580)
+			initializeBackBuffer(window, width, height)
 		}
 
 		WM_CLOSE -> DestroyWindow(window)
@@ -244,9 +248,9 @@ fun initializeBackBuffer(hWnd: HWND?, w: Int, h: Int) {
 	hdcBack1 = CreateCompatibleDC(hdcWindow)
 	hdcBack2 = CreateCompatibleDC(hdcWindow)
 	hdcBack3 = CreateCompatibleDC(hdcWindow)
-	hbmBack1 = CreateCompatibleBitmap(hdcWindow, w, h)
-	hbmBack2 = CreateCompatibleBitmap(hdcWindow, w, h)
-	hbmBack3 = CreateCompatibleBitmap(hdcWindow, w, h)
+	hbmBack1 = CreateBitmap(w, h, 1u, 32u, bitmapData1.refTo(0))
+	hbmBack2 = CreateBitmap(w, h, 1u, 32u, bitmapData2.refTo(0))
+	hbmBack3 = CreateBitmap(w, h, 1u, 32u, bitmapData3.refTo(0))
 	SaveDC(hdcBack1)
 	SaveDC(hdcBack2)
 	SaveDC(hdcBack3)
