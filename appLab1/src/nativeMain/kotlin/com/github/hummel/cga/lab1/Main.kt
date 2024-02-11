@@ -252,7 +252,7 @@ fun drawLineDDA(x1: Int, y1: Int, x2: Int, y2: Int) {
 			x += xIncrement
 			y += yIncrement
 		} else {
-			val index = (round(x).toInt() * 4) + (round(y).toInt() * width)
+			val index = (round(y).toInt() * width + round(x).toInt()) * 4
 
 			bitmapData[index + 0] = 0.toByte() // BLUE
 			bitmapData[index + 1] = 0.toByte() // GREEN
