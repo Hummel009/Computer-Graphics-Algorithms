@@ -10,23 +10,17 @@ import kotlin.math.max
 import kotlin.math.round
 import kotlin.time.measureTime
 
-const val angleX: Float = 0.2f
-const val angleY: Float = 0.2f
-const val angleZ: Float = 0.2f
-
-val vertices: ArrayList<Vertex> = ArrayList()
-val faces: ArrayList<Face> = ArrayList()
-
 const val width: Int = 1040
 const val height: Int = 580
-
-var hdcBack: HDC? = null
-var hbmBack: HBITMAP? = null
-var bitmapData: ByteArray = ByteArray(width * height * 4)
 
 const val VK_Z: Int = 0x5A
 const val VK_X: Int = 0x58
 const val VK_C: Int = 0x43
+
+val vertices: ArrayList<Vertex> = ArrayList()
+val faces: ArrayList<Face> = ArrayList()
+
+var bitmapData: ByteArray = ByteArray(width * height * 4)
 
 fun main() {
 	memScoped {
@@ -221,15 +215,7 @@ private fun wndProc(window: HWND?, msg: UINT, wParam: WPARAM, lParam: LPARAM): L
 
 		WM_CLOSE -> DestroyWindow(window)
 
-		WM_DESTROY -> {
-			hdcBack?.let {
-				RestoreDC(hdcBack, -1)
-				DeleteObject(hbmBack)
-				DeleteDC(hdcBack)
-				hdcBack = null
-			}
-			PostQuitMessage(0)
-		}
+		WM_DESTROY -> PostQuitMessage(0)
 
 		else -> {}
 	}
@@ -241,13 +227,15 @@ fun drawLineDDA(x1: Int, y1: Int, x2: Int, y2: Int) {
 	val dx = x2 - x1
 	val dy = y2 - y1
 	val steps = max(abs(dx), abs(dy))
+
 	val xIncrement = dx / steps.toFloat()
 	val yIncrement = dy / steps.toFloat()
+
 	var x = x1.toFloat()
 	var y = y1.toFloat()
 
 	for (i in 0..steps) {
-		//IF THE OBJECT IS OUT OF BORDERS OF THE WINDOW, IT SHOULD NOT BE DISPLAYED
+		//IF THE OBJECT IS OUT OF BOUNDS, IT SHOULDN'T BE DISPLAYED
 		if (x > width - 1 || x < 0 || y > height - 1 || y < 0) {
 			x += xIncrement
 			y += yIncrement
