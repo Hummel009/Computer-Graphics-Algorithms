@@ -138,7 +138,7 @@ private fun wndProc(window: HWND?, msg: UINT, wParam: WPARAM, lParam: LPARAM): L
 					}
 
 					VK_OEM_MINUS, VK_SUBTRACT -> {
-						scaleVectors(1.1f)
+						scaleVectors(1 / 1.1f)
 						InvalidateRect(window, null, FALSE)
 					}
 
@@ -203,17 +203,14 @@ private fun wndProc(window: HWND?, msg: UINT, wParam: WPARAM, lParam: LPARAM): L
 }
 
 var n: Int = 100
-fun drawLineDDA(hdc: HDC, vertex1: Vertex, vertex2: Vertex) {
-	var x = vertex1.x
-	var y = vertex1.y
-
-	val dx = vertex2.x - x
-	val dy = vertex2.y - y
-	val steps = if (abs(dx) > abs(dy)) abs(dx).toInt() else abs(dy).toInt()
-
-	val xIncrement = dx / steps
-	val yIncrement = dy / steps
-
+fun drawLineDDA(hdc: HDC, x1: Int, y1: Int, x2: Int, y2: Int) {
+	val dx = x2 - x1
+	val dy = y2 - y1
+	val steps = if (abs(dx) > abs(dy)) abs(dx) else abs(dy)
+	val xIncrement = dx.toFloat() / steps.toFloat()
+	val yIncrement = dy.toFloat() / steps.toFloat()
+	var x = x1.toFloat()
+	var y = y1.toFloat()
 	for (i in 0..steps step 2) {
 		SetPixel(hdc, x.toInt(), y.toInt(), 0u)
 		x += xIncrement
