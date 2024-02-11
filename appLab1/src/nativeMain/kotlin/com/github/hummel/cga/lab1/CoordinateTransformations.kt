@@ -19,14 +19,14 @@ fun multiplyMatrices(matrix1: Array<FloatArray>, matrix2: Array<FloatArray>): Ar
 	return result
 }
 
-fun translateVertexs(shiftX: Float, shiftY: Float) {
+fun translateVertices(shiftX: Float, shiftY: Float) {
 	for (vertex in vertices) {
 		vertex.x += shiftX
 		vertex.y += shiftY
 	}
 }
 
-fun scaleVertexs(scale: Float) {
+fun scaleVertices(scale: Float) {
 	for (vertex in vertices) {
 		vertex.x *= scale
 		vertex.y *= scale
@@ -34,7 +34,7 @@ fun scaleVertexs(scale: Float) {
 	}
 }
 
-fun rotateVertexsAroundX() {
+fun rotateVerticesAroundX() {
 	val cos = cos(angleX)
 	val sin = sin(angleX)
 
@@ -46,7 +46,7 @@ fun rotateVertexsAroundX() {
 	}
 }
 
-fun rotateVertexsAroundY() {
+fun rotateVerticesAroundY() {
 	val cos = cos(angleY)
 	val sin = sin(angleY)
 
@@ -58,7 +58,7 @@ fun rotateVertexsAroundY() {
 	}
 }
 
-fun rotateVertexsAroundZ() {
+fun rotateVerticesAroundZ() {
 	val cos = cos(angleZ)
 	val sin = sin(angleZ)
 

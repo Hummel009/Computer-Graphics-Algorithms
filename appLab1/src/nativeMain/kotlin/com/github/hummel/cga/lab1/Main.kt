@@ -114,47 +114,47 @@ private fun wndProc(window: HWND?, msg: UINT, wParam: WPARAM, lParam: LPARAM): L
 			WM_KEYDOWN -> {
 				when (wParam.toInt()) {
 					VK_Z -> {
-						rotateVertexsAroundZ()
+						rotateVerticesAroundZ()
 						InvalidateRect(window, null, FALSE)
 					}
 
 					VK_X -> {
-						rotateVertexsAroundX()
+						rotateVerticesAroundX()
 						InvalidateRect(window, null, FALSE)
 					}
 
 					VK_C -> {
-						rotateVertexsAroundY()
+						rotateVerticesAroundY()
 						InvalidateRect(window, null, FALSE)
 					}
 
 					VK_LEFT -> {
-						translateVertexs(-0.05f, 0.0f)
+						translateVertices(-0.05f, 0.0f)
 						InvalidateRect(window, null, FALSE)
 					}
 
 					VK_RIGHT -> {
-						translateVertexs(0.05f, 0.0f)
+						translateVertices(0.05f, 0.0f)
 						InvalidateRect(window, null, FALSE)
 					}
 
 					VK_UP -> {
-						translateVertexs(0.0f, 0.05f)
+						translateVertices(0.0f, 0.05f)
 						InvalidateRect(window, null, FALSE)
 					}
 
 					VK_DOWN -> {
-						translateVertexs(0.0f, -0.05f)
+						translateVertices(0.0f, -0.05f)
 						InvalidateRect(window, null, FALSE)
 					}
 
 					VK_OEM_PLUS, VK_ADD -> {
-						scaleVertexs(1.1f)
+						scaleVertices(1.1f)
 						InvalidateRect(window, null, FALSE)
 					}
 
 					VK_OEM_MINUS, VK_SUBTRACT -> {
-						scaleVertexs(1 / 1.1f)
+						scaleVertices(1 / 1.1f)
 						InvalidateRect(window, null, FALSE)
 					}
 
