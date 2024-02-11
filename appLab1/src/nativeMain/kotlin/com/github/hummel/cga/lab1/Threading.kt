@@ -10,7 +10,7 @@ fun drawLines1(lpParameter: LPVOID?): DWORD {
 		val v2 = vertices[v21 - 1]
 
 		drawLineDDA(
-			hdcBack!!,
+			hdcBack1!!,
 			(v1.x * n + 500).toInt(),
 			(680 - (v1.y * n) - 550 + (n)).toInt(),
 			(v2.x * n + 500).toInt(),
@@ -27,7 +27,7 @@ fun drawLines2(lpParameter: LPVOID?): DWORD {
 		val v3 = vertices[v31 - 1]
 
 		drawLineDDA(
-			hdcBack!!,
+			hdcBack2!!,
 			(v2.x * n + 500).toInt(),
 			(680 - (v2.y * n) - 550 + (n)).toInt(),
 			(v3.x * n + 500).toInt(),
@@ -44,7 +44,7 @@ fun drawLines3(lpParameter: LPVOID?): DWORD {
 		val v3 = vertices[v31 - 1]
 
 		drawLineDDA(
-			hdcBack!!,
+			hdcBack3!!,
 			(v3.x * n + 500).toInt(),
 			(680 - (v3.y * n) - 550 + (n)).toInt(),
 			(v1.x * n + 500).toInt(),

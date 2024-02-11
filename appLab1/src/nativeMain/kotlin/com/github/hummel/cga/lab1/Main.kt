@@ -7,6 +7,7 @@ import platform.posix.fopen
 import platform.windows.*
 import kotlin.math.abs
 import kotlin.math.max
+import kotlin.time.measureTime
 
 const val angleX: Float = 0.2f
 const val angleY: Float = 0.2f
@@ -18,8 +19,13 @@ const val height: Int = 540
 val vertices: ArrayList<Vertex> = ArrayList()
 val faces: ArrayList<Face> = ArrayList()
 
-var hdcBack: HDC? = null
-var hbmBack: HBITMAP? = null
+var hdcBack1: HDC? = null
+var hdcBack2: HDC? = null
+var hdcBack3: HDC? = null
+
+var hbmBack1: HBITMAP? = null
+var hbmBack2: HBITMAP? = null
+var hbmBack3: HBITMAP? = null
 
 const val VK_Z: Int = 0x5A
 const val VK_X: Int = 0x58
@@ -162,32 +168,40 @@ private fun wndProc(window: HWND?, msg: UINT, wParam: WPARAM, lParam: LPARAM): L
 
 		WM_PAINT -> {
 			memScoped {
-				val ps = alloc<PAINTSTRUCT>()
-				PatBlt(hdcBack, 0, 0, 1040, 580, WHITENESS)
+				val time = measureTime {
+					val ps = alloc<PAINTSTRUCT>()
+					PatBlt(hdcBack1, 0, 0, 1040, 580, WHITENESS)
+					PatBlt(hdcBack2, 0, 0, 1040, 580, WHITENESS)
+					PatBlt(hdcBack3, 0, 0, 1040, 580, WHITENESS)
 
-				val threadOperate1 = CreateThread(
-					null, 0u, staticCFunction(::drawLines1), null, 0u, null
-				)
+					val thread1 = CreateThread(
+						null, 0u, staticCFunction(::drawLines1), null, 0u, null
+					)
 
-				val threadOperate2 = CreateThread(
-					null, 0u, staticCFunction(::drawLines2), null, 0u, null
-				)
+					val thread2 = CreateThread(
+						null, 0u, staticCFunction(::drawLines2), null, 0u, null
+					)
 
-				val threadOperate3 = CreateThread(
-					null, 0u, staticCFunction(::drawLines3), null, 0u, null
-				)
+					val thread3 = CreateThread(
+						null, 0u, staticCFunction(::drawLines3), null, 0u, null
+					)
 
-				WaitForSingleObject(threadOperate1, INFINITE)
-				WaitForSingleObject(threadOperate2, INFINITE)
-				WaitForSingleObject(threadOperate3, INFINITE)
+					WaitForSingleObject(thread1, INFINITE)
+					WaitForSingleObject(thread2, INFINITE)
+					WaitForSingleObject(thread3, INFINITE)
 
-				CloseHandle(threadOperate1)
-				CloseHandle(threadOperate2)
-				CloseHandle(threadOperate3)
+					CloseHandle(thread1)
+					CloseHandle(thread2)
+					CloseHandle(thread3)
 
-				val hdc = BeginPaint(window, ps.ptr)
-				BitBlt(hdc, 0, 0, 1040, 580, hdcBack, 0, 0, SRCCOPY)
-				EndPaint(window, ps.ptr)
+					val hdc = BeginPaint(window, ps.ptr)
+					BitBlt(hdc, 0, 0, 1040, 580, hdcBack1, 0, 0, SRCCOPY)
+					BitBlt(hdc, 0, 0, 1040, 580, hdcBack2, 0, 0, SRCAND)
+					BitBlt(hdc, 0, 0, 1040, 580, hdcBack3, 0, 0, SRCAND)
+					EndPaint(window, ps.ptr)
+
+				}.inWholeNanoseconds
+				println("Draw: $time")
 			}
 		}
 
@@ -227,19 +241,39 @@ fun drawLineDDA(hdc: HDC, x1: Int, y1: Int, x2: Int, y2: Int) {
 fun initializeBackBuffer(hWnd: HWND?, w: Int, h: Int) {
 	val hdcWindow = GetDC(hWnd)
 
-	hdcBack = CreateCompatibleDC(hdcWindow)
-	hbmBack = CreateCompatibleBitmap(hdcWindow, w, h)
-	SaveDC(hdcBack)
-	SelectObject(hdcBack, hbmBack)
+	hdcBack1 = CreateCompatibleDC(hdcWindow)
+	hdcBack2 = CreateCompatibleDC(hdcWindow)
+	hdcBack3 = CreateCompatibleDC(hdcWindow)
+	hbmBack1 = CreateCompatibleBitmap(hdcWindow, w, h)
+	hbmBack2 = CreateCompatibleBitmap(hdcWindow, w, h)
+	hbmBack3 = CreateCompatibleBitmap(hdcWindow, w, h)
+	SaveDC(hdcBack1)
+	SaveDC(hdcBack2)
+	SaveDC(hdcBack3)
+	SelectObject(hdcBack1, hbmBack1)
+	SelectObject(hdcBack2, hbmBack2)
+	SelectObject(hdcBack3, hbmBack3)
 
 	ReleaseDC(hWnd, hdcWindow)
 }
 
 fun finalizeBackBuffer() {
-	hdcBack?.let {
-		RestoreDC(hdcBack, -1)
-		DeleteObject(hbmBack)
-		DeleteDC(hdcBack)
-		hdcBack = null
+	hdcBack1?.let {
+		RestoreDC(hdcBack1, -1)
+		DeleteObject(hbmBack1)
+		DeleteDC(hdcBack1)
+		hdcBack1 = null
+	}
+	hdcBack2?.let {
+		RestoreDC(hdcBack2, -1)
+		DeleteObject(hbmBack2)
+		DeleteDC(hdcBack2)
+		hdcBack2 = null
+	}
+	hdcBack3?.let {
+		RestoreDC(hdcBack3, -1)
+		DeleteObject(hbmBack3)
+		DeleteDC(hdcBack3)
+		hdcBack3 = null
 	}
 }
