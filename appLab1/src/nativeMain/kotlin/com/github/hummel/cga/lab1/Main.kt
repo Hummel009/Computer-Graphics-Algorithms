@@ -27,9 +27,7 @@ var hbmBack1: HBITMAP? = null
 var hbmBack2: HBITMAP? = null
 var hbmBack3: HBITMAP? = null
 
-var bitmapData1: ByteArray = ByteArray(width * height * 4)
-var bitmapData2: ByteArray = ByteArray(width * height * 4)
-var bitmapData3: ByteArray = ByteArray(width * height * 4)
+var bitmapData: ByteArray = ByteArray(width * height * 4)
 
 const val VK_Z: Int = 0x5A
 const val VK_X: Int = 0x58
@@ -248,9 +246,9 @@ fun initializeBackBuffer(hWnd: HWND?, w: Int, h: Int) {
 	hdcBack1 = CreateCompatibleDC(hdcWindow)
 	hdcBack2 = CreateCompatibleDC(hdcWindow)
 	hdcBack3 = CreateCompatibleDC(hdcWindow)
-	hbmBack1 = CreateBitmap(w, h, 1u, 32u, bitmapData1.refTo(0))
-	hbmBack2 = CreateBitmap(w, h, 1u, 32u, bitmapData2.refTo(0))
-	hbmBack3 = CreateBitmap(w, h, 1u, 32u, bitmapData3.refTo(0))
+	hbmBack1 = CreateBitmap(w, h, 1u, 32u, bitmapData.refTo(0))
+	hbmBack2 = CreateBitmap(w, h, 1u, 32u, bitmapData.refTo(0))
+	hbmBack3 = CreateBitmap(w, h, 1u, 32u, bitmapData.refTo(0))
 	SaveDC(hdcBack1)
 	SaveDC(hdcBack2)
 	SaveDC(hdcBack3)
