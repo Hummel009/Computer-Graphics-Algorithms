@@ -1,9 +1,6 @@
 package com.github.hummel.cga.lab1
 
 import kotlinx.cinterop.*
-import platform.posix.fclose
-import platform.posix.fgets
-import platform.posix.fopen
 import platform.windows.*
 import kotlin.math.max
 import kotlin.time.measureTime
@@ -21,6 +18,8 @@ val faces: ArrayList<Face> = ArrayList()
 var bitmapData: ByteArray = ByteArray(width * height * 4)
 
 fun main() {
+	parse("teapot.obj")
+
 	memScoped {
 		val className = "Teapot"
 		val windowTitle = "Windows API: Kotlin Native"
@@ -59,33 +58,6 @@ fun main() {
 			null,
 			null
 		)
-
-		val file = fopen("teapot.obj", "r")
-		val bufferLength = 1024
-		val buffer = ByteArray(bufferLength)
-
-		while (fgets(buffer.refTo(0), bufferLength, file) != null) {
-			val line = buffer.toKString()
-			val array = line.trim().split("\\s+".toRegex()).toTypedArray()
-
-			when (array[0]) {
-				"v" -> {
-					val vertex = Vertex(
-						array[1].toFloat(), array[2].toFloat() - 1.5f, array[3].toFloat()
-					)
-					vertices.add(vertex)
-				}
-
-				"f" -> {
-					val face = Face(
-						array[1].split("/")[0].toInt(), array[2].split("/")[0].toInt(), array[3].split("/")[0].toInt()
-					)
-					faces.add(face)
-				}
-			}
-		}
-
-		fclose(file)
 
 		val msg = alloc<MSG>()
 		while (GetMessageW(msg.ptr, null, 0u, 0u) != 0) {
