@@ -21,8 +21,8 @@ const val rotationSpeedZ: Float = 0.2f
 const val width: Int = 960
 const val height: Int = 540
 
-val vertices: ArrayList<Vertex> = ArrayList()
-val faces: ArrayList<Face> = ArrayList()
+val points: ArrayList<Point> = ArrayList()
+val polygons: ArrayList<Polygon> = ArrayList()
 
 var hdcBack: HDC? = null
 var hbmBack: HBITMAP? = null
@@ -33,7 +33,7 @@ const val VK_C: Int = 0x43
 
 fun main() {
 	memScoped {
-		val className = "RedSquare"
+		val className = "Teapot"
 		val windowTitle = "Windows API: Kotlin Native"
 
 		val windowClass = alloc<WNDCLASS>()
@@ -84,17 +84,17 @@ fun main() {
 
 			when (array[0]) {
 				"v" -> {
-					val vertex = Vertex(
+					val point = Point(
 						array[1].toFloat(), array[2].toFloat() - 1.5f, array[3].toFloat()
 					)
-					vertices.add(vertex)
+					points.add(point)
 				}
 
 				"f" -> {
-					val face = Face(
+					val polygon = Polygon(
 						array[1].split("/")[0].toInt(), array[2].split("/")[0].toInt(), array[3].split("/")[0].toInt()
 					)
-					faces.add(face)
+					polygons.add(polygon)
 				}
 			}
 		}
@@ -172,10 +172,10 @@ private fun wndProc(window: HWND?, msg: UINT, wParam: WPARAM, lParam: LPARAM): L
 					val time = measureTime {
 						val ps = alloc<PAINTSTRUCT>()
 						PatBlt(hdcBack, 0, 0, 1040, 580, WHITENESS)
-						for ((v11, v21, v31) in faces) {
-							val v1 = vertices[v11 - 1]
-							val v2 = vertices[v21 - 1]
-							val v3 = vertices[v31 - 1]
+						for ((v11, v21, v31) in polygons) {
+							val v1 = points[v11 - 1]
+							val v2 = points[v21 - 1]
+							val v3 = points[v31 - 1]
 
 							drawLineDDA(
 								hdcBack!!,
