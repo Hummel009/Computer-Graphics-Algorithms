@@ -62,7 +62,7 @@ fun main() {
 			null
 		)
 
-		val file = fopen("D:\\teapot.obj", "r")
+		val file = fopen("teapot.obj", "r")
 		val bufferLength = 1024
 		val buffer = ByteArray(bufferLength)
 
@@ -234,7 +234,7 @@ fun drawLineDDA(x1: Int, y1: Int, x2: Int, y2: Int) {
 	var x = x1.toFloat()
 	var y = y1.toFloat()
 
-	for (i in 0..steps) {
+	for (i in 0..steps step 2) {
 		//IF THE OBJECT IS OUT OF BOUNDS, IT SHOULDN'T BE DISPLAYED
 		if (x > width - 1 || x < 0 || y > height - 1 || y < 0) {
 			x += xIncrement
