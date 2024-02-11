@@ -7,26 +7,21 @@ import platform.posix.fopen
 import platform.windows.*
 import kotlin.math.abs
 import kotlin.math.max
+import kotlin.math.round
 import kotlin.time.measureTime
 
 const val angleX: Float = 0.2f
 const val angleY: Float = 0.2f
 const val angleZ: Float = 0.2f
 
-const val width: Int = 1040
-const val height: Int = 580
-
 val vertices: ArrayList<Vertex> = ArrayList()
 val faces: ArrayList<Face> = ArrayList()
 
-var hdcBack1: HDC? = null
-var hdcBack2: HDC? = null
-var hdcBack3: HDC? = null
+const val width: Int = 1040
+const val height: Int = 580
 
-var hbmBack1: HBITMAP? = null
-var hbmBack2: HBITMAP? = null
-var hbmBack3: HBITMAP? = null
-
+var hdcBack: HDC? = null
+var hbmBack: HBITMAP? = null
 var bitmapData: ByteArray = ByteArray(width * height * 4)
 
 const val VK_Z: Int = 0x5A
@@ -55,11 +50,8 @@ fun main() {
 		val screenWidth = GetSystemMetrics(SM_CXSCREEN)
 		val screenHeight = GetSystemMetrics(SM_CYSCREEN)
 
-		val windowWidth = width
-		val windowHeight = height
-
-		val windowX = max(0, (screenWidth - windowWidth) / 2)
-		val windowY = max(0, (screenHeight - windowHeight) / 2)
+		val windowX = max(0, (screenWidth - width) / 2)
+		val windowY = max(0, (screenHeight - height) / 2)
 
 		CreateWindowExW(
 			0u,
@@ -114,7 +106,6 @@ fun main() {
 private fun wndProc(window: HWND?, msg: UINT, wParam: WPARAM, lParam: LPARAM): LRESULT {
 	when (msg.toInt()) {
 		WM_CREATE -> {
-			initializeBackBuffer(window, width, height)
 		}
 
 		WM_KEYDOWN -> {
@@ -172,50 +163,71 @@ private fun wndProc(window: HWND?, msg: UINT, wParam: WPARAM, lParam: LPARAM): L
 			memScoped {
 				val time = measureTime {
 					val ps = alloc<PAINTSTRUCT>()
-					PatBlt(hdcBack1, 0, 0, width, height, WHITENESS)
-					PatBlt(hdcBack2, 0, 0, width, height, WHITENESS)
-					PatBlt(hdcBack3, 0, 0, width, height, WHITENESS)
-
-					val thread1 = CreateThread(
-						null, 0u, staticCFunction(::drawLines1), null, 0u, null
-					)
-
-					val thread2 = CreateThread(
-						null, 0u, staticCFunction(::drawLines2), null, 0u, null
-					)
-
-					val thread3 = CreateThread(
-						null, 0u, staticCFunction(::drawLines3), null, 0u, null
-					)
-
-					WaitForSingleObject(thread1, INFINITE)
-					WaitForSingleObject(thread2, INFINITE)
-					WaitForSingleObject(thread3, INFINITE)
-
-					CloseHandle(thread1)
-					CloseHandle(thread2)
-					CloseHandle(thread3)
-
 					val hdc = BeginPaint(window, ps.ptr)
-					BitBlt(hdc, 0, 0, width, height, hdcBack1, 0, 0, SRCCOPY)
-					BitBlt(hdc, 0, 0, width, height, hdcBack2, 0, 0, SRCAND)
-					BitBlt(hdc, 0, 0, width, height, hdcBack3, 0, 0, SRCAND)
-					EndPaint(window, ps.ptr)
+					val hdcMem = CreateCompatibleDC(hdc)
 
+					//MAKE IT WHITE
+					for (y in 0 until height) {
+						for (x in 0 until width) {
+							val offset = (y * width + x) * 4
+							bitmapData[offset + 0] = 255.toByte() // BLUE
+							bitmapData[offset + 1] = 255.toByte() // GREEN
+							bitmapData[offset + 2] = 255.toByte() // RED
+							bitmapData[offset + 3] = 255.toByte() // ALPHA
+						}
+					}
+
+					for ((v11, v21, v31) in faces) {
+						val v1 = vertices[v11 - 1]
+						val v2 = vertices[v21 - 1]
+						val v3 = vertices[v31 - 1]
+
+						drawLineDDA(
+							(v1.x * n + 500).toInt(),
+							(680 - (v1.y * n) - 550 + (n)).toInt(),
+							(v2.x * n + 500).toInt(),
+							(680 - (v2.y * n) - 550 + (n)).toInt()
+						)
+
+						drawLineDDA(
+							(v2.x * n + 500).toInt(),
+							(680 - (v2.y * n) - 550 + (n)).toInt(),
+							(v3.x * n + 500).toInt(),
+							(680 - (v3.y * n) - 550 + (n)).toInt()
+						)
+
+						drawLineDDA(
+							(v3.x * n + 500).toInt(),
+							(680 - (v3.y * n) - 550 + (n)).toInt(),
+							(v1.x * n + 500).toInt(),
+							(680 - (v1.y * n) - 550 + (n)).toInt()
+						)
+					}
+
+					val hBitmap = CreateBitmap(width, height, 1u, 32u, bitmapData.refTo(0))
+					val hOldBitmap = SelectObject(hdcMem, hBitmap)
+
+					BitBlt(hdc, ps.rcPaint.left, ps.rcPaint.top, width, height, hdcMem, 0, 0, SRCCOPY)
+
+					SelectObject(hdcMem, hOldBitmap)
+					DeleteObject(hBitmap)
+
+					DeleteDC(hdcMem)
+					EndPaint(window, ps.ptr)
 				}.inWholeNanoseconds
 				println("Draw: $time")
 			}
 		}
 
-		WM_SIZE -> {
-			finalizeBackBuffer()
-			initializeBackBuffer(window, width, height)
-		}
-
 		WM_CLOSE -> DestroyWindow(window)
 
 		WM_DESTROY -> {
-			finalizeBackBuffer()
+			hdcBack?.let {
+				RestoreDC(hdcBack, -1)
+				DeleteObject(hbmBack)
+				DeleteDC(hdcBack)
+				hdcBack = null
+			}
 			PostQuitMessage(0)
 		}
 
@@ -225,57 +237,30 @@ private fun wndProc(window: HWND?, msg: UINT, wParam: WPARAM, lParam: LPARAM): L
 }
 
 var n: Int = 100
-fun drawLineDDA(hdc: HDC, x1: Int, y1: Int, x2: Int, y2: Int) {
+fun drawLineDDA(x1: Int, y1: Int, x2: Int, y2: Int) {
 	val dx = x2 - x1
 	val dy = y2 - y1
-	val steps = if (abs(dx) > abs(dy)) abs(dx) else abs(dy)
-	val xIncrement = dx.toFloat() / steps.toFloat()
-	val yIncrement = dy.toFloat() / steps.toFloat()
+	val steps = max(abs(dx), abs(dy))
+	val xIncrement = dx / steps.toFloat()
+	val yIncrement = dy / steps.toFloat()
 	var x = x1.toFloat()
 	var y = y1.toFloat()
-	for (i in 0..steps step 2) {
-		SetPixel(hdc, x.toInt(), y.toInt(), 0u)
-		x += xIncrement
-		y += yIncrement
-	}
-}
 
-fun initializeBackBuffer(hWnd: HWND?, w: Int, h: Int) {
-	val hdcWindow = GetDC(hWnd)
+	for (i in 0..steps) {
+		//IF THE OBJECT IS OUT OF BORDERS OF THE WINDOW, IT SHOULD NOT BE DISPLAYED
+		if (x > width - 1 || x < 0 || y > height - 1 || y < 0) {
+			x += xIncrement
+			y += yIncrement
+		} else {
+			val index = (round(x).toInt() * 4) + (round(y).toInt() * width)
 
-	hdcBack1 = CreateCompatibleDC(hdcWindow)
-	hdcBack2 = CreateCompatibleDC(hdcWindow)
-	hdcBack3 = CreateCompatibleDC(hdcWindow)
-	hbmBack1 = CreateBitmap(w, h, 1u, 32u, bitmapData.refTo(0))
-	hbmBack2 = CreateBitmap(w, h, 1u, 32u, bitmapData.refTo(0))
-	hbmBack3 = CreateBitmap(w, h, 1u, 32u, bitmapData.refTo(0))
-	SaveDC(hdcBack1)
-	SaveDC(hdcBack2)
-	SaveDC(hdcBack3)
-	SelectObject(hdcBack1, hbmBack1)
-	SelectObject(hdcBack2, hbmBack2)
-	SelectObject(hdcBack3, hbmBack3)
+			bitmapData[index + 0] = 0.toByte() // BLUE
+			bitmapData[index + 1] = 0.toByte() // GREEN
+			bitmapData[index + 2] = 0.toByte() // RED
+			bitmapData[index + 3] = 255.toByte() // ALPHA
 
-	ReleaseDC(hWnd, hdcWindow)
-}
-
-fun finalizeBackBuffer() {
-	hdcBack1?.let {
-		RestoreDC(hdcBack1, -1)
-		DeleteObject(hbmBack1)
-		DeleteDC(hdcBack1)
-		hdcBack1 = null
-	}
-	hdcBack2?.let {
-		RestoreDC(hdcBack2, -1)
-		DeleteObject(hbmBack2)
-		DeleteDC(hdcBack2)
-		hdcBack2 = null
-	}
-	hdcBack3?.let {
-		RestoreDC(hdcBack3, -1)
-		DeleteObject(hbmBack3)
-		DeleteDC(hdcBack3)
-		hdcBack3 = null
+			x += xIncrement
+			y += yIncrement
+		}
 	}
 }
