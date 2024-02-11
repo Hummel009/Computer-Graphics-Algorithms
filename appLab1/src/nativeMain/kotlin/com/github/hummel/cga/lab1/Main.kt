@@ -28,9 +28,9 @@ val faces: ArrayList<Face> = ArrayList()
 var hdcBack: HDC? = null
 var hbmBack: HBITMAP? = null
 
-const val VK_S: Int = 0x53
-const val VK_A: Int = 0x41
-const val VK_D: Int = 0x44
+const val VK_Z: Int = 0x5A
+const val VK_X: Int = 0x58
+const val VK_C: Int = 0x43
 
 fun main() {
 	memScoped {
@@ -119,17 +119,17 @@ private fun wndProc(window: HWND?, msg: UINT, wParam: WPARAM, lParam: LPARAM): L
 
 			WM_KEYDOWN -> {
 				when (wParam.toInt()) {
-					VK_LEFT, VK_A -> {
+					VK_LEFT, VK_X -> {
 						rotateModelX()
 						InvalidateRect(window, null, FALSE)
 					}
 
-					VK_UP, VK_S -> {
+					VK_UP, VK_C -> {
 						rotateModelY()
 						InvalidateRect(window, null, FALSE)
 					}
 
-					VK_RIGHT, VK_D -> {
+					VK_RIGHT, VK_Z -> {
 						rotateModelZ()
 						InvalidateRect(window, null, FALSE)
 					}
