@@ -5,12 +5,12 @@ import platform.windows.*
 import kotlin.math.max
 import kotlin.time.measureTime
 
+private const val VK_Z: Int = 0x5A
+private const val VK_X: Int = 0x58
+private const val VK_C: Int = 0x43
+
 const val width: Int = 1040
 const val height: Int = 580
-
-const val VK_Z: Int = 0x5A
-const val VK_X: Int = 0x58
-const val VK_C: Int = 0x43
 
 val vertices: ArrayList<Vertex> = ArrayList()
 val faces: ArrayList<Face> = ArrayList()

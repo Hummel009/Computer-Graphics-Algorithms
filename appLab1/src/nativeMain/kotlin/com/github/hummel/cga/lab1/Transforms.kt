@@ -5,9 +5,9 @@ package com.github.hummel.cga.lab1
 import kotlin.math.cos
 import kotlin.math.sin
 
-const val angleX: Float = 0.2f
-const val angleY: Float = 0.2f
-const val angleZ: Float = 0.2f
+private const val angleX: Float = 0.2f
+private const val angleY: Float = 0.2f
+private const val angleZ: Float = 0.2f
 
 fun multiplyMatrices(matrix1: Array<FloatArray>, matrix2: Array<FloatArray>): Array<FloatArray> {
 	val result = Array(matrix1.size) { FloatArray(matrix2[0].size) }
