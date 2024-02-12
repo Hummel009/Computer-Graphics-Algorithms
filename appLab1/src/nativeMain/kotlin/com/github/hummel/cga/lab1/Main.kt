@@ -72,17 +72,17 @@ private fun wndProc(window: HWND?, msg: UINT, wParam: WPARAM, lParam: LPARAM): L
 		WM_KEYDOWN -> {
 			when (wParam.toInt()) {
 				VK_Z -> {
-					rotateVerticesAroundZ()
+					rotateVerticesAxisZ()
 					InvalidateRect(window, null, FALSE)
 				}
 
 				VK_X -> {
-					rotateVerticesAroundX()
+					rotateVerticesAxisX()
 					InvalidateRect(window, null, FALSE)
 				}
 
 				VK_C -> {
-					rotateVerticesAroundY()
+					rotateVerticesAxisY()
 					InvalidateRect(window, null, FALSE)
 				}
 
