@@ -161,7 +161,7 @@ private fun wndProc(window: HWND?, msg: UINT, wParam: WPARAM, lParam: LPARAM): L
 					val hBitmap = CreateBitmap(width, height, 1u, 32u, bitmapData.refTo(0))
 					val hOldBitmap = SelectObject(hdcMem, hBitmap)
 
-					BitBlt(hdc, ps.rcPaint.left, ps.rcPaint.top, width, height, hdcMem, 0, 0, SRCCOPY)
+					BitBlt(hdc, 0, 0, width, height, hdcMem, 0, 0, SRCCOPY)
 
 					SelectObject(hdcMem, hOldBitmap)
 					DeleteObject(hBitmap)
