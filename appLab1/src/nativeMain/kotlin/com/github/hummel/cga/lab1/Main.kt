@@ -69,9 +69,6 @@ fun main() {
 
 private fun wndProc(window: HWND?, msg: UINT, wParam: WPARAM, lParam: LPARAM): LRESULT {
 	when (msg.toInt()) {
-		WM_CREATE -> {
-		}
-
 		WM_KEYDOWN -> {
 			when (wParam.toInt()) {
 				VK_Z -> {
