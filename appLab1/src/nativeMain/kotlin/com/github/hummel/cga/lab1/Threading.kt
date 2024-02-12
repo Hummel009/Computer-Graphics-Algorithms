@@ -6,19 +6,20 @@ import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.round
 
-private const val n: Int = 100
-
 @Suppress("UNUSED_PARAMETER")
 fun drawLines12(lpParameter: LPVOID?): DWORD {
 	for ((v11, v21, _) in faces) {
-		val v1 = vertices[v11 - 1]
-		val v2 = vertices[v21 - 1]
+		var v1 = vertices[v11 - 1]
+		var v2 = vertices[v21 - 1]
+
+		v1 = v1.toView().toProjection().toViewport()
+		v2 = v2.toView().toProjection().toViewport()
 
 		drawLineDDA(
-			(v1.x * n + 500).toInt(),
-			(680 - (v1.y * n) - 550 + (n)).toInt(),
-			(v2.x * n + 500).toInt(),
-			(680 - (v2.y * n) - 550 + (n)).toInt()
+			v1.x.toInt(),
+			v1.y.toInt(),
+			v2.x.toInt(),
+			v2.y.toInt()
 		)
 	}
 	return 0u
@@ -27,14 +28,17 @@ fun drawLines12(lpParameter: LPVOID?): DWORD {
 @Suppress("UNUSED_PARAMETER")
 fun drawLines23(lpParameter: LPVOID?): DWORD {
 	for ((_, v21, v31) in faces) {
-		val v2 = vertices[v21 - 1]
-		val v3 = vertices[v31 - 1]
+		var v2 = vertices[v21 - 1]
+		var v3 = vertices[v31 - 1]
+
+		v2 = v2.toView().toProjection().toViewport()
+		v3 = v3.toView().toProjection().toViewport()
 
 		drawLineDDA(
-			(v2.x * n + 500).toInt(),
-			(680 - (v2.y * n) - 550 + (n)).toInt(),
-			(v3.x * n + 500).toInt(),
-			(680 - (v3.y * n) - 550 + (n)).toInt()
+			v2.x.toInt(),
+			v2.y.toInt(),
+			v3.x.toInt(),
+			v3.y.toInt()
 		)
 	}
 	return 0u
@@ -43,14 +47,17 @@ fun drawLines23(lpParameter: LPVOID?): DWORD {
 @Suppress("UNUSED_PARAMETER")
 fun drawLines31(lpParameter: LPVOID?): DWORD {
 	for ((v11, _, v31) in faces) {
-		val v1 = vertices[v11 - 1]
-		val v3 = vertices[v31 - 1]
+		var v1 = vertices[v11 - 1]
+		var v3 = vertices[v31 - 1]
+
+		v1 = v1.toView().toProjection().toViewport()
+		v3 = v3.toView().toProjection().toViewport()
 
 		drawLineDDA(
-			(v3.x * n + 500).toInt(),
-			(680 - (v3.y * n) - 550 + (n)).toInt(),
-			(v1.x * n + 500).toInt(),
-			(680 - (v1.y * n) - 550 + (n)).toInt()
+			v3.x.toInt(),
+			v3.y.toInt(),
+			v1.x.toInt(),
+			v1.y.toInt()
 		)
 	}
 	return 0u

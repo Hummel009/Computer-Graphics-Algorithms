@@ -9,20 +9,6 @@ private const val angleX: Float = 0.2f
 private const val angleY: Float = 0.2f
 private const val angleZ: Float = 0.2f
 
-fun multiplyMatrices(matrix1: Array<FloatArray>, matrix2: Array<FloatArray>): Array<FloatArray> {
-	val result = Array(matrix1.size) { FloatArray(matrix2[0].size) }
-
-	for (i in matrix1.indices) {
-		for (j in matrix2[0].indices) {
-			for (k in matrix2.indices) {
-				result[i][j] += matrix1[i][k] * matrix2[k][j]
-			}
-		}
-	}
-
-	return result
-}
-
 fun multiplyVertexByMatrix(vertex: Vertex, matrix: Array<FloatArray>): Vertex {
 	val result = FloatArray(4)
 
@@ -40,7 +26,7 @@ fun translateVertices(shiftX: Float, shiftY: Float) {
 		floatArrayOf(1.0f, 0.0f, 0.0f, vertex.x),
 		floatArrayOf(0.0f, 1.0f, 0.0f, vertex.y),
 		floatArrayOf(0.0f, 0.0f, 1.0f, vertex.z),
-		floatArrayOf(0.0f, 0.0f, 0.0f, 1.0f),
+		floatArrayOf(0.0f, 0.0f, 0.0f, 1.0f)
 	)
 
 	applyTransform(matrix)
@@ -52,7 +38,7 @@ fun scaleVertices(scale: Float) {
 		floatArrayOf(vertex.x, 0.0f, 0.0f, 0.0f),
 		floatArrayOf(0.0f, vertex.y, 0.0f, 0.0f),
 		floatArrayOf(0.0f, 0.0f, vertex.z, 0.0f),
-		floatArrayOf(0.0f, 0.0f, 0.0f, 1.0f),
+		floatArrayOf(0.0f, 0.0f, 0.0f, 1.0f)
 	)
 
 	applyTransform(matrix)
@@ -65,7 +51,7 @@ fun rotateVerticesAxisX() {
 		floatArrayOf(1.0f, 0.0f, 0.0f, 0.0f),
 		floatArrayOf(0.0f, cos, -sin, 0.0f),
 		floatArrayOf(0.0f, sin, cos, 0.0f),
-		floatArrayOf(0.0f, 0.0f, 0.0f, 1.0f),
+		floatArrayOf(0.0f, 0.0f, 0.0f, 1.0f)
 	)
 
 	applyTransform(matrix)
@@ -78,7 +64,7 @@ fun rotateVerticesAxisY() {
 		floatArrayOf(cos, 0.0f, sin, 0.0f),
 		floatArrayOf(0.0f, 1.0f, 0.0f, 0.0f),
 		floatArrayOf(-sin, 0.0f, cos, 0.0f),
-		floatArrayOf(0.0f, 0.0f, 0.0f, 1.0f),
+		floatArrayOf(0.0f, 0.0f, 0.0f, 1.0f)
 	)
 
 	applyTransform(matrix)
@@ -91,17 +77,17 @@ fun rotateVerticesAxisZ() {
 		floatArrayOf(cos, -sin, 0.0f, 0.0f),
 		floatArrayOf(sin, cos, 0.0f, 0.0f),
 		floatArrayOf(0.0f, 0.0f, 1.0f, 0.0f),
-		floatArrayOf(0.0f, 0.0f, 0.0f, 1.0f),
+		floatArrayOf(0.0f, 0.0f, 0.0f, 1.0f)
 	)
 
 	applyTransform(matrix)
 }
 
-private fun applyTransform(translationMatrix: Array<FloatArray>) {
+private fun applyTransform(matrix: Array<FloatArray>) {
 	for (vertex in vertices) {
-		val translatedVertex = multiplyVertexByMatrix(vertex, translationMatrix)
-		vertex.x = translatedVertex.x
-		vertex.y = translatedVertex.y
-		vertex.z = translatedVertex.z
+		val tempVertex = multiplyVertexByMatrix(vertex, matrix)
+		vertex.x = tempVertex.x
+		vertex.y = tempVertex.y
+		vertex.z = tempVertex.z
 	}
 }
