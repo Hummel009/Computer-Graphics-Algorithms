@@ -1,13 +1,11 @@
-@file:Suppress("unused")
-
 package com.github.hummel.cga.lab1
 
 import kotlin.math.cos
 import kotlin.math.sin
 
-private const val angleX: Float = 0.2f
-private const val angleY: Float = 0.2f
-private const val angleZ: Float = 0.2f
+private const val angle: Float = 0.2f
+private val cos = cos(angle)
+private val sin = sin(angle)
 
 fun multiplyVertexByMatrix(vertex: Vertex, matrix: Array<FloatArray>): Vertex {
 	val result = FloatArray(4)
@@ -19,6 +17,27 @@ fun multiplyVertexByMatrix(vertex: Vertex, matrix: Array<FloatArray>): Vertex {
 	val w = result[3]
 	return Vertex(result[0] / w, result[1] / w, result[2] / w)
 }
+
+private val matrixRotateX: Array<FloatArray> = arrayOf(
+	floatArrayOf(1.0f, 0.0f, 0.0f, 0.0f),
+	floatArrayOf(0.0f, cos, -sin, 0.0f),
+	floatArrayOf(0.0f, sin, cos, 0.0f),
+	floatArrayOf(0.0f, 0.0f, 0.0f, 1.0f)
+)
+
+private val matrixRotateY: Array<FloatArray> = arrayOf(
+	floatArrayOf(cos, 0.0f, sin, 0.0f),
+	floatArrayOf(0.0f, 1.0f, 0.0f, 0.0f),
+	floatArrayOf(-sin, 0.0f, cos, 0.0f),
+	floatArrayOf(0.0f, 0.0f, 0.0f, 1.0f)
+)
+
+private val matrixRotateZ: Array<FloatArray> = arrayOf(
+	floatArrayOf(cos, -sin, 0.0f, 0.0f),
+	floatArrayOf(sin, cos, 0.0f, 0.0f),
+	floatArrayOf(0.0f, 0.0f, 1.0f, 0.0f),
+	floatArrayOf(0.0f, 0.0f, 0.0f, 1.0f)
+)
 
 fun translateVertices(shiftX: Float, shiftY: Float) {
 	val vertex = Vertex(shiftX, shiftY, 0.0f)
@@ -45,42 +64,15 @@ fun scaleVertices(scale: Float) {
 }
 
 fun rotateVerticesAxisX() {
-	val cos = cos(angleX)
-	val sin = sin(angleX)
-	val matrix = arrayOf(
-		floatArrayOf(1.0f, 0.0f, 0.0f, 0.0f),
-		floatArrayOf(0.0f, cos, -sin, 0.0f),
-		floatArrayOf(0.0f, sin, cos, 0.0f),
-		floatArrayOf(0.0f, 0.0f, 0.0f, 1.0f)
-	)
-
-	applyTransform(matrix)
+	applyTransform(matrixRotateX)
 }
 
 fun rotateVerticesAxisY() {
-	val cos = cos(angleY)
-	val sin = sin(angleY)
-	val matrix = arrayOf(
-		floatArrayOf(cos, 0.0f, sin, 0.0f),
-		floatArrayOf(0.0f, 1.0f, 0.0f, 0.0f),
-		floatArrayOf(-sin, 0.0f, cos, 0.0f),
-		floatArrayOf(0.0f, 0.0f, 0.0f, 1.0f)
-	)
-
-	applyTransform(matrix)
+	applyTransform(matrixRotateY)
 }
 
 fun rotateVerticesAxisZ() {
-	val cos = cos(angleZ)
-	val sin = sin(angleZ)
-	val matrix = arrayOf(
-		floatArrayOf(cos, -sin, 0.0f, 0.0f),
-		floatArrayOf(sin, cos, 0.0f, 0.0f),
-		floatArrayOf(0.0f, 0.0f, 1.0f, 0.0f),
-		floatArrayOf(0.0f, 0.0f, 0.0f, 1.0f)
-	)
-
-	applyTransform(matrix)
+	applyTransform(matrixRotateZ)
 }
 
 private fun applyTransform(matrix: Array<FloatArray>) {
