@@ -34,7 +34,7 @@ fun rotateVerticesAxisX() {
 	val cos = cos(angle)
 	val sin = sin(angle)
 
-	val matrixRotateX: Array<FloatArray> = arrayOf(
+	val matrixRotateX = arrayOf(
 		floatArrayOf(1.0f, 0.0f, 0.0f, 0.0f),
 		floatArrayOf(0.0f, cos, -sin, 0.0f),
 		floatArrayOf(0.0f, sin, cos, 0.0f),
@@ -49,7 +49,7 @@ fun rotateVerticesAxisY() {
 	val cos = cos(angle)
 	val sin = sin(angle)
 
-	val matrixRotateY: Array<FloatArray> = arrayOf(
+	val matrixRotateY = arrayOf(
 		floatArrayOf(cos, 0.0f, sin, 0.0f),
 		floatArrayOf(0.0f, 1.0f, 0.0f, 0.0f),
 		floatArrayOf(-sin, 0.0f, cos, 0.0f),
@@ -64,7 +64,7 @@ fun rotateVerticesAxisZ() {
 	val cos = cos(angle)
 	val sin = sin(angle)
 
-	val matrixRotateZ: Array<FloatArray> = arrayOf(
+	val matrixRotateZ = arrayOf(
 		floatArrayOf(cos, -sin, 0.0f, 0.0f),
 		floatArrayOf(sin, cos, 0.0f, 0.0f),
 		floatArrayOf(0.0f, 0.0f, 1.0f, 0.0f),
