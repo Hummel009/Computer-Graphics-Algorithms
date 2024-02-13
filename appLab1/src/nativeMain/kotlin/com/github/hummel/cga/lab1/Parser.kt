@@ -27,34 +27,66 @@ fun parse(fileName: String) {
 }
 
 private fun addVertex(array: Array<String>) {
-	val vertex = when (array.size) {
-		3 -> Vertex(array[0].toFloat(), array[1].toFloat(), array[2].toFloat())
-		4 -> Vertex(array[0].toFloat(), array[1].toFloat(), array[2].toFloat(), array[3].toFloat())
+	val coords = array.map { it.toFloat() }
+
+	val vertex = when (coords.size) {
+		3 -> Vertex(coords[0], coords[1], coords[2])
+		4 -> Vertex(coords[0], coords[1], coords[2], coords[3])
 		else -> throw Exception("Vertex error: ${array.joinToString(" ")}")
 	}
 	vertices.add(vertex)
 }
 
 private fun addVertexTexture(array: Array<String>) {
-	val vertex = when (array.size) {
-		1 -> Vertex(array[0].toFloat(), 0.0f, 0.0f)
-		2 -> Vertex(array[0].toFloat(), array[1].toFloat(), 0.0f)
-		3 -> Vertex(array[0].toFloat(), array[1].toFloat(), array[2].toFloat())
+	val coords = array.map { it.toFloat() }
+
+	val vertex = when (coords.size) {
+		1 -> Vertex(coords[0], 0.0f, 0.0f)
+		2 -> Vertex(coords[0], coords[1], 0.0f)
+		3 -> Vertex(coords[0], coords[1], coords[2])
 		else -> throw Exception("Vertex texture error: ${array.joinToString(" ")}")
 	}
 	verticesTexture.add(vertex)
 }
 
 private fun addVertexNormal(array: Array<String>) {
-	val vertex = when (array.size) {
-		3 -> Vertex(array[0].toFloat(), array[1].toFloat(), array[2].toFloat())
+	val coords = array.map { it.toFloat() }
+
+	val vertex = when (coords.size) {
+		3 -> Vertex(coords[0], coords[1], coords[2])
 		else -> throw Exception("Vertex normal error: ${array.joinToString(" ")}")
 	}
 	verticesNormal.add(vertex)
 }
 
 private fun addFace(array: Array<String>) {
-	val vertices = array.map { it.split("/")[0].toInt() }.map { it - 1 }
-	val face = Face(vertices.requireNoNulls(), mutableListOf(), mutableListOf())
-	faces.add(face)
+	val vs = mutableListOf<Int>()
+	val vns = mutableListOf<Int>()
+	val vts = mutableListOf<Int>()
+
+	val coords = array.filter { it.isNotBlank() }
+
+	coords.forEach { coord ->
+		val elem = coord.split('/')
+
+		elem[0].toIntOrNull()?.let { vs.add(it - 1) } ?: run {
+			vs.add(vertices.lastIndex)
+		}
+
+		if (elem.size > 1) {
+			elem[1].toIntOrNull()?.let { vts.add(it - 1) } ?: run {
+				elem[2].toIntOrNull()?.let { vns.add(it - 1) } ?: run {
+					vns.add(verticesNormal.lastIndex)
+				}
+			}
+		}
+
+		if (elem.size > 2) {
+			elem[2].toIntOrNull()?.let { vns.add(it - 1) } ?: run {
+				vns.add(verticesNormal.lastIndex)
+			}
+		}
+	}
+
+	faces.add(Face(vs, vts, vns))
 }
