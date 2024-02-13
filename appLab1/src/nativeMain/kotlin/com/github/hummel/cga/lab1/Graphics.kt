@@ -39,15 +39,15 @@ fun drawerThread(lpParameter: LPVOID?): DWORD {
 	for (face in splitFaces[parameter!!]) {
 		val faceVertices = face.vertices
 		if (faceVertices.size >= 3) {
-			var previousVertex = vertices[faceVertices.last() - 1].toView().toProjection().toViewport()
+			var previousVertex = vertices[faceVertices.last()].toView().toProjection().toViewport()
 
 			for (i in faceVertices) {
-				val currentVertex = vertices[i - 1].toView().toProjection().toViewport()
+				val currentVertex = vertices[i].toView().toProjection().toViewport()
 				drawLineDDA(previousVertex, currentVertex)
 				previousVertex = currentVertex
 			}
 
-			val firstVertex = vertices[faceVertices.first() - 1].toView().toProjection().toViewport()
+			val firstVertex = vertices[faceVertices.first()].toView().toProjection().toViewport()
 			drawLineDDA(previousVertex, firstVertex)
 		}
 	}

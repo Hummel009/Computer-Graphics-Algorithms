@@ -77,4 +77,4 @@ data class Vertex(var x: Float, var y: Float, var z: Float, var w: Float) {
 	}
 }
 
-data class Face(val vertices: Set<Int>)
+data class Face(val vertices: List<Int>, val textures: List<Int>, val normals: List<Int>)
