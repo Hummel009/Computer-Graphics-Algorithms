@@ -61,6 +61,17 @@ data class Vertex(var x: Float, var y: Float, var z: Float) {
 		val magnitude = sqrt(x * x + y * y + z * z)
 		return Vertex(x / magnitude, y / magnitude, z / magnitude)
 	}
+
+	private fun multiplyVertexByMatrix(vertex: Vertex, matrix: Array<FloatArray>): Vertex {
+		val result = FloatArray(4)
+
+		for (i in 0 until 4) {
+			result[i] = vertex.x * matrix[i][0] + vertex.y * matrix[i][1] + vertex.z * matrix[i][2] + matrix[i][3]
+		}
+
+		val w = result[3]
+		return Vertex(result[0] / w, result[1] / w, result[2] / w)
+	}
 }
 
 data class Face(val v1: Int, val v2: Int, val v3: Int)
