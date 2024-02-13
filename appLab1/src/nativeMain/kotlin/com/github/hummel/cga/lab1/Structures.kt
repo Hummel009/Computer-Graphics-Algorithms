@@ -39,8 +39,10 @@ private val matrixViewport: Array<FloatArray> = arrayOf(
 	floatArrayOf(0.0f, 0.0f, 0.0f, 1.0f)
 )
 
-data class Vertex(var x: Float, var y: Float, var z: Float) {
+data class Vertex(var x: Float, var y: Float, var z: Float, var w: Float) {
 	private val magnitude: Float = sqrt(x * x + y * y + z * z)
+
+	constructor(x: Float, y: Float, z: Float) : this(x, y, z, 1.0f)
 
 	operator fun minus(other: Vertex): Vertex = Vertex(x - other.x, y - other.y, z - other.z)
 
