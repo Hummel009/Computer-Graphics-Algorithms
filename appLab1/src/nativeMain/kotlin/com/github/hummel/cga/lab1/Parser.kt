@@ -34,7 +34,7 @@ private fun addVertex(array: Array<String>) {
 private fun addFace(array: Array<String>) {
 	val vertices = array.drop(1).map { it.split("/")[0].toIntOrNull() }
 	if (vertices.all { it != null }) {
-		val face = Face(vertices.requireNoNulls())
+		val face = Face(vertices.requireNoNulls().toSet())
 		faces.add(face)
 	} else {
 		println("Error: Invalid vertex index in face definition - ${array.joinToString(" ")}")

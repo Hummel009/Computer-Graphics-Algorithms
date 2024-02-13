@@ -1,5 +1,7 @@
 package com.github.hummel.cga.lab1
 
+import kotlinx.cinterop.*
+import platform.windows.*
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.round
@@ -9,21 +11,46 @@ private const val green: Byte = 0.toByte()
 private const val red: Byte = 0.toByte()
 private const val alpha: Byte = 255.toByte()
 
-fun drawLines() {
-	for ((verticesIndices) in faces) {
-		if (verticesIndices.size >= 3) {
-			var previousVertex = vertices[verticesIndices.last() - 1].toView().toProjection().toViewport()
+private val dividedList: Array<List<Face>> = splitListIntoEqualParts(faces, 10)
 
-			for (i in verticesIndices) {
+fun drawLines() {
+	memScoped {
+		val params = Array(10) {
+			alloc<IntVar>()
+		}
+
+		params.forEachIndexed { index, param -> param.value = index }
+
+		val threads = Array(10) {
+			CreateThread(null, 0u, staticCFunction(::drawerThread), params[it].ptr, 0u, null)
+		}
+
+		for (thread in threads) {
+			WaitForSingleObject(thread, INFINITE)
+			CloseHandle(thread)
+		}
+	}
+}
+
+fun drawerThread(lpParameter: LPVOID?): DWORD {
+	val parameter = lpParameter?.reinterpret<IntVar>()?.pointed?.value
+
+	for (face in dividedList[parameter!!]) {
+		val faceVertices = face.vertices
+		if (faceVertices.size >= 3) {
+			var previousVertex = vertices[faceVertices.last() - 1].toView().toProjection().toViewport()
+
+			for (i in faceVertices) {
 				val currentVertex = vertices[i - 1].toView().toProjection().toViewport()
 				drawLineDDA(previousVertex, currentVertex)
 				previousVertex = currentVertex
 			}
 
-			val firstVertex = vertices[verticesIndices.first() - 1].toView().toProjection().toViewport()
+			val firstVertex = vertices[faceVertices.first() - 1].toView().toProjection().toViewport()
 			drawLineDDA(previousVertex, firstVertex)
 		}
 	}
+	return 0u
 }
 
 private fun drawLineDDA(v1: Vertex, v2: Vertex) {
@@ -50,4 +77,13 @@ private fun drawLineDDA(v1: Vertex, v2: Vertex) {
 		x += xIncrement
 		y += yIncrement
 	}
+}
+
+private fun <T> splitListIntoEqualParts(list: List<T>, parts: Int): Array<List<T>> {
+	require(parts > 0) { "Number of parts must be greater than zero." }
+
+	val size = list.size
+	val chunkSize = (size + parts - 1) / parts
+
+	return list.chunked(chunkSize).toTypedArray()
 }
