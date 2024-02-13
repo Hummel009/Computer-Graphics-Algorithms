@@ -4,6 +4,11 @@ import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.round
 
+private const val blue: Byte = 0.toByte()
+private const val green: Byte = 0.toByte()
+private const val red: Byte = 0.toByte()
+private const val alpha: Byte = 255.toByte()
+
 fun drawLines() {
 	for ((v11, v21, v31) in faces) {
 		var v1 = vertices[v11 - 1]
@@ -32,13 +37,13 @@ private fun drawLineDDA(v1: Vertex, v2: Vertex) {
 	val yIncrement = dy / steps
 
 	for (i in 0..steps step 2) {
-		if (!(x <= width - 1 && x >= 0 && y <= height - 1 && y >= 0)) {
-			val index = (round(y).toInt() * width + round(x).toInt()) * 4
+		if (!(x > width - 1 || x < 0 || y > height - 1 || y < 0)) {
+			val index = (round(y).toInt() * width + round(x).toInt()) shl 2
 
-			bitmapData[index + 0] = 0.toByte() // BLUE
-			bitmapData[index + 1] = 0.toByte() // GREEN
-			bitmapData[index + 2] = 0.toByte() // RED
-			bitmapData[index + 3] = 255.toByte() // ALPHA
+			bitmapData[index + 0] = blue // BLUE
+			bitmapData[index + 1] = green // GREEN
+			bitmapData[index + 2] = red // RED
+			bitmapData[index + 3] = alpha // ALPHA
 		}
 
 		x += xIncrement
