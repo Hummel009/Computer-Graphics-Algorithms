@@ -1,7 +1,5 @@
 package com.github.hummel.cga.lab1
 
-import platform.windows.DWORD
-import platform.windows.LPVOID
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.round
@@ -11,46 +9,25 @@ private const val green: Byte = 0.toByte()
 private const val red: Byte = 0.toByte()
 private const val alpha: Byte = 255.toByte()
 
-@Suppress("UNUSED_PARAMETER")
-fun drawLines12(lpParameter: LPVOID?): DWORD {
-	for ((v11, v21, _) in faces) {
-		var v1 = vertices[v11 - 1]
-		var v2 = vertices[v21 - 1]
+fun drawLines() {
+	for (face in faces) {
+		val verticesIndices = face.vertices
 
-		v1 = v1.toView().toProjection().toViewport()
-		v2 = v2.toView().toProjection().toViewport()
+		if (verticesIndices.size < 3) {
+			continue
+		}
 
-		drawLineDDA(v1, v2)
+		var previousVertex = vertices[verticesIndices.last() - 1].toView().toProjection().toViewport()
+
+		for (i in verticesIndices) {
+			val currentVertex = vertices[i - 1].toView().toProjection().toViewport()
+			drawLineDDA(previousVertex, currentVertex)
+			previousVertex = currentVertex
+		}
+
+		val firstVertex = vertices[verticesIndices.first() - 1].toView().toProjection().toViewport()
+		drawLineDDA(previousVertex, firstVertex)
 	}
-	return 0u
-}
-
-@Suppress("UNUSED_PARAMETER")
-fun drawLines23(lpParameter: LPVOID?): DWORD {
-	for ((_, v21, v31) in faces) {
-		var v2 = vertices[v21 - 1]
-		var v3 = vertices[v31 - 1]
-
-		v2 = v2.toView().toProjection().toViewport()
-		v3 = v3.toView().toProjection().toViewport()
-
-		drawLineDDA(v2, v3)
-	}
-	return 0u
-}
-
-@Suppress("UNUSED_PARAMETER")
-fun drawLines31(lpParameter: LPVOID?): DWORD {
-	for ((v11, _, v31) in faces) {
-		var v1 = vertices[v11 - 1]
-		var v3 = vertices[v31 - 1]
-
-		v1 = v1.toView().toProjection().toViewport()
-		v3 = v3.toView().toProjection().toViewport()
-
-		drawLineDDA(v3, v1)
-	}
-	return 0u
 }
 
 private fun drawLineDDA(v1: Vertex, v2: Vertex) {

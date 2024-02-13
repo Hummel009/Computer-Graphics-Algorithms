@@ -16,21 +16,27 @@ fun parse(fileName: String) {
 		val array = line.trim().split("\\s+".toRegex()).toTypedArray()
 
 		when (array[0]) {
-			"v" -> {
-				val vertex = Vertex(
-					array[1].toFloat(), array[2].toFloat() - 1.5f, array[3].toFloat()
-				)
-				vertices.add(vertex)
-			}
-
-			"f" -> {
-				val face = Face(
-					array[1].split("/")[0].toInt(), array[2].split("/")[0].toInt(), array[3].split("/")[0].toInt()
-				)
-				faces.add(face)
-			}
+			"v" -> addVertex(array)
+			"f" -> addFace(array)
 		}
 	}
 
 	fclose(file)
+}
+
+private fun addVertex(array: Array<String>) {
+	val vertex = Vertex(
+		array[1].toFloat(), array[2].toFloat() - 1.5f, array[3].toFloat()
+	)
+	vertices.add(vertex)
+}
+
+private fun addFace(array: Array<String>) {
+	val vertices = array.drop(1).map { it.split("/")[0].toIntOrNull() }
+	if (vertices.all { it != null }) {
+		val face = Face(vertices.requireNoNulls())
+		faces.add(face)
+	} else {
+		println("Error: Invalid vertex index in face definition - ${array.joinToString(" ")}")
+	}
 }
