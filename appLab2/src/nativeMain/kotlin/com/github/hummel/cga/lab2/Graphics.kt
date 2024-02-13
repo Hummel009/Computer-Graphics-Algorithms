@@ -36,8 +36,7 @@ fun drawLines() {
 fun drawerThread(lpParameter: LPVOID?): DWORD {
 	val parameter = lpParameter?.reinterpret<IntVar>()?.pointed?.value
 
-	for (face in splitFaces[parameter!!]) {
-		val faceVertices = face.vertices
+	for ((faceVertices, faceTextures, faceNormals) in splitFaces[parameter!!]) {
 		if (faceVertices.size >= 3) {
 			var previousVertex = vertices[faceVertices.last()].toView().toProjection().toViewport()
 
