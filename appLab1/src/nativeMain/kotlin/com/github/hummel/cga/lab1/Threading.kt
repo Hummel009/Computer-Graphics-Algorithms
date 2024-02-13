@@ -10,23 +10,19 @@ private const val red: Byte = 0.toByte()
 private const val alpha: Byte = 255.toByte()
 
 fun drawLines() {
-	for (face in faces) {
-		val verticesIndices = face.vertices
+	for ((verticesIndices) in faces) {
+		if (verticesIndices.size >= 3) {
+			var previousVertex = vertices[verticesIndices.last() - 1].toView().toProjection().toViewport()
 
-		if (verticesIndices.size < 3) {
-			continue
+			for (i in verticesIndices) {
+				val currentVertex = vertices[i - 1].toView().toProjection().toViewport()
+				drawLineDDA(previousVertex, currentVertex)
+				previousVertex = currentVertex
+			}
+
+			val firstVertex = vertices[verticesIndices.first() - 1].toView().toProjection().toViewport()
+			drawLineDDA(previousVertex, firstVertex)
 		}
-
-		var previousVertex = vertices[verticesIndices.last() - 1].toView().toProjection().toViewport()
-
-		for (i in verticesIndices) {
-			val currentVertex = vertices[i - 1].toView().toProjection().toViewport()
-			drawLineDDA(previousVertex, currentVertex)
-			previousVertex = currentVertex
-		}
-
-		val firstVertex = vertices[verticesIndices.first() - 1].toView().toProjection().toViewport()
-		drawLineDDA(previousVertex, firstVertex)
 	}
 }
 
