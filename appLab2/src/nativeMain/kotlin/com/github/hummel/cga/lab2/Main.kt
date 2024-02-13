@@ -130,13 +130,14 @@ private fun wndProc(window: HWND?, msg: UINT, wParam: WPARAM, lParam: LPARAM): L
 					val hdcMem = CreateCompatibleDC(hdc)
 
 					//MAKE IT WHITE
+					val color = Color(255, 255, 255, 255)
 					for (y in 0 until height) {
 						for (x in 0 until width) {
 							val offset = (y * width + x) * 4
-							bitmapData[offset + 0] = 255.toByte() // BLUE
-							bitmapData[offset + 1] = 255.toByte() // GREEN
-							bitmapData[offset + 2] = 255.toByte() // RED
-							bitmapData[offset + 3] = 255.toByte() // ALPHA
+							bitmapData[offset + 0] = color.blue // BLUE
+							bitmapData[offset + 1] = color.green // GREEN
+							bitmapData[offset + 2] = color.red // RED
+							bitmapData[offset + 3] = color.alpha // ALPHA
 						}
 					}
 

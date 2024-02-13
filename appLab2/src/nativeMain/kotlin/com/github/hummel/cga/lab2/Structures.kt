@@ -185,3 +185,9 @@ data class Triangle(var a: Vertex, var b: Vertex, var c: Vertex) {
 		return LineSegment(leftPoint, rightPoint)
 	}
 }
+
+data class Color(val blue: Byte, val green: Byte, val red: Byte, val alpha: Byte) {
+	constructor(blue: Int, green: Int, red: Int, alpha: Int) : this(
+		blue.toByte(), green.toByte(), red.toByte(), alpha.toByte()
+	)
+}
