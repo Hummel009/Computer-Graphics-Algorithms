@@ -138,7 +138,25 @@ private fun wndProc(window: HWND?, msg: UINT, wParam: WPARAM, lParam: LPARAM): L
 						}
 					}
 
-					drawLines()
+					val thread1 = CreateThread(
+						null, 0u, staticCFunction(::drawLines12), null, 0u, null
+					)
+
+					val thread2 = CreateThread(
+						null, 0u, staticCFunction(::drawLines23), null, 0u, null
+					)
+
+					val thread3 = CreateThread(
+						null, 0u, staticCFunction(::drawLines31), null, 0u, null
+					)
+
+					WaitForSingleObject(thread1, INFINITE)
+					WaitForSingleObject(thread2, INFINITE)
+					WaitForSingleObject(thread3, INFINITE)
+
+					CloseHandle(thread1)
+					CloseHandle(thread2)
+					CloseHandle(thread3)
 
 					val hBitmap = CreateBitmap(width, height, 1u, 32u, bitmapData.refTo(0))
 					val hOldBitmap = SelectObject(hdcMem, hBitmap)
