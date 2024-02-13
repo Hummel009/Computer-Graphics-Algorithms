@@ -1,6 +1,8 @@
 package com.github.hummel.cga.lab1
 
-import kotlin.math.*
+import kotlin.math.PI
+import kotlin.math.sqrt
+import kotlin.math.tan
 
 private var eye: Vertex = Vertex(0.0f, 0.0f, 10.0f)
 private var target: Vertex = Vertex(0.0f, 0.0f, 0.0f)
@@ -42,14 +44,6 @@ data class Vertex(var x: Float, var y: Float, var z: Float, var w: Float) {
 
 	constructor(x: Float, y: Float, z: Float) : this(x, y, z, 1.0f)
 
-	operator fun minus(float: Float): Vertex = Vertex(x - float, y - float, z - float)
-
-	operator fun plus(float: Float): Vertex = Vertex(x + float, y + float, z + float)
-
-	operator fun times(float: Float): Vertex = Vertex(x * float, y * float, z * float)
-
-	operator fun div(float: Float): Vertex = Vertex(x / float, y / float, z / float)
-
 	operator fun minus(other: Vertex): Vertex = Vertex(x - other.x, y - other.y, z - other.z)
 
 	operator fun plus(other: Vertex): Vertex = Vertex(x + other.x, y + other.y, z + other.z)
@@ -71,8 +65,6 @@ data class Vertex(var x: Float, var y: Float, var z: Float, var w: Float) {
 
 	fun normalize(): Vertex = Vertex(x / magnitude, y / magnitude, z / magnitude)
 
-	fun getMagnitude(): Float = magnitude
-
 	private fun multiplyByMatrix(matrix: Array<FloatArray>): Vertex {
 		val result = FloatArray(4)
 
@@ -86,102 +78,3 @@ data class Vertex(var x: Float, var y: Float, var z: Float, var w: Float) {
 }
 
 data class Face(val vertices: List<Int>, val textures: List<Int>, val normals: List<Int>)
-
-data class LineSegment(val left: Vertex, val right: Vertex)
-
-data class PointLight(var x: Float, var y: Float, var z: Float, var intency: Float) {
-	fun calculateLight(point: Vertex, normal: Vertex): Float {
-		val l = Vertex(x, y, z) - point
-
-		var lightResult = 0.0f
-		val angle = normal scalarMul l
-
-		if (angle > 0) {
-			lightResult = intency * angle / (l.getMagnitude() * normal.getMagnitude())
-		}
-
-		return lightResult
-	}
-}
-
-data class Triangle(val a: Vertex, val b: Vertex, val c: Vertex) {
-	fun getHorizontalLines(): Collection<LineSegment> {
-		val minY = min(min(a.y, b.y), c.y)
-		val maxY = max(max(a.y, b.y), c.y)
-
-		val results = mutableListOf<LineSegment>()
-
-		var y = minY
-		while (y <= maxY) {
-			results.add(findIntersectingSegmentY(a, b, c, y))
-			y += 1.0f
-		}
-
-		return results
-	}
-
-	fun getVerticalLines(): Collection<LineSegment> {
-		val minX = min(min(a.x, b.x), c.x)
-		val maxX = max(max(a.x, b.x), c.x)
-
-		val results = mutableListOf<LineSegment>()
-
-		var x = minX
-		while (x <= maxX) {
-			results.add(findIntersectingSegmentX(a, b, c, x))
-			x += 1.0f
-		}
-
-		return results
-	}
-
-	private fun findIntersectingSegmentX(point1: Vertex, point2: Vertex, point3: Vertex, x: Float): LineSegment {
-		val trianglePoints = arrayOf(point1, point2, point3)
-		var leftPoint = Vertex(0.0f, 0.0f, 0.0f)
-		var rightPoint = Vertex(0.0f, 0.0f, 0.0f)
-
-		for (i in 0 until 3) {
-			val currentPoint = trianglePoints[i]
-			val nextPoint = trianglePoints[(i + 1) % 3]
-
-			if ((currentPoint.x <= x && nextPoint.x >= x) || (currentPoint.x >= x && nextPoint.x <= x)) {
-				val t = (x - currentPoint.x) / (nextPoint.x - currentPoint.x)
-				val intersectionPoint = currentPoint + (nextPoint - currentPoint) * t
-
-				if (leftPoint == Vertex(0.0f, 0.0f, 0.0f)) {
-					leftPoint = intersectionPoint
-				} else {
-					rightPoint = intersectionPoint
-					break
-				}
-			}
-		}
-
-		return LineSegment(leftPoint, rightPoint)
-	}
-
-	private fun findIntersectingSegmentY(point1: Vertex, point2: Vertex, point3: Vertex, y: Float): LineSegment {
-		val trianglePoints = arrayOf(point1, point2, point3)
-		var leftPoint = Vertex(0.0f, 0.0f, 0.0f)
-		var rightPoint = Vertex(0.0f, 0.0f, 0.0f)
-
-		for (i in 0 until 3) {
-			val currentPoint = trianglePoints[i]
-			val nextPoint = trianglePoints[(i + 1) % 3]
-
-			if ((currentPoint.y <= y && nextPoint.y >= y) || (currentPoint.y >= y && nextPoint.y <= y)) {
-				val t = (y - currentPoint.y) / (nextPoint.y - currentPoint.y)
-				val intersectionPoint = currentPoint + (nextPoint - currentPoint) * t
-
-				if (leftPoint == Vertex(0.0f, 0.0f, 0.0f)) {
-					leftPoint = intersectionPoint
-				} else {
-					rightPoint = intersectionPoint
-					break
-				}
-			}
-		}
-
-		return LineSegment(leftPoint, rightPoint)
-	}
-}
