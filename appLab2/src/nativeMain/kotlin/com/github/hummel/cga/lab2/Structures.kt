@@ -104,7 +104,7 @@ data class PointLight(var x: Float, var y: Float, var z: Float, var intency: Flo
 	}
 }
 
-data class Triangle(val a: Vertex, val b: Vertex, val c: Vertex) {
+data class Triangle(var a: Vertex, var b: Vertex, var c: Vertex) {
 	fun getHorizontalLines(): Collection<LineSegment> {
 		val minY = min(min(a.y, b.y), c.y)
 		val maxY = max(max(a.y, b.y), c.y)

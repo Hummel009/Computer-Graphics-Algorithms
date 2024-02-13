@@ -33,7 +33,7 @@ fun drawLines() {
 	}
 }
 
-fun drawerThread(lpParameter: LPVOID?): DWORD {
+private fun drawerThread(lpParameter: LPVOID?): DWORD {
 	val parameter = lpParameter?.reinterpret<IntVar>()?.pointed?.value
 
 	for ((faceVertices, _, _) in splitFaces[parameter!!]) {
