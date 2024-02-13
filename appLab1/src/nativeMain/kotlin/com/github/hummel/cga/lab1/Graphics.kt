@@ -11,17 +11,18 @@ private const val green: Byte = 0.toByte()
 private const val red: Byte = 0.toByte()
 private const val alpha: Byte = 255.toByte()
 
-private val dividedList: Array<List<Face>> = splitListIntoEqualParts(faces, 10)
+private val chunks: Int = faces.size / 1000
+private val splitFaces: Array<List<Face>> = split(faces, chunks)
 
 fun drawLines() {
 	memScoped {
-		val params = Array(10) {
+		val params = Array(chunks) {
 			alloc<IntVar>()
 		}
 
 		params.forEachIndexed { index, param -> param.value = index }
 
-		val threads = Array(10) {
+		val threads = Array(chunks) {
 			CreateThread(null, 0u, staticCFunction(::drawerThread), params[it].ptr, 0u, null)
 		}
 
@@ -35,7 +36,7 @@ fun drawLines() {
 fun drawerThread(lpParameter: LPVOID?): DWORD {
 	val parameter = lpParameter?.reinterpret<IntVar>()?.pointed?.value
 
-	for (face in dividedList[parameter!!]) {
+	for (face in splitFaces[parameter!!]) {
 		val faceVertices = face.vertices
 		if (faceVertices.size >= 3) {
 			var previousVertex = vertices[faceVertices.last() - 1].toView().toProjection().toViewport()
@@ -79,7 +80,7 @@ private fun drawLineDDA(v1: Vertex, v2: Vertex) {
 	}
 }
 
-private fun <T> splitListIntoEqualParts(list: List<T>, parts: Int): Array<List<T>> {
+private fun <T> split(list: List<T>, parts: Int): Array<List<T>> {
 	require(parts > 0) { "Number of parts must be greater than zero." }
 
 	val size = list.size
