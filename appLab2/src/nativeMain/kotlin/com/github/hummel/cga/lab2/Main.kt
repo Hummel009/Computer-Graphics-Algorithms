@@ -20,7 +20,7 @@ val faces: ArrayList<Face> = ArrayList()
 var bitmapData: ByteArray = ByteArray(width * height * 4)
 
 fun main() {
-	parse("teapot.obj")
+	parse("teapot.obj") //sketchfab
 
 	memScoped {
 		val className = "Teapot"

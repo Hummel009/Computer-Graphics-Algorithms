@@ -80,7 +80,7 @@ private fun applyTransform(matrix: Array<FloatArray>) {
 	}
 }
 
-private fun multiplyVertexByMatrix(vertex: Vertex, matrix: Array<FloatArray>) {
+fun multiplyVertexByMatrix(vertex: Vertex, matrix: Array<FloatArray>) {
 	val result = FloatArray(4)
 
 	for (i in 0 until 4) {
@@ -92,4 +92,17 @@ private fun multiplyVertexByMatrix(vertex: Vertex, matrix: Array<FloatArray>) {
 	vertex.x = result[0] / w
 	vertex.y = result[1] / w
 	vertex.z = result[2] / w
+}
+
+fun multiplyMatrixByMatrix(matrixA: Array<FloatArray>, matrixB: Array<FloatArray>): Array<FloatArray> {
+	val result = Array(4) { FloatArray(4) }
+
+	for (i in 0 until 4) {
+		for (j in 0 until 4) {
+			val sum = (0 until 4).asSequence().map { matrixA[i][it] * matrixB[it][j] }.sum()
+			result[i][j] = sum
+		}
+	}
+
+	return result
 }

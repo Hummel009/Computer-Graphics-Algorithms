@@ -39,6 +39,9 @@ private val matrixViewport: Array<FloatArray> = arrayOf(
 	floatArrayOf(0.0f, 0.0f, 0.0f, 1.0f)
 )
 
+val resultMatrix: Array<FloatArray> =
+	multiplyMatrixByMatrix(multiplyMatrixByMatrix(matrixViewport, matrixProjection), matrixView)
+
 data class Vertex(var x: Float, var y: Float, var z: Float, var w: Float) {
 	private val magnitude: Float = sqrt(x * x + y * y + z * z)
 
@@ -70,6 +73,8 @@ data class Vertex(var x: Float, var y: Float, var z: Float, var w: Float) {
 	fun toProjection(): Vertex = multiplyByMatrix(matrixProjection)
 
 	fun toViewport(): Vertex = multiplyByMatrix(matrixViewport)
+
+	fun fastTransform(): Vertex = multiplyByMatrix(resultMatrix)
 
 	fun normalize(): Vertex = Vertex(x / magnitude, y / magnitude, z / magnitude)
 
