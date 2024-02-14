@@ -68,10 +68,13 @@ data class Vertex(var x: Float, var y: Float, var z: Float, var w: Float) {
 
 	infix fun scalarMul(other: Vertex): Float = x * other.x + y * other.y + z * other.z
 
+	@Deprecated("Use fastTransform() instead")
 	fun toView(): Vertex = multiplyByMatrix(matrixView)
 
+	@Deprecated("Use fastTransform() instead")
 	fun toProjection(): Vertex = multiplyByMatrix(matrixProjection)
 
+	@Deprecated("Use fastTransform() instead")
 	fun toViewport(): Vertex = multiplyByMatrix(matrixViewport)
 
 	fun fastTransform(): Vertex = multiplyByMatrix(resultMatrix)
