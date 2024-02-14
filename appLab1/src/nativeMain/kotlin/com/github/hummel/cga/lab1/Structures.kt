@@ -44,6 +44,14 @@ data class Vertex(var x: Float, var y: Float, var z: Float, var w: Float) {
 
 	constructor(x: Float, y: Float, z: Float) : this(x, y, z, 1.0f)
 
+	operator fun minus(float: Float): Vertex = Vertex(x - float, y - float, z - float)
+
+	operator fun plus(float: Float): Vertex = Vertex(x + float, y + float, z + float)
+
+	operator fun times(float: Float): Vertex = Vertex(x * float, y * float, z * float)
+
+	operator fun div(float: Float): Vertex = Vertex(x / float, y / float, z / float)
+
 	operator fun minus(other: Vertex): Vertex = Vertex(x - other.x, y - other.y, z - other.z)
 
 	operator fun plus(other: Vertex): Vertex = Vertex(x + other.x, y + other.y, z + other.z)
