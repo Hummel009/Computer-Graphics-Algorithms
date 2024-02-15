@@ -38,5 +38,5 @@ private val matrixViewport: Array<FloatArray> = arrayOf(
 	floatArrayOf(0.0f, 0.0f, 0.0f, 1.0f)
 )
 
-val resultMatrix: Array<FloatArray> =
+val displayMatrix: Array<FloatArray> =
 	multiplyMatrixByMatrix(multiplyMatrixByMatrix(matrixViewport, matrixProjection), matrixView)

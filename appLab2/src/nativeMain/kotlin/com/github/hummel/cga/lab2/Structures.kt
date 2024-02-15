@@ -26,8 +26,6 @@ data class Vertex(var x: Float, var y: Float, var z: Float, var w: Float = 1.0f)
 
 	infix fun scalarMul(other: Vertex): Float = x * other.x + y * other.y + z * other.z
 
-	fun transform(): Vertex = multiplyVertexByMatrix(this, resultMatrix)
-
 	fun normalize(): Vertex = Vertex(x / magnitude, y / magnitude, z / magnitude)
 }
 

@@ -71,6 +71,8 @@ fun rotateVerticesAxisZ(angle: Float = 0.2f) {
 	applyTransform(matrixRotateZ)
 }
 
+fun displayTransform(vertex: Vertex): Vertex = multiplyVertexByMatrix(vertex, displayMatrix)
+
 private fun applyTransform(matrix: Array<FloatArray>) {
 	for (i in vertices.indices) {
 		vertices[i] = multiplyVertexByMatrix(vertices[i], matrix)
