@@ -1,9 +1,9 @@
 package com.github.hummel.cga.lab2
 
-import com.github.hummel.cga.lab2.math.Vector4
+import com.github.hummel.cga.lab2.math.Vertex
 
 class Camera {
-	var eye: Vector4? = null
-	var target: Vector4? = null
-	var up: Vector4? = null
+	var eye: Vertex? = null
+	var target: Vertex? = null
+	var up: Vertex? = null
 }

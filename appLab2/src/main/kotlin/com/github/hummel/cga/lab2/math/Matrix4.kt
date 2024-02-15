@@ -27,8 +27,8 @@ class Matrix4 {
 		return res
 	}
 
-	fun mul(arg: Vector4?): Vector4 {
-		val res = Vector4()
+	fun mul(arg: Vertex?): Vertex {
+		val res = Vertex()
 		res[3] = 0.0
 		for (i in 0..3) {
 			for (j in 0..3) {

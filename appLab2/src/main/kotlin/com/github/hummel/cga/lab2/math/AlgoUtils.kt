@@ -41,7 +41,7 @@ class AlgoUtils {
 		}
 	}
 
-	fun drawRasterTriangle1(bufferedImage: BufferedImage, triangle: Array<Vector4>, zBuffer: DoubleArray?) {
+	fun drawRasterTriangle1(bufferedImage: BufferedImage, triangle: Array<Vertex>, zBuffer: DoubleArray?) {
 		var minY = Int.MAX_VALUE
 		var maxY = Int.MIN_VALUE
 		for (vertex in triangle) {
@@ -90,32 +90,32 @@ class AlgoUtils {
 	}
 
 	companion object {
-		fun getCenter(triangle: Array<Vector4?>?): Vector4? {
-			var sum: Vector4? = Vector4(0.0, 0.0, 0.0)
+		fun getCenter(triangle: Array<Vertex?>?): Vertex? {
+			var sum: Vertex? = Vertex(0.0, 0.0, 0.0)
 			for (i in 0..2) {
 				sum = sum!!.add(triangle!![i])
 			}
 			return sum!!.div(3.0)
 		}
 
-		fun applyMatrix(triangles: Iterable<Array<Vector4?>?>, matrix: Matrix4?): List<Array<Vector4?>> {
-			val list: MutableList<Array<Vector4?>> = ArrayList()
+		fun applyMatrix(triangles: Iterable<Array<Vertex?>?>, matrix: Matrix4?): List<Array<Vertex?>> {
+			val list: MutableList<Array<Vertex?>> = ArrayList()
 			for (triangle in triangles) {
-				val list1: MutableList<Vector4?> = ArrayList()
-				for (vector41 in triangle!!) {
-					var result = matrix!!.mul(vector41)
+				val list1: MutableList<Vertex?> = ArrayList()
+				for (Vertex1 in triangle!!) {
+					var result = matrix!!.mul(Vertex1)
 					result = result!!.div(result[3])
 					val apply = result
 					list1.add(apply)
 				}
-				val array = list1.toTypedArray<Vector4?>()
+				val array = list1.toTypedArray<Vertex?>()
 				list.add(array)
 			}
 			return list
 		}
 
-		fun addNormals(triangles: Iterable<Array<Vector4?>?>): MutableList<Array<Vector4?>?> {
-			val list: MutableList<Array<Vector4?>?> = ArrayList()
+		fun addNormals(triangles: Iterable<Array<Vertex?>?>): MutableList<Array<Vertex?>?> {
+			val list: MutableList<Array<Vertex?>?> = ArrayList()
 			for (triangle in triangles) {
 				val vec1 = triangle!![1]!!.subtract(triangle[0])
 				val vec2 = triangle[2]!!.subtract(triangle[1])
@@ -127,8 +127,8 @@ class AlgoUtils {
 			return list
 		}
 
-		fun filterTriangles(triangles: Iterable<Array<Vector4?>?>, camera: Camera): List<Array<Vector4?>?> {
-			val list: MutableList<Array<Vector4?>?> = ArrayList()
+		fun filterTriangles(triangles: Iterable<Array<Vertex?>?>, camera: Camera): List<Array<Vertex?>?> {
+			val list: MutableList<Array<Vertex?>?> = ArrayList()
 			for (triangle in triangles) {
 				val viewDir = triangle!![0]!!.subtract(camera.eye).normalize()
 				val cos = triangle[3]!!.dot(viewDir)
@@ -140,7 +140,7 @@ class AlgoUtils {
 		}
 
 		fun drawRasterTriangle(
-			bufferedImage: BufferedImage, triangle: Array<Vector4?>, zBuffer: DoubleArray, cosAngle: Double
+			bufferedImage: BufferedImage, triangle: Array<Vertex?>, zBuffer: DoubleArray, cosAngle: Double
 		) {
 			val colorVal = (0xff * abs(cosAngle)).toInt()
 			val color = colorVal shl 16 or (colorVal shl 8) or colorVal
@@ -198,7 +198,7 @@ class AlgoUtils {
 
 						// Проверка z-буфера
 						if (zBuffer[x * Main.height + y] > zFragment) {
-							zBuffer[x * Main.height + y] = zFragment
+							zBuffer[x * Main.height + y] = zFragment.toDouble()
 							bufferedImage.setRGB(x, y, color)
 						}
 					}

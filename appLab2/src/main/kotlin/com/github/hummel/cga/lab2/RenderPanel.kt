@@ -3,7 +3,7 @@ package com.github.hummel.cga.lab2
 import com.github.hummel.cga.lab2.math.AlgoUtils
 import com.github.hummel.cga.lab2.math.Matrix4
 import com.github.hummel.cga.lab2.math.MatrixBuilder
-import com.github.hummel.cga.lab2.math.Vector4
+import com.github.hummel.cga.lab2.math.Vertex
 import java.awt.Color
 import java.awt.Graphics
 import java.awt.Graphics2D
@@ -15,7 +15,7 @@ import javax.swing.JPanel
 import kotlin.math.cos
 import kotlin.math.sin
 
-class RenderPanel(private val triangles: List<Array<Vector4?>?>) : JPanel() {
+class RenderPanel(private val triangles: List<Array<Vertex?>?>) : JPanel() {
 	private val viewportMatrix: Matrix4 =
 		MatrixBuilder.Companion.buildViewport(Main.width, Main.height)
 	private val projectionMatrix: Matrix4 = MatrixBuilder.Companion.buildProjection(1.75, 90.0)
@@ -36,9 +36,9 @@ class RenderPanel(private val triangles: List<Array<Vector4?>?>) : JPanel() {
 		val dist = 5.0
 		camera = Camera()
 		camera.eye =
-			Vector4(dist * cos(rotateX) * cos(rotateY), dist * sin(rotateX), dist * cos(rotateX) * sin(rotateY))
-		camera.target = Vector4(0.0, 0.0, 0.0)
-		camera.up = Vector4(0.0, 1.0, 0.0)
+			Vertex(dist * cos(rotateX) * cos(rotateY), dist * sin(rotateX), dist * cos(rotateX) * sin(rotateY))
+		camera.target = Vertex(0.0, 0.0, 0.0)
+		camera.up = Vertex(0.0, 1.0, 0.0)
 		viewMatrix = MatrixBuilder.Companion.buildView(camera)
 		bufferedImage = BufferedImage(Main.width, Main.height, BufferedImage.TYPE_INT_RGB)
 		imgGraphics = bufferedImage.createGraphics()
@@ -77,15 +77,15 @@ class RenderPanel(private val triangles: List<Array<Vector4?>?>) : JPanel() {
 
 		val dist = Main.dist
 		camera.eye =
-			Vector4(dist * cos(rotateX) * cos(rotateY), dist * sin(rotateX), dist * cos(rotateX) * sin(rotateY))
+			Vertex(dist * cos(rotateX) * cos(rotateY), dist * sin(rotateX), dist * cos(rotateX) * sin(rotateY))
 		viewMatrix = MatrixBuilder.Companion.buildView(camera)
 		setupCamMatrix()
 
 		val finalMatrix = camMatrix
 
 		imgGraphics.clearRect(0, 0, Main.width, Main.height)
-		val filteredList: List<Array<Vector4?>?> = AlgoUtils.Companion.filterTriangles(triangles, camera)
-		val drawList: List<Array<Vector4?>> = AlgoUtils.Companion.applyMatrix(filteredList, finalMatrix)
+		val filteredList: List<Array<Vertex?>?> = AlgoUtils.Companion.filterTriangles(triangles, camera)
+		val drawList: List<Array<Vertex?>> = AlgoUtils.Companion.applyMatrix(filteredList, finalMatrix)
 
 		Arrays.fill(zBuffer, Double.POSITIVE_INFINITY)
 
@@ -96,7 +96,7 @@ class RenderPanel(private val triangles: List<Array<Vector4?>?>) : JPanel() {
 			val normal = t!![3]!!.normalize()
 			val ray = center?.subtract(camera.eye)?.subtract(camera.up)?.normalize()
 			val cosAngle = normal!!.dot(ray)
-			AlgoUtils.Companion.drawRasterTriangle(bufferedImage, drawT, zBuffer, cosAngle)
+			AlgoUtils.Companion.drawRasterTriangle(bufferedImage, drawT, zBuffer, cosAngle.toDouble())
 		}
 
 		g2d.drawImage(bufferedImage, 0, 0, Main.width, Main.height, null)
