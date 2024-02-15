@@ -129,18 +129,7 @@ private fun wndProc(window: HWND?, msg: UINT, wParam: WPARAM, lParam: LPARAM): L
 					val hdc = BeginPaint(window, ps.ptr)
 					val hdcMem = CreateCompatibleDC(hdc)
 
-					//MAKE IT WHITE
-					for (y in 0 until height) {
-						for (x in 0 until width) {
-							val offset = (y * width + x) * 4
-							bitmapData[offset + 0] = 255.toByte() // BLUE
-							bitmapData[offset + 1] = 255.toByte() // GREEN
-							bitmapData[offset + 2] = 255.toByte() // RED
-							bitmapData[offset + 3] = 255.toByte() // ALPHA
-						}
-					}
-
-					drawLines()
+					renderObject()
 
 					val hBitmap = CreateBitmap(width, height, 1u, 32u, bitmapData.refTo(0))
 					val hOldBitmap = SelectObject(hdcMem, hBitmap)

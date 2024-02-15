@@ -6,15 +6,14 @@ import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.round
 
-private const val blue: Byte = 0.toByte()
-private const val green: Byte = 0.toByte()
-private const val red: Byte = 0.toByte()
-private const val alpha: Byte = 255.toByte()
-
 private val chunks: Int = faces.size / 1000
 private val splitFaces: Array<List<Face>> = split(faces, chunks)
+private val white: Color = Color(255, 255, 255, 255)
+private val black: Color = Color(0, 0, 0, 255)
 
-fun drawLines() {
+fun renderObject() {
+	fillBackground(white)
+
 	memScoped {
 		val params = Array(chunks) {
 			alloc<IntVar>()
@@ -38,22 +37,22 @@ private fun drawerThread(lpParameter: LPVOID?): DWORD {
 
 	for ((faceVertices, _, _) in splitFaces[parameter!!]) {
 		if (faceVertices.size >= 3) {
-			var previousVertex = vertices[faceVertices.last()].fastTransform()
+			var previousVertex = vertices[faceVertices.last()].transform()
 
 			for (i in faceVertices) {
-				val currentVertex = vertices[i].fastTransform()
-				drawLineDDA(previousVertex, currentVertex)
+				val currentVertex = vertices[i].transform()
+				drawLineDDA(previousVertex, currentVertex, black)
 				previousVertex = currentVertex
 			}
 
-			val firstVertex = vertices[faceVertices.first()].fastTransform()
-			drawLineDDA(previousVertex, firstVertex)
+			val firstVertex = vertices[faceVertices.first()].transform()
+			drawLineDDA(previousVertex, firstVertex, black)
 		}
 	}
 	return 0u
 }
 
-private fun drawLineDDA(v1: Vertex, v2: Vertex) {
+private fun drawLineDDA(v1: Vertex, v2: Vertex, color: Color) {
 	var x = v1.x
 	var y = v1.y
 
@@ -66,16 +65,28 @@ private fun drawLineDDA(v1: Vertex, v2: Vertex) {
 
 	for (i in 0..steps step 2) {
 		if (!(x > width - 1 || x < 0 || y > height - 1 || y < 0)) {
-			val index = (round(y).toInt() * width + round(x).toInt()) shl 2
+			val offset = (round(y).toInt() * width + round(x).toInt()) shl 2
 
-			bitmapData[index + 0] = blue // BLUE
-			bitmapData[index + 1] = green // GREEN
-			bitmapData[index + 2] = red // RED
-			bitmapData[index + 3] = alpha // ALPHA
+			bitmapData[offset + 0] = color.blue
+			bitmapData[offset + 1] = color.green
+			bitmapData[offset + 2] = color.red
+			bitmapData[offset + 3] = color.alpha
 		}
 
 		x += xIncrement
 		y += yIncrement
+	}
+}
+
+private fun fillBackground(color: Color) {
+	for (y in 0 until height) {
+		for (x in 0 until width) {
+			val offset = (y * width + x) * 4
+			bitmapData[offset + 0] = color.blue
+			bitmapData[offset + 1] = color.green
+			bitmapData[offset + 2] = color.red
+			bitmapData[offset + 3] = color.alpha
+		}
 	}
 }
 

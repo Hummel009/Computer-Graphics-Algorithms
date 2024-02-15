@@ -29,8 +29,7 @@ fun scaleVertices(scale: Float) {
 	applyTransform(matrix)
 }
 
-fun rotateVerticesAxisX() {
-	val angle = 0.2f
+fun rotateVerticesAxisX(angle: Float = 0.2f) {
 	val cos = cos(angle)
 	val sin = sin(angle)
 
@@ -44,8 +43,7 @@ fun rotateVerticesAxisX() {
 	applyTransform(matrixRotateX)
 }
 
-fun rotateVerticesAxisY() {
-	val angle = 0.2f
+fun rotateVerticesAxisY(angle: Float = 0.2f) {
 	val cos = cos(angle)
 	val sin = sin(angle)
 
@@ -59,8 +57,7 @@ fun rotateVerticesAxisY() {
 	applyTransform(matrixRotateY)
 }
 
-fun rotateVerticesAxisZ() {
-	val angle = 0.2f
+fun rotateVerticesAxisZ(angle: Float = 0.2f) {
 	val cos = cos(angle)
 	val sin = sin(angle)
 
@@ -75,34 +72,7 @@ fun rotateVerticesAxisZ() {
 }
 
 private fun applyTransform(matrix: Array<FloatArray>) {
-	for (vertex in vertices) {
-		multiplyVertexByMatrix(vertex, matrix)
+	for (i in vertices.indices) {
+		vertices[i] = multiplyVertexByMatrix(vertices[i], matrix)
 	}
-}
-
-fun multiplyVertexByMatrix(vertex: Vertex, matrix: Array<FloatArray>) {
-	val result = FloatArray(4)
-
-	for (i in 0 until 4) {
-		result[i] = vertex.x * matrix[i][0] + vertex.y * matrix[i][1] + vertex.z * matrix[i][2] + matrix[i][3]
-	}
-
-	val w = result[3]
-
-	vertex.x = result[0] / w
-	vertex.y = result[1] / w
-	vertex.z = result[2] / w
-}
-
-fun multiplyMatrixByMatrix(matrixA: Array<FloatArray>, matrixB: Array<FloatArray>): Array<FloatArray> {
-	val result = Array(4) { FloatArray(4) }
-
-	for (i in 0 until 4) {
-		for (j in 0 until 4) {
-			val sum = (0 until 4).asSequence().map { matrixA[i][it] * matrixB[it][j] }.sum()
-			result[i][j] = sum
-		}
-	}
-
-	return result
 }
