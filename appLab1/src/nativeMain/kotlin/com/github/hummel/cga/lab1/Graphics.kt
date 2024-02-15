@@ -3,8 +3,6 @@ package com.github.hummel.cga.lab1
 import kotlinx.cinterop.*
 import platform.windows.*
 import kotlin.math.abs
-import kotlin.math.max
-import kotlin.math.round
 
 private val chunks: Int = faces.size / 1000
 private val splitFaces: Array<List<Face>> = split(faces, chunks)
@@ -41,31 +39,32 @@ private fun drawerThread(lpParameter: LPVOID?): DWORD {
 
 			for (i in faceVertices) {
 				val currentVertex = displayTransform(vertices[i])
-				drawLineDDA(previousVertex, currentVertex, black)
+				drawLine(previousVertex, currentVertex, black)
 				previousVertex = currentVertex
 			}
 
 			val firstVertex = displayTransform(vertices[faceVertices.first()])
-			drawLineDDA(previousVertex, firstVertex, black)
+			drawLine(previousVertex, firstVertex, black)
 		}
 	}
 	return 0u
 }
 
-private fun drawLineDDA(v1: Vertex, v2: Vertex, color: Color) {
-	var x = v1.x
-	var y = v1.y
+private fun drawLine(v1: Vertex, v2: Vertex, color: Color) {
+	var x1 = v1.x.toInt()
+	val x2 = v2.x.toInt()
+	var y1 = v1.y.toInt()
+	val y2 = v2.y.toInt()
 
-	val dx = v2.x - x
-	val dy = v2.y - y
-	val steps = max(abs(dx), abs(dy)).toInt()
+	val dx = abs(x2 - x1)
+	val dy = abs(y2 - y1)
+	val sx = if (x1 < x2) 1 else -1
+	val sy = if (y1 < y2) 1 else -1
+	var err = dx - dy
 
-	val xIncrement = dx / steps
-	val yIncrement = dy / steps
-
-	for (i in 0..steps step 2) {
-		if (!(x > width - 1 || x < 0 || y > height - 1 || y < 0)) {
-			val offset = (round(y).toInt() * width + round(x).toInt()) shl 2
+	while (true) {
+		if (x1 in 0 until width && y1 in 0 until height) {
+			val offset = (y1 * width + x1) shl 2
 
 			bitmapData[offset + 0] = color.blue
 			bitmapData[offset + 1] = color.green
@@ -73,8 +72,21 @@ private fun drawLineDDA(v1: Vertex, v2: Vertex, color: Color) {
 			bitmapData[offset + 3] = color.alpha
 		}
 
-		x += xIncrement
-		y += yIncrement
+		if (x1 == x2 && y1 == y2) {
+			break
+		}
+
+		val err2 = 2 * err
+
+		if (err2 > -dy) {
+			err -= dy
+			x1 += sx
+		}
+
+		if (err2 < dx) {
+			err += dx
+			y1 += sy
+		}
 	}
 }
 

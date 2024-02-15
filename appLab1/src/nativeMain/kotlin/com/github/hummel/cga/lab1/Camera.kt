@@ -3,7 +3,8 @@ package com.github.hummel.cga.lab1
 import kotlin.math.PI
 import kotlin.math.tan
 
-private var eye: Vertex = Vertex(0.0f, 0.0f, 10.0f)
+var eye: Vertex = Vertex(0.0f, 0.0f, 10.0f)
+
 private var target: Vertex = Vertex(0.0f, 0.0f, 0.0f)
 private var up: Vertex = Vertex(0.0f, 1.0f, 0.0f)
 
