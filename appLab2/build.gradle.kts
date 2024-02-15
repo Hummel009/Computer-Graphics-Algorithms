@@ -2,11 +2,18 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 plugins {
-	id("org.jetbrains.kotlin.multiplatform")
+	id("org.jetbrains.kotlin.jvm")
+	id("application")
 }
 
 group = "com.github.hummel"
 version = LocalDate.now().format(DateTimeFormatter.ofPattern("yy.MM.dd"))
+
+val embed: Configuration by configurations.creating
+
+dependencies {
+	embed("org.jetbrains.kotlin:kotlin-stdlib:1.9.22")
+}
 
 java {
 	toolchain {
@@ -14,21 +21,25 @@ java {
 	}
 }
 
-kotlin {
-	mingwX64 {
-		binaries {
-			executable {
-				entryPoint("com.github.hummel.cga.lab2.main")
-				linkerOpts("-lwinmm")
-				baseName = "${project.name}-${project.version}"
-			}
-		}
+application {
+	mainClass = "com.github.hummel.cga.lab2.Main"
+}
+
+tasks {
+	named<JavaExec>("run") {
+		standardInput = System.`in`
 	}
-	sourceSets {
-		configureEach {
-			languageSettings {
-				optIn("kotlinx.cinterop.ExperimentalForeignApi")
-			}
+	jar {
+		manifest {
+			attributes(
+				mapOf(
+					"Main-Class" to "com.github.hummel.cga.lab2.Main"
+				)
+			)
 		}
+		from(embed.map {
+			if (it.isDirectory) it else zipTree(it)
+		})
+		duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 	}
 }
