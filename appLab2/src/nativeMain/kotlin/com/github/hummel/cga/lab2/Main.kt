@@ -20,7 +20,7 @@ val faces: ArrayList<Face> = ArrayList()
 var bitmapData: ByteArray = ByteArray(width * height * 4)
 
 fun main() {
-	parse("teapot.obj") //sketchfab
+	parse("teapot.obj")
 
 	memScoped {
 		val className = "Teapot"
@@ -129,19 +129,7 @@ private fun wndProc(window: HWND?, msg: UINT, wParam: WPARAM, lParam: LPARAM): L
 					val hdc = BeginPaint(window, ps.ptr)
 					val hdcMem = CreateCompatibleDC(hdc)
 
-					//MAKE IT WHITE
-					val color = Color(255, 255, 255, 255)
-					for (y in 0 until height) {
-						for (x in 0 until width) {
-							val offset = (y * width + x) * 4
-							bitmapData[offset + 0] = color.blue // BLUE
-							bitmapData[offset + 1] = color.green // GREEN
-							bitmapData[offset + 2] = color.red // RED
-							bitmapData[offset + 3] = color.alpha // ALPHA
-						}
-					}
-
-					drawLines()
+					renderObject()
 
 					val hBitmap = CreateBitmap(width, height, 1u, 32u, bitmapData.refTo(0))
 					val hOldBitmap = SelectObject(hdcMem, hBitmap)
