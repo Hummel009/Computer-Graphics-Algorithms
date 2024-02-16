@@ -31,20 +31,17 @@ fun renderObject() {
 }
 
 private fun drawerThread(lpParameter: LPVOID?): DWORD {
-	val parameter = lpParameter?.reinterpret<IntVar>()?.pointed?.value
+	val parameter = lpParameter?.reinterpret<IntVar>()?.pointed?.value!!
 
-	val filteredList = filterTriangles(splitFaces[parameter!!])
+	val filteredFaces = filterFaces(splitFaces[parameter])
 
-	for (i in filteredList.indices) {
+	for (face in filteredFaces) {
+		val ray = (face.getCenter() - eye - up).normalize()
+		val cosAngle = face.vertices[3].normalize() scalarMul ray
+
 		val vertexList = ArrayList<Vertex>()
+		face.vertices.mapTo(vertexList) { displayTransform(it) }
 
-		filteredList[i].vertices.mapTo(vertexList) { displayTransform(it) }
-
-		val t = filteredList[i]
-		val center = t.getCenter()
-		val normal = t.vertices[3].normalize()
-		val ray = (center - eye - up).normalize()
-		val cosAngle = normal scalarMul ray
 		drawRasterTriangle(vertexList, zBuffer, cosAngle)
 	}
 	return 0u
