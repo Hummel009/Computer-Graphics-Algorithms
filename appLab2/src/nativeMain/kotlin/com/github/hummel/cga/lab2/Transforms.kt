@@ -2,32 +2,7 @@ package com.github.hummel.cga.lab2
 
 import kotlin.math.cos
 import kotlin.math.sin
-
-fun translateVertices(shiftX: Float, shiftY: Float) {
-	val vertex = Vertex(shiftX, shiftY, 0.0f)
-
-	val matrix = arrayOf(
-		floatArrayOf(1.0f, 0.0f, 0.0f, vertex.x),
-		floatArrayOf(0.0f, 1.0f, 0.0f, vertex.y),
-		floatArrayOf(0.0f, 0.0f, 1.0f, vertex.z),
-		floatArrayOf(0.0f, 0.0f, 0.0f, 1.0f)
-	)
-
-	applyTransform(matrix)
-}
-
-fun scaleVertices(scale: Float) {
-	val vertex = Vertex(scale, scale, scale)
-
-	val matrix = arrayOf(
-		floatArrayOf(vertex.x, 0.0f, 0.0f, 0.0f),
-		floatArrayOf(0.0f, vertex.y, 0.0f, 0.0f),
-		floatArrayOf(0.0f, 0.0f, vertex.z, 0.0f),
-		floatArrayOf(0.0f, 0.0f, 0.0f, 1.0f)
-	)
-
-	applyTransform(matrix)
-}
+import kotlin.time.measureTime
 
 fun rotateVerticesAxisX(angle: Float = 0.2f) {
 	val cos = cos(angle)
@@ -73,10 +48,17 @@ fun rotateVerticesAxisZ(angle: Float = 0.2f) {
 
 fun displayTransform(vertex: Vertex): Vertex = multiplyVertexByMatrix(vertex, displayMatrix)
 
+private val times: MutableList<Long> = ArrayList()
 private fun applyTransform(matrix: Array<FloatArray>) {
-	for ((vertices) in faces) {
-		for (i in vertices.indices) {
-			vertices[i] = multiplyVertexByMatrix(vertices[i], matrix)
+	val time = measureTime {
+		for ((vertices) in faces) {
+			for (i in vertices.indices) {
+				vertices[i] = multiplyVertexByMatrix(vertices[i], matrix)
+			}
 		}
-	}
+	}.inWholeNanoseconds
+
+	times.add(time)
+
+	println("Transform: ${times.average()}")
 }

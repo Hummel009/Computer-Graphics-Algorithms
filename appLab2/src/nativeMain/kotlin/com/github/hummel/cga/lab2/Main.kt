@@ -3,7 +3,6 @@ package com.github.hummel.cga.lab2
 import kotlinx.cinterop.*
 import platform.windows.*
 import kotlin.math.max
-import kotlin.time.measureTime
 
 private const val VK_Z: Int = 0x5A
 private const val VK_X: Int = 0x58
@@ -90,26 +89,22 @@ private fun wndProc(window: HWND?, msg: UINT, wParam: WPARAM, lParam: LPARAM): L
 
 		WM_PAINT -> {
 			memScoped {
-				val time = measureTime {
-					val ps = alloc<PAINTSTRUCT>()
-					val hdc = BeginPaint(window, ps.ptr)
-					val hdcMem = CreateCompatibleDC(hdc)
+				val ps = alloc<PAINTSTRUCT>()
+				val hdc = BeginPaint(window, ps.ptr)
+				val hdcMem = CreateCompatibleDC(hdc)
 
-					renderObject()
+				renderObject()
 
-					val hBitmap = CreateBitmap(width, height, 1u, 32u, bitmapData.refTo(0))
-					val hOldBitmap = SelectObject(hdcMem, hBitmap)
+				val hBitmap = CreateBitmap(width, height, 1u, 32u, bitmapData.refTo(0))
+				val hOldBitmap = SelectObject(hdcMem, hBitmap)
 
-					BitBlt(hdc, 0, 0, width, height, hdcMem, 0, 0, SRCCOPY)
+				BitBlt(hdc, 0, 0, width, height, hdcMem, 0, 0, SRCCOPY)
 
-					SelectObject(hdcMem, hOldBitmap)
-					DeleteObject(hBitmap)
+				SelectObject(hdcMem, hOldBitmap)
+				DeleteObject(hBitmap)
 
-					DeleteDC(hdcMem)
-					EndPaint(window, ps.ptr)
-				}.inWholeNanoseconds
-
-				println("Draw: $time")
+				DeleteDC(hdcMem)
+				EndPaint(window, ps.ptr)
 			}
 		}
 

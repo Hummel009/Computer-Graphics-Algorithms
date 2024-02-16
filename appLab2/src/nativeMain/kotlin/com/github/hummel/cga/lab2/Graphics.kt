@@ -3,32 +3,39 @@ package com.github.hummel.cga.lab2
 import kotlinx.cinterop.*
 import platform.windows.*
 import kotlin.math.abs
+import kotlin.time.measureTime
 
 private val chunks: Int = faces.size / 100
 private val splitFaces: Array<List<Face>> = split(faces, chunks)
 private val black: Color = Color(0, 0, 0, 255)
 private val zBuffer: FloatArray = FloatArray(width * height)
 
+private val times: MutableList<Long> = ArrayList()
 fun renderObject() {
-	fillBackground(black)
-	zBuffer.fill(Float.POSITIVE_INFINITY)
+	val time = measureTime {
+		fillBackground(black)
 
-	memScoped {
-		val params = Array(chunks) {
-			alloc<IntVar>()
+		memScoped {
+			val params = Array(chunks) {
+				alloc<IntVar>()
+			}
+
+			params.forEachIndexed { index, param -> param.value = index }
+
+			val threads = Array(chunks) {
+				CreateThread(null, 0u, staticCFunction(::drawerThread), params[it].ptr, 0u, null)
+			}
+
+			for (thread in threads) {
+				WaitForSingleObject(thread, INFINITE)
+				CloseHandle(thread)
+			}
 		}
+	}.inWholeNanoseconds
 
-		params.forEachIndexed { index, param -> param.value = index }
+	times.add(time)
 
-		val threads = Array(chunks) {
-			CreateThread(null, 0u, staticCFunction(::drawerThread), params[it].ptr, 0u, null)
-		}
-
-		for (thread in threads) {
-			WaitForSingleObject(thread, INFINITE)
-			CloseHandle(thread)
-		}
-	}
+	println("Draw: ${times.average()}")
 }
 
 private val optiTemp: Vertex = eye + up
