@@ -84,36 +84,6 @@ private fun wndProc(window: HWND?, msg: UINT, wParam: WPARAM, lParam: LPARAM): L
 					InvalidateRect(window, null, FALSE)
 				}
 
-				VK_LEFT -> {
-					translateVertices(-0.05f, 0.0f)
-					InvalidateRect(window, null, FALSE)
-				}
-
-				VK_RIGHT -> {
-					translateVertices(0.05f, 0.0f)
-					InvalidateRect(window, null, FALSE)
-				}
-
-				VK_UP -> {
-					translateVertices(0.0f, 0.05f)
-					InvalidateRect(window, null, FALSE)
-				}
-
-				VK_DOWN -> {
-					translateVertices(0.0f, -0.05f)
-					InvalidateRect(window, null, FALSE)
-				}
-
-				VK_OEM_PLUS, VK_ADD -> {
-					scaleVertices(1.1f)
-					InvalidateRect(window, null, FALSE)
-				}
-
-				VK_OEM_MINUS, VK_SUBTRACT -> {
-					scaleVertices(1 / 1.1f)
-					InvalidateRect(window, null, FALSE)
-				}
-
 				else -> {}
 			}
 		}
