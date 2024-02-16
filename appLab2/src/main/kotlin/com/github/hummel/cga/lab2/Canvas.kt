@@ -1,10 +1,10 @@
 package com.github.hummel.cga.lab2
 
-import com.github.hummel.cga.lab2.hum.Vertex
+import com.github.hummel.cga.lab2.hum.Face
 import javax.swing.JFrame
 import javax.swing.JPanel
 
-class Canvas(triangles: List<Array<Vertex?>?>) : JFrame() {
+class Canvas(triangles: List<Face>) : JFrame() {
 	init {
 		title = "My frame"
 		defaultCloseOperation = EXIT_ON_CLOSE

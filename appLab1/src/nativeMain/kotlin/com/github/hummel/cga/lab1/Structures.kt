@@ -29,7 +29,9 @@ data class Vertex(var x: Float, var y: Float, var z: Float, var w: Float = 1.0f)
 	fun normalize(): Vertex = Vertex(x / magnitude, y / magnitude, z / magnitude)
 }
 
-data class Face(val vertices: MutableList<Vertex>, val textures: MutableList<Vertex>, val normals: MutableList<Vertex>)
+data class Face(
+	val vertices: MutableList<Vertex>, val textures: MutableList<Vertex>, val normals: MutableList<Vertex>
+)
 
 data class Color(val red: Byte, val green: Byte, val blue: Byte, val alpha: Byte) {
 	constructor(red: Int, green: Int, blue: Int, alpha: Int) : this(

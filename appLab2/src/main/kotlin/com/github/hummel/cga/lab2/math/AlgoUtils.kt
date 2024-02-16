@@ -1,9 +1,7 @@
 package com.github.hummel.cga.lab2.math
 
 import com.github.hummel.cga.lab2.Main
-import com.github.hummel.cga.lab2.hum.Vertex
-import com.github.hummel.cga.lab2.hum.eye
-import com.github.hummel.cga.lab2.hum.multiplyVertexByMatrix
+import com.github.hummel.cga.lab2.hum.*
 import java.awt.image.BufferedImage
 import kotlin.math.abs
 
@@ -42,56 +40,57 @@ fun drawLine(image: BufferedImage, x1: Int, y1: Int, x2: Int, y2: Int) {
 	}
 }
 
-fun getCenter(triangle: Array<Vertex?>?): Vertex? {
-	var sum: Vertex? = Vertex(0.0, 0.0, 0.0)
+fun getCenter(triangle: Array<Vertex>): Vertex {
+	var sum: Vertex = Vertex(0.0, 0.0, 0.0)
 	for (i in 0..2) {
-		sum = sum!!.add(triangle!![i])
+		sum = sum.add(triangle[i])
 	}
-	return sum!!.div(3.0)
+	return sum.div(3.0)
 }
 
-fun applyMatrix(triangles: Iterable<Array<Vertex?>?>, matrix: Array<FloatArray>?): List<Array<Vertex?>> {
-	val list: MutableList<Array<Vertex?>> = ArrayList()
+fun applyMatrix(triangles: Iterable<Face>, matrix: Array<FloatArray>): List<Array<Vertex>> {
+	val list: MutableList<Array<Vertex>> = ArrayList()
 	for (triangle in triangles) {
-		val list1: MutableList<Vertex?> = ArrayList()
-		for (Vertex1 in triangle!!) {
-			var result = multiplyVertexByMatrix(Vertex1!!, matrix!!)
+		val list1: MutableList<Vertex> = ArrayList()
+		for (Vertex1 in triangle.toTriangle()) {
+			var result = multiplyVertexByMatrix(Vertex1, matrix)
 			val apply = result
 			list1.add(apply)
 		}
-		val array = list1.toTypedArray<Vertex?>()
+		val array = list1.toTypedArray<Vertex>()
 		list.add(array)
 	}
 	return list
 }
 
-fun addNormals(triangles: Iterable<Array<Vertex?>?>): MutableList<Array<Vertex?>?> {
-	val list: MutableList<Array<Vertex?>?> = ArrayList()
-	for (triangle in triangles) {
-		val vec1 = triangle!![1]!!.subtract(triangle[0])
-		val vec2 = triangle[2]!!.subtract(triangle[1])
-		val normal = vec2!!.cross(vec1).normalize()
-		val newArr = triangle.copyOf(4)
-		newArr[3] = normal
-		list.add(newArr)
+fun addNormals(triangles: Iterable<Face>): MutableList<Face> {
+	val list: MutableList<Face> = ArrayList()
+	for (face in triangles) {
+		val triangle = face.toTriangle()
+		val vec1 = triangle[1].subtract(triangle[0])
+		val vec2 = triangle[2].subtract(triangle[1])
+		val normal = vec2.cross(vec1).normalize()
+		val newArr = arrayOf(triangle[0], triangle[1], triangle[2], normal)
+		list.add(newArr.toFace())
 	}
 	return list
 }
 
-fun filterTriangles(triangles: Iterable<Array<Vertex?>?>): List<Array<Vertex?>?> {
-	val list: MutableList<Array<Vertex?>?> = ArrayList()
-	for (triangle in triangles) {
-		val viewDir = triangle!![0]!!.subtract(eye).normalize()
-		val cos = triangle[3]!!.dot(viewDir)
+fun filterTriangles(triangles: Iterable<Face>): List<Face> {
+	val list: MutableList<Face> = ArrayList()
+	for (face in triangles) {
+		val triangle = face.toTriangle()
+		val viewDir = triangle[0].subtract(eye).normalize()
+		val cos = triangle[3].dot(viewDir)
 		if (cos > 0) {
-			list.add(triangle)
+			list.add(triangle.toFace())
 		}
 	}
 	return list
 }
 
 fun drawRasterTriangle(
-	bufferedImage: BufferedImage, triangle: Array<Vertex?>, zBuffer: DoubleArray, cosAngle: Double
+	bufferedImage: BufferedImage, triangle: Array<Vertex>, zBuffer: DoubleArray, cosAngle: Double
 ) {
 	val colorVal = (0xff * abs(cosAngle)).toInt()
 	val color = colorVal shl 16 or (colorVal shl 8) or colorVal
@@ -99,7 +98,7 @@ fun drawRasterTriangle(
 	var minY = Int.MAX_VALUE
 	var maxY = Int.MIN_VALUE
 	for (vertex in triangle) {
-		val y = vertex!![1].toInt()
+		val y = vertex[1].toInt()
 		if (y < minY) {
 			minY = y
 		}
@@ -116,9 +115,9 @@ fun drawRasterTriangle(
 		for (i in 0..2) {
 			val v0 = triangle[i]
 			val v1 = triangle[(i + 1) % 3]
-			val y0 = v0!![1].toInt()
-			val y1 = v1!![1].toInt()
-			if (y0 <= y && y < y1 || y1 <= y && y < y0) {
+			val y0 = v0[1].toInt()
+			val y1 = v1[1].toInt()
+			if (y in y0 until y1 || y in y1 until y0) {
 				val t = (y - y0) / (y1 - y0).toDouble()
 				val x = (v0[0] + t * (v1[0] - v0[0])).toInt()
 				xIntersections[intersectionCount] = x
@@ -141,7 +140,7 @@ fun drawRasterTriangle(
 				val v1 = triangle[1]
 				val v2 = triangle[2]
 				val alpha =
-					((v1!![1] - v2!![1]) * (x - v2[0]) + (v2[0] - v1[0]) * (y - v2[1])) / ((v1[1] - v2[1]) * (v0!![0] - v2[0]) + (v2[0] - v1[0]) * (v0[1] - v2[1]))
+					((v1[1] - v2[1]) * (x - v2[0]) + (v2[0] - v1[0]) * (y - v2[1])) / ((v1[1] - v2[1]) * (v0[0] - v2[0]) + (v2[0] - v1[0]) * (v0[1] - v2[1]))
 				val beta =
 					((v2[1] - v0[1]) * (x - v2[0]) + (v0[0] - v2[0]) * (y - v2[1])) / ((v1[1] - v2[1]) * (v0[0] - v2[0]) + (v2[0] - v1[0]) * (v0[1] - v2[1]))
 				val gamma = 1 - alpha - beta

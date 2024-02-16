@@ -14,12 +14,12 @@ import java.awt.image.BufferedImage
 import java.util.*
 import javax.swing.JPanel
 
-class RenderPanel(private val triangles: List<Array<Vertex?>?>) : JPanel() {
+class RenderPanel(private val triangles: List<Face>) : JPanel() {
 	private val bufferedImage: BufferedImage
 	private val zBuffer: DoubleArray
 	private val imgGraphics: Graphics2D
 	private var viewMatrix: Array<FloatArray>
-	private var camMatrix: Array<FloatArray>? = null
+	private lateinit var camMatrix: Array<FloatArray>
 	private var prevMouseX = 0
 	private var prevMouseY = 0
 	private var rotateY = 0.0
@@ -62,24 +62,23 @@ class RenderPanel(private val triangles: List<Array<Vertex?>?>) : JPanel() {
 		val g2d = g as Graphics2D
 		g.setColor(Color.GREEN)
 
-		val dist = Main.dist
 		viewMatrix = matrixView
 		setupCamMatrix()
 
 		val finalMatrix = camMatrix
 
 		imgGraphics.clearRect(0, 0, Main.width, Main.height)
-		val filteredList: List<Array<Vertex?>?> = filterTriangles(triangles)
-		val drawList: List<Array<Vertex?>> = applyMatrix(filteredList, finalMatrix)
+		val filteredList = filterTriangles(triangles)
+		val drawList = applyMatrix(filteredList, finalMatrix)
 
 		Arrays.fill(zBuffer, Double.POSITIVE_INFINITY)
 
 		for (i in drawList.indices) {
 			val t = filteredList[i]
 			val drawT = drawList[i]
-			val center = getCenter(t)
-			val normal = t!![3]!!.normalize()
-			val ray = center?.subtract(eye)?.subtract(up)?.normalize()
+			val center = getCenter(t.toTriangle())
+			val normal = t.toTriangle()[3].normalize()
+			val ray = center.subtract(eye).subtract(up).normalize()
 			val cosAngle = normal.dot(ray)
 			drawRasterTriangle(bufferedImage, drawT, zBuffer, cosAngle.toDouble())
 		}

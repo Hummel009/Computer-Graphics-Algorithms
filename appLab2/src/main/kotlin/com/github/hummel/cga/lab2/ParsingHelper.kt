@@ -1,6 +1,8 @@
 package com.github.hummel.cga.lab2
 
+import com.github.hummel.cga.lab2.hum.Face
 import com.github.hummel.cga.lab2.hum.Vertex
+import com.github.hummel.cga.lab2.hum.toFace
 
 object ParsingHelper {
 	fun extractVertex(line: String): Vertex {
@@ -13,7 +15,7 @@ object ParsingHelper {
 		return Vertex(dList[0], dList[1], dList[2])
 	}
 
-	fun extractTriangle(line: String, vertices: List<Vertex?>): Array<Vertex?> {
+	fun extractTriangle(line: String, vertices: List<Vertex>): Face {
 		val f = line.replace("f ", "")
 		val indexList: MutableCollection<Int> = ArrayList()
 		for (vInfo in f.split(" ".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()) {
@@ -21,11 +23,11 @@ object ParsingHelper {
 			val parseInt = s.toInt()
 			indexList.add(parseInt)
 		}
-		val list: MutableList<Vertex?> = ArrayList()
+		val list: MutableList<Vertex> = ArrayList()
 		for (id in indexList) {
 			val Vertex = vertices[id - 1]
 			list.add(Vertex)
 		}
-		return list.toTypedArray<Vertex?>()
+		return list.toTypedArray<Vertex>().toFace()
 	}
 }

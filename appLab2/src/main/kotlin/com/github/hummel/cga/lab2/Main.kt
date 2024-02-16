@@ -2,6 +2,7 @@ package com.github.hummel.cga.lab2
 
 import com.github.hummel.cga.lab2.ParsingHelper.extractTriangle
 import com.github.hummel.cga.lab2.ParsingHelper.extractVertex
+import com.github.hummel.cga.lab2.hum.Face
 import com.github.hummel.cga.lab2.hum.Vertex
 import com.github.hummel.cga.lab2.math.addNormals
 import java.io.BufferedReader
@@ -18,8 +19,8 @@ object Main {
 
 	@JvmStatic
 	fun main(args: Array<String>) {
-		val vertexList: MutableList<Vertex?> = ArrayList()
-		var triangleList: MutableList<Array<Vertex?>?> = ArrayList()
+		val vertexList: MutableList<Vertex> = ArrayList()
+		var triangleList: MutableList<Face> = ArrayList()
 
 		BufferedReader(FileReader(modelPath)).use { bufferedReader ->
 			var line: String?
