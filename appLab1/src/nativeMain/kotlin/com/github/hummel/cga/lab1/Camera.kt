@@ -4,9 +4,8 @@ import kotlin.math.PI
 import kotlin.math.tan
 
 var eye: Vertex = Vertex(0.0f, 0.0f, 10.0f)
-
-private var target: Vertex = Vertex(0.0f, 0.0f, 0.0f)
-private var up: Vertex = Vertex(0.0f, 1.0f, 0.0f)
+var target: Vertex = Vertex(0.0f, 0.0f, 0.0f)
+var up: Vertex = Vertex(0.0f, 1.0f, 0.0f)
 
 private var fov: Float = PI.toFloat() / 4.0f
 private var aspect = width.toFloat() / height.toFloat()
