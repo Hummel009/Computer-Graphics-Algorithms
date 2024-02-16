@@ -31,7 +31,7 @@ fun renderObject() {
 				CloseHandle(thread)
 			}
 		}
-	}.inWholeNanoseconds
+	}.inWholeMilliseconds
 
 	times.add(time)
 

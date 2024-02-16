@@ -14,6 +14,7 @@ private val times: MutableList<Long> = ArrayList()
 fun renderObject() {
 	val time = measureTime {
 		fillBackground(black)
+		zBuffer.fill(Float.POSITIVE_INFINITY)
 
 		memScoped {
 			val params = Array(chunks) {
@@ -31,7 +32,7 @@ fun renderObject() {
 				CloseHandle(thread)
 			}
 		}
-	}.inWholeNanoseconds
+	}.inWholeMilliseconds
 
 	times.add(time)
 

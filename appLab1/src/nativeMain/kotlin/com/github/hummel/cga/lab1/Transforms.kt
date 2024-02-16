@@ -82,7 +82,7 @@ private fun applyTransform(matrix: Array<FloatArray>) {
 				vertices[i] = multiplyVertexByMatrix(vertices[i], matrix)
 			}
 		}
-	}.inWholeNanoseconds
+	}.inWholeMilliseconds
 
 	times.add(time)
 
