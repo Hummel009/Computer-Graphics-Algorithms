@@ -76,8 +76,8 @@ class RenderPanel(private val triangles: List<Face>) : JPanel() {
 		for (i in drawList.indices) {
 			val t = filteredList[i]
 			val drawT = drawList[i]
-			val center = getCenter(t.toTriangle())
-			val normal = t.toTriangle()[3].normalize()
+			val center = getCenter(t)
+			val normal = t.vertices[3].normalize()
 			val ray = center.subtract(eye).subtract(up).normalize()
 			val cosAngle = normal.dot(ray)
 			drawRasterTriangle(bufferedImage, drawT, zBuffer, cosAngle.toDouble())

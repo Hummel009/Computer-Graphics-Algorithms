@@ -62,41 +62,11 @@ data class Vertex(var x: Float, var y: Float, var z: Float, var w: Float = 1.0f)
 }
 
 data class Face(
-	val vertices: MutableList<Vertex>,
-	val textures: MutableList<Vertex>,
-	val normals: MutableList<Vertex>,
-	val belsky: Array<Vertex>
-) {
-	override fun equals(other: Any?): Boolean {
-		if (this === other) return true
-		if (javaClass != other?.javaClass) return false
-
-		other as Face
-
-		if (vertices != other.vertices) return false
-		if (textures != other.textures) return false
-		if (normals != other.normals) return false
-		if (!belsky.contentEquals(other.belsky)) return false
-
-		return true
-	}
-
-	override fun hashCode(): Int {
-		var result = vertices.hashCode()
-		result = 31 * result + textures.hashCode()
-		result = 31 * result + normals.hashCode()
-		result = 31 * result + belsky.contentHashCode()
-		return result
-	}
-}
+	val vertices: MutableList<Vertex>, val textures: MutableList<Vertex>, val normals: MutableList<Vertex>
+)
 
 data class Color(val red: Byte, val green: Byte, val blue: Byte, val alpha: Byte) {
 	constructor(red: Int, green: Int, blue: Int, alpha: Int) : this(
 		red.toByte(), green.toByte(), blue.toByte(), alpha.toByte()
 	)
 }
-
-//BELSKI COMPAT
-
-fun Array<Vertex>.toFace(): Face = Face(mutableListOf(), mutableListOf(), mutableListOf(), this)
-fun Face.toTriangle(): Array<Vertex> = belsky

@@ -2,7 +2,6 @@ package com.github.hummel.cga.lab2
 
 import com.github.hummel.cga.lab2.hum.Face
 import com.github.hummel.cga.lab2.hum.Vertex
-import com.github.hummel.cga.lab2.hum.toFace
 
 object ParsingHelper {
 	fun extractVertex(line: String): Vertex {
@@ -28,6 +27,6 @@ object ParsingHelper {
 			val Vertex = vertices[id - 1]
 			list.add(Vertex)
 		}
-		return list.toTypedArray<Vertex>().toFace()
+		return Face(list, mutableListOf(), mutableListOf())
 	}
 }

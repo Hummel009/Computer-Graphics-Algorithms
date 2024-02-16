@@ -40,10 +40,10 @@ fun drawLine(image: BufferedImage, x1: Int, y1: Int, x2: Int, y2: Int) {
 	}
 }
 
-fun getCenter(triangle: Array<Vertex>): Vertex {
+fun getCenter(face: Face): Vertex {
 	var sum: Vertex = Vertex(0.0, 0.0, 0.0)
 	for (i in 0..2) {
-		sum = sum.add(triangle[i])
+		sum = sum.add(face.vertices[i])
 	}
 	return sum.div(3.0)
 }
@@ -52,7 +52,7 @@ fun applyMatrix(triangles: Iterable<Face>, matrix: Array<FloatArray>): List<Arra
 	val list: MutableList<Array<Vertex>> = ArrayList()
 	for (triangle in triangles) {
 		val list1: MutableList<Vertex> = ArrayList()
-		for (Vertex1 in triangle.toTriangle()) {
+		for (Vertex1 in triangle.vertices) {
 			var result = multiplyVertexByMatrix(Vertex1, matrix)
 			val apply = result
 			list1.add(apply)
@@ -66,12 +66,15 @@ fun applyMatrix(triangles: Iterable<Face>, matrix: Array<FloatArray>): List<Arra
 fun addNormals(triangles: Iterable<Face>): MutableList<Face> {
 	val list: MutableList<Face> = ArrayList()
 	for (face in triangles) {
-		val triangle = face.toTriangle()
-		val vec1 = triangle[1].subtract(triangle[0])
-		val vec2 = triangle[2].subtract(triangle[1])
+		val vec1 = face.vertices[1].subtract(face.vertices[0])
+		val vec2 = face.vertices[2].subtract(face.vertices[1])
 		val normal = vec2.cross(vec1).normalize()
-		val newArr = arrayOf(triangle[0], triangle[1], triangle[2], normal)
-		list.add(newArr.toFace())
+		val newFace = Face(
+			mutableListOf(face.vertices[0], face.vertices[1], face.vertices[2], normal),
+			mutableListOf(),
+			mutableListOf()
+		)
+		list.add(newFace)
 	}
 	return list
 }
@@ -79,11 +82,10 @@ fun addNormals(triangles: Iterable<Face>): MutableList<Face> {
 fun filterTriangles(triangles: Iterable<Face>): List<Face> {
 	val list: MutableList<Face> = ArrayList()
 	for (face in triangles) {
-		val triangle = face.toTriangle()
-		val viewDir = triangle[0].subtract(eye).normalize()
-		val cos = triangle[3].dot(viewDir)
+		val viewDir = face.vertices[0].subtract(eye).normalize()
+		val cos = face.vertices[3].dot(viewDir)
 		if (cos > 0) {
-			list.add(triangle.toFace())
+			list.add(face)
 		}
 	}
 	return list
