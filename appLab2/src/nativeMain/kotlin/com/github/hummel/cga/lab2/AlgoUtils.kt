@@ -1,15 +1,14 @@
-package com.github.hummel.cga.lab2.math
+package com.github.hummel.cga.lab2
 
-import com.github.hummel.cga.lab2.Main
-import com.github.hummel.cga.lab2.hum.*
-import java.awt.image.BufferedImage
 import kotlin.math.abs
 
-fun drawLine(image: BufferedImage, x1: Int, y1: Int, x2: Int, y2: Int) {
+val color = Color(255, 1, 0, 255)
+
+fun drawLine(x1: Int, y1: Int, x2: Int, y2: Int) {
 	var x11 = x1
 	var y11 = y1
-	val width = image.width
-	val height = image.height
+	val width = width
+	val height = height
 
 	val dx = abs((x2 - x11).toDouble()).toInt()
 	val dy = abs((y2 - y11).toDouble()).toInt()
@@ -19,7 +18,13 @@ fun drawLine(image: BufferedImage, x1: Int, y1: Int, x2: Int, y2: Int) {
 
 	while (true) {
 		if (x11 >= 0 && x11 < width && y11 >= 0 && y11 < height) {
-			image.setRGB(x11, y11, -0xff0100)
+
+			val offset = (y11 * width + x11) shl 2
+
+			bitmapData[offset + 0] = color.blue
+			bitmapData[offset + 1] = color.green
+			bitmapData[offset + 2] = color.red
+			bitmapData[offset + 3] = color.alpha
 		}
 
 		if (x11 == x2 && y11 == y2) {
@@ -92,10 +97,10 @@ fun filterTriangles(triangles: Iterable<Face>): List<Face> {
 }
 
 fun drawRasterTriangle(
-	bufferedImage: BufferedImage, triangle: Array<Vertex>, zBuffer: DoubleArray, cosAngle: Double
+	triangle: Array<Vertex>, zBuffer: DoubleArray, cosAngle: Double
 ) {
 	val colorVal = (0xff * abs(cosAngle)).toInt()
-	val color = colorVal shl 16 or (colorVal shl 8) or colorVal
+	val color = Color(colorVal, colorVal, colorVal, 255)
 
 	var minY = Int.MAX_VALUE
 	var maxY = Int.MIN_VALUE
@@ -149,9 +154,15 @@ fun drawRasterTriangle(
 				val zFragment = alpha * v0[2] + beta * v1[2] + gamma * v2[2]
 
 				// Проверка z-буфера
-				if (zBuffer[x * Main.height + y] > zFragment) {
-					zBuffer[x * Main.height + y] = zFragment.toDouble()
-					bufferedImage.setRGB(x, y, color)
+				if (zBuffer[x * height + y] > zFragment) {
+					zBuffer[x * height + y] = zFragment
+
+					val offset = (y * width + x) shl 2
+
+					bitmapData[offset + 0] = color.blue
+					bitmapData[offset + 1] = color.green
+					bitmapData[offset + 2] = color.red
+					bitmapData[offset + 3] = color.alpha
 				}
 			}
 		}

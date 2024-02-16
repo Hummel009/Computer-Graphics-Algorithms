@@ -1,4 +1,4 @@
-package com.github.hummel.cga.lab2.hum
+package com.github.hummel.cga.lab2
 
 import kotlin.math.sqrt
 

@@ -1,4 +1,4 @@
-package com.github.hummel.cga.lab2.hum
+package com.github.hummel.cga.lab2
 
 fun multiplyVertexByMatrix(vertex: Vertex, matrix: Array<FloatArray>): Vertex {
 	val result = FloatArray(4)
