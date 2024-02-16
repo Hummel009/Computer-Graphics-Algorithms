@@ -72,8 +72,6 @@ fun rotateVerticesAxisZ(angle: Float = 0.2f) {
 	applyTransform(matrixRotateZ)
 }
 
-fun displayTransform(vertex: Vertex): Vertex = multiplyVertexByMatrix(vertex, displayMatrix)
-
 private val times: MutableList<Long> = ArrayList()
 private fun applyTransform(matrix: Array<FloatArray>) {
 	val time = measureTime {

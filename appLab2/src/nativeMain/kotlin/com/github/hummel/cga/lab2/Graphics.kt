@@ -51,7 +51,7 @@ private fun drawerThread(lpParameter: LPVOID?): DWORD {
 			val cosAngle = face.vertices[3].normalize() scalarMul ray
 
 			val vertexList = ArrayList<Vertex>()
-			face.vertices.mapTo(vertexList) { displayTransform(it) }
+			face.vertices.mapTo(vertexList) { multiplyVertexByMatrix(it, displayMatrix) }
 
 			drawRasterTriangle(vertexList, zBuffer, cosAngle)
 		}
