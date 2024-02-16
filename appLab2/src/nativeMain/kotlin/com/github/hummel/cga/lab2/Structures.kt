@@ -27,38 +27,6 @@ data class Vertex(var x: Float, var y: Float, var z: Float, var w: Float = 1.0f)
 	infix fun scalarMul(other: Vertex): Float = x * other.x + y * other.y + z * other.z
 
 	fun normalize(): Vertex = Vertex(x / magnitude, y / magnitude, z / magnitude)
-
-	//BELSKI COMPAT
-
-	constructor(x: Double, y: Double, z: Double, w: Double = 1.0) : this(
-		x.toFloat(), y.toFloat(), z.toFloat(), w.toFloat()
-	)
-
-	operator fun get(index: Int): Double {
-		return when (index) {
-			0 -> x.toDouble()
-			1 -> y.toDouble()
-			2 -> z.toDouble()
-			3 -> w.toDouble()
-			else -> throw Exception()
-		}
-	}
-
-	operator fun set(index: Int, value: Double) {
-		when (index) {
-			0 -> x = value.toFloat()
-			1 -> y = value.toFloat()
-			2 -> z = value.toFloat()
-			3 -> w = value.toFloat()
-			else -> throw Exception()
-		}
-	}
-
-	fun div(double: Double): Vertex = div(double.toFloat())
-	fun add(vertex: Vertex): Vertex = plus(vertex)
-	fun subtract(vertex: Vertex): Vertex = minus(vertex)
-	fun dot(vertex: Vertex): Double = scalarMul(vertex).toDouble()
-	fun cross(vertex: Vertex): Vertex = vectorMul(vertex)
 }
 
 data class Face(
