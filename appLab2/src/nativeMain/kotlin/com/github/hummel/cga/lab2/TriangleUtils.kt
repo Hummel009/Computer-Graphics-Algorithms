@@ -29,7 +29,7 @@ fun filterTriangles(faces: Collection<Face>): MutableList<Face> {
 }
 
 fun drawRasterTriangle(
-	triangle: ArrayList<Vertex>, zBuffer: FloatArray, cosAngle: Float
+	triangle: MutableList<Vertex>, zBuffer: FloatArray, cosAngle: Float
 ) {
 	val colorVal = (0xff * abs(cosAngle)).toInt()
 	val color = Color(colorVal, colorVal, colorVal, 255)

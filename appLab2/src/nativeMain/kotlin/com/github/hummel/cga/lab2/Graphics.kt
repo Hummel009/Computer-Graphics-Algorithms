@@ -38,11 +38,7 @@ private fun drawerThread(lpParameter: LPVOID?): DWORD {
 	for (i in filteredList.indices) {
 		val vertexList = ArrayList<Vertex>()
 
-		filteredList[i].vertices.asSequence().map {
-			multiplyVertexByMatrix(it, displayMatrix)
-		}.mapTo(vertexList) {
-			it
-		}
+		filteredList[i].vertices.mapTo(vertexList) { displayTransform(it) }
 
 		val t = filteredList[i]
 		val center = t.getCenter()
