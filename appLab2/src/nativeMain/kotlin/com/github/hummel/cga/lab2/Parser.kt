@@ -99,6 +99,7 @@ private fun addFace(array: Array<String>) {
 
 
 private fun addNormals(faces: MutableList<Face>) {
+	val newFaces = mutableListOf<Face>()
 	for ((vertices, _, _) in faces) {
 		val vec1 = vertices[1] - vertices[0]
 		val vec2 = vertices[2] - vertices[1]
@@ -106,6 +107,7 @@ private fun addNormals(faces: MutableList<Face>) {
 		val newFace = Face(
 			mutableListOf(vertices[0], vertices[1], vertices[2], normal), mutableListOf(), mutableListOf()
 		)
-		faces.add(newFace)
+		newFaces.add(newFace)
 	}
+	faces.addAll(newFaces)
 }
