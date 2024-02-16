@@ -15,7 +15,7 @@ var faces: MutableList<Face> = ArrayList()
 var bitmapData: ByteArray = ByteArray(width * height * 4)
 
 fun main() {
-	parse("teapot.obj")
+	parse("tie.obj")
 
 	memScoped {
 		val className = "Teapot"
