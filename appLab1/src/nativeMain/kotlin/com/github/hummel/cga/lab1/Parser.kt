@@ -92,5 +92,5 @@ private fun addFace(array: Array<String>) {
 		}
 	}
 
-	faces.add(Face(vs, vts, vns))
+	faces.add(Face(vs))
 }

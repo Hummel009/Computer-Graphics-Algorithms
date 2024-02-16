@@ -30,7 +30,7 @@ data class Vertex(var x: Float, var y: Float, var z: Float, var w: Float = 1.0f)
 }
 
 data class Face(
-	val vertices: MutableList<Vertex>, val textures: MutableList<Vertex>, val normals: MutableList<Vertex>
+	val vertices: MutableList<Vertex>
 ) {
 	fun getCenter(): Vertex {
 		var sum = Vertex(0.0f, 0.0f, 0.0f)

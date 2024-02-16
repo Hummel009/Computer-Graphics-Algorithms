@@ -29,7 +29,7 @@ fun parse(fileName: String) {
 
 	fclose(file)
 
-	addNormals(faces)
+	faces = addNormals(faces)
 }
 
 private fun addVertex(array: Array<String>) {
@@ -94,20 +94,19 @@ private fun addFace(array: Array<String>) {
 		}
 	}
 
-	faces.add(Face(vs, vts, vns))
+	faces.add(Face(vs))
 }
 
-
-private fun addNormals(faces: MutableList<Face>) {
-	val newFaces = mutableListOf<Face>()
-	for ((vertices, _, _) in faces) {
+private fun addNormals(faces: Collection<Face>): MutableList<Face> {
+	val list = ArrayList<Face>()
+	for ((vertices) in faces) {
 		val vec1 = vertices[1] - vertices[0]
 		val vec2 = vertices[2] - vertices[1]
 		val normal = (vec2 vectorMul vec1).normalize()
 		val newFace = Face(
-			mutableListOf(vertices[0], vertices[1], vertices[2], normal), mutableListOf(), mutableListOf()
+			mutableListOf(vertices[0], vertices[1], vertices[2], normal)
 		)
-		newFaces.add(newFace)
+		list.add(newFace)
 	}
-	faces.addAll(newFaces)
+	return list
 }

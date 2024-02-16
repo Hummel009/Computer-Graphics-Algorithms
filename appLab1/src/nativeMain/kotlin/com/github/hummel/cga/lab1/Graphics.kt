@@ -33,7 +33,7 @@ fun renderObject() {
 private fun drawerThread(lpParameter: LPVOID?): DWORD {
 	val parameter = lpParameter?.reinterpret<IntVar>()?.pointed?.value!!
 
-	for ((vertices, _, _) in splitFaces[parameter]) {
+	for ((vertices) in splitFaces[parameter]) {
 		if (vertices.size >= 3) {
 			var previousVertex = displayTransform(vertices.last())
 
