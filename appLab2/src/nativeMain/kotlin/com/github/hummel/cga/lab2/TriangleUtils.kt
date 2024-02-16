@@ -16,20 +16,6 @@ fun addNormals(faces: Collection<Face>): MutableList<Face> {
 	return list
 }
 
-fun applyMatrix(faces: Collection<Face>, matrix: Array<FloatArray>): MutableList<Face> {
-	val faceList = ArrayList<Face>()
-	for ((vertices, _, _) in faces) {
-		val vertexList = ArrayList<Vertex>()
-		vertices.asSequence().map {
-			multiplyVertexByMatrix(it, matrix)
-		}.mapTo(vertexList) {
-			it
-		}
-		faceList.add(Face(vertexList, mutableListOf(), mutableListOf()))
-	}
-	return faceList
-}
-
 fun filterTriangles(faces: Collection<Face>): MutableList<Face> {
 	val list = ArrayList<Face>()
 	for (face in faces) {
@@ -43,14 +29,14 @@ fun filterTriangles(faces: Collection<Face>): MutableList<Face> {
 }
 
 fun drawRasterTriangle(
-	triangle: Face, zBuffer: FloatArray, cosAngle: Float
+	triangle: ArrayList<Vertex>, zBuffer: FloatArray, cosAngle: Float
 ) {
 	val colorVal = (0xff * abs(cosAngle)).toInt()
 	val color = Color(colorVal, colorVal, colorVal, 255)
 
 	var minY = Int.MAX_VALUE
 	var maxY = Int.MIN_VALUE
-	for (vertex in triangle.vertices) {
+	for (vertex in triangle) {
 		val y = vertex.y.toInt()
 		if (y < minY) {
 			minY = y
@@ -66,8 +52,8 @@ fun drawRasterTriangle(
 		val xIntersections = IntArray(2)
 		var intersectionCount = 0
 		for (i in 0..2) {
-			val v0 = triangle.vertices[i]
-			val v1 = triangle.vertices[(i + 1) % 3]
+			val v0 = triangle[i]
+			val v1 = triangle[(i + 1) % 3]
 			val y0 = v0.y.toInt()
 			val y1 = v1.y.toInt()
 			if (y in y0 until y1 || y in y1 until y0) {
@@ -88,9 +74,9 @@ fun drawRasterTriangle(
 		// Заполнить пиксели между пересечениями цветом треугольника
 		if (intersectionCount == 2) {
 			for (x in xIntersections[0]..xIntersections[1]) {
-				val v0 = triangle.vertices[0]
-				val v1 = triangle.vertices[1]
-				val v2 = triangle.vertices[2]
+				val v0 = triangle[0]
+				val v1 = triangle[1]
+				val v2 = triangle[2]
 				val alpha =
 					((v1.y - v2.y) * (x - v2.x) + (v2.x - v1.x) * (y - v2.y)) / ((v1.y - v2.y) * (v0.x - v2.x) + (v2.x - v1.x) * (v0.y - v2.y))
 				val beta =

@@ -5,11 +5,11 @@ import platform.windows.*
 
 private val chunks: Int = faces.size / 100
 private val splitFaces: Array<List<Face>> = split(faces, chunks)
-private val white: Color = Color(255, 255, 255, 255)
+private val black: Color = Color(0, 0, 0, 255)
 private val zBuffer: FloatArray = FloatArray(width * height)
 
 fun renderObject() {
-	fillBackground(white)
+	fillBackground(black)
 	zBuffer.fill(Float.POSITIVE_INFINITY)
 
 	memScoped {
@@ -34,15 +34,22 @@ private fun drawerThread(lpParameter: LPVOID?): DWORD {
 	val parameter = lpParameter?.reinterpret<IntVar>()?.pointed?.value
 
 	val filteredList = filterTriangles(splitFaces[parameter!!])
-	val drawList = applyMatrix(filteredList, displayMatrix)
+
 	for (i in filteredList.indices) {
+		val vertexList = ArrayList<Vertex>()
+
+		filteredList[i].vertices.asSequence().map {
+			multiplyVertexByMatrix(it, displayMatrix)
+		}.mapTo(vertexList) {
+			it
+		}
+
 		val t = filteredList[i]
-		val drawT = drawList[i]
 		val center = t.getCenter()
 		val normal = t.vertices[3].normalize()
 		val ray = (center - eye - up).normalize()
 		val cosAngle = normal scalarMul ray
-		drawRasterTriangle(drawT, zBuffer, cosAngle)
+		drawRasterTriangle(vertexList, zBuffer, cosAngle)
 	}
 	return 0u
 }
