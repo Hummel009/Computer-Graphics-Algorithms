@@ -12,8 +12,7 @@ private const val VK_C: Int = 0x43
 const val width: Int = 1040
 const val height: Int = 580
 
-val faces: ArrayList<Face> = ArrayList()
-
+var faces: MutableList<Face> = ArrayList()
 var bitmapData: ByteArray = ByteArray(width * height * 4)
 
 fun main() {

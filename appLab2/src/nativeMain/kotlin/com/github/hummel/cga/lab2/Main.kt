@@ -13,12 +13,10 @@ const val width: Int = 1040
 const val height: Int = 580
 
 var faces: MutableList<Face> = ArrayList()
-
 var bitmapData: ByteArray = ByteArray(width * height * 4)
 
 fun main() {
 	parse("teapot.obj")
-	faces = addNormals(faces)
 
 	memScoped {
 		val className = "Teapot"

@@ -50,6 +50,18 @@ private fun drawerThread(lpParameter: LPVOID?): DWORD {
 	return 0u
 }
 
+private fun fillBackground(color: Color) {
+	for (y in 0 until height) {
+		for (x in 0 until width) {
+			val offset = (y * width + x) * 4
+			bitmapData[offset + 0] = color.blue
+			bitmapData[offset + 1] = color.green
+			bitmapData[offset + 2] = color.red
+			bitmapData[offset + 3] = color.alpha
+		}
+	}
+}
+
 private fun drawLine(v1: Vertex, v2: Vertex, color: Color) {
 	var x1 = v1.x.toInt()
 	val x2 = v2.x.toInt()
@@ -86,18 +98,6 @@ private fun drawLine(v1: Vertex, v2: Vertex, color: Color) {
 		if (err2 < dx) {
 			err += dx
 			y1 += sy
-		}
-	}
-}
-
-private fun fillBackground(color: Color) {
-	for (y in 0 until height) {
-		for (x in 0 until width) {
-			val offset = (y * width + x) * 4
-			bitmapData[offset + 0] = color.blue
-			bitmapData[offset + 1] = color.green
-			bitmapData[offset + 2] = color.red
-			bitmapData[offset + 3] = color.alpha
 		}
 	}
 }
