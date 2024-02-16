@@ -1,6 +1,6 @@
 package com.github.hummel.cga.lab2
 
-import com.github.hummel.cga.lab2.math.Vertex
+import com.github.hummel.cga.lab2.hum.Vertex
 
 object ParsingHelper {
 	fun extractVertex(line: String): Vertex {

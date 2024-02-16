@@ -2,8 +2,8 @@ package com.github.hummel.cga.lab2
 
 import com.github.hummel.cga.lab2.ParsingHelper.extractTriangle
 import com.github.hummel.cga.lab2.ParsingHelper.extractVertex
-import com.github.hummel.cga.lab2.math.AlgoUtils
-import com.github.hummel.cga.lab2.math.Vertex
+import com.github.hummel.cga.lab2.hum.Vertex
+import com.github.hummel.cga.lab2.math.addNormals
 import java.io.BufferedReader
 import java.io.FileReader
 
@@ -32,7 +32,7 @@ object Main {
 			}
 		}
 
-		triangleList = AlgoUtils.addNormals(triangleList)
+		triangleList = addNormals(triangleList)
 
 		val canvas = Canvas(triangleList)
 		canvas.isVisible = true

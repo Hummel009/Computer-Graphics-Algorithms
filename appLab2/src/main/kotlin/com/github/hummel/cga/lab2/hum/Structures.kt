@@ -1,4 +1,4 @@
-package com.github.hummel.cga.lab2.math
+package com.github.hummel.cga.lab2.hum
 
 import kotlin.math.sqrt
 
@@ -29,17 +29,21 @@ data class Vertex(var x: Float, var y: Float, var z: Float, var w: Float = 1.0f)
 	fun normalize(): Vertex = Vertex(x / magnitude, y / magnitude, z / magnitude)
 
 	//BELSKI COMPAT
-	operator fun get(int: Int): Float {
-		return when (int) {
-			0 -> x
-			1 -> y
-			2 -> z
-			3 -> w
+
+	constructor(x: Double, y: Double, z: Double, w: Double = 1.0) : this(
+		x.toFloat(), y.toFloat(), z.toFloat(), w.toFloat()
+	)
+
+	operator fun get(index: Int): Double {
+		return when (index) {
+			0 -> x.toDouble()
+			1 -> y.toDouble()
+			2 -> z.toDouble()
+			3 -> w.toDouble()
 			else -> throw Exception()
 		}
 	}
 
-	//BELSKI COMPAT
 	operator fun set(index: Int, value: Double) {
 		when (index) {
 			0 -> x = value.toFloat()
@@ -50,13 +54,17 @@ data class Vertex(var x: Float, var y: Float, var z: Float, var w: Float = 1.0f)
 		}
 	}
 
-	fun add(other: Vertex?): Vertex = plus(other!!)
-	fun subtract(other: Vertex?): Vertex = minus(other!!)
-	fun cross(other: Vertex?): Vertex = vectorMul(other!!)
-	fun dot(other: Vertex?): Float = scalarMul(other!!)
 	fun div(double: Double): Vertex = div(double.toFloat())
+	fun add(vertex: Vertex?): Vertex = plus(vertex!!)
+	fun subtract(vertex: Vertex?): Vertex = minus(vertex!!)
+	fun dot(vertex: Vertex?): Double = scalarMul(vertex!!).toDouble()
+	fun cross(vertex: Vertex?): Vertex = vectorMul(vertex!!)
+}
 
-	constructor(x: Double = 0.0, y: Double = 0.0, z: Double = 0.0, w: Double = 1.0) : this(
-		x.toFloat(), y.toFloat(), z.toFloat(), w.toFloat()
+data class Face(val vertices: List<Int>, val textures: List<Int>, val normals: List<Int>)
+
+data class Color(val red: Byte, val green: Byte, val blue: Byte, val alpha: Byte) {
+	constructor(red: Int, green: Int, blue: Int, alpha: Int) : this(
+		red.toByte(), green.toByte(), blue.toByte(), alpha.toByte()
 	)
 }
