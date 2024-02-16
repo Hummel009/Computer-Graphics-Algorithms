@@ -33,17 +33,17 @@ fun renderObject() {
 private fun drawerThread(lpParameter: LPVOID?): DWORD {
 	val parameter = lpParameter?.reinterpret<IntVar>()?.pointed?.value
 
-	for ((faceVertices, _, _) in splitFaces[parameter!!]) {
-		if (faceVertices.size >= 3) {
-			var previousVertex = displayTransform(vertices[faceVertices.last()])
+	for ((vertices, _, _) in splitFaces[parameter!!]) {
+		if (vertices.size >= 3) {
+			var previousVertex = displayTransform(vertices.last())
 
-			for (i in faceVertices) {
-				val currentVertex = displayTransform(vertices[i])
+			for (i in vertices) {
+				val currentVertex = displayTransform(i)
 				drawLine(previousVertex, currentVertex, black)
 				previousVertex = currentVertex
 			}
 
-			val firstVertex = displayTransform(vertices[faceVertices.first()])
+			val firstVertex = displayTransform(vertices.first())
 			drawLine(previousVertex, firstVertex, black)
 		}
 	}

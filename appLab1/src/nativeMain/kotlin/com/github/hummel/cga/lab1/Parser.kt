@@ -6,6 +6,10 @@ import platform.posix.fclose
 import platform.posix.fgets
 import platform.posix.fopen
 
+private val vertices: ArrayList<Vertex> = ArrayList()
+private val textures: ArrayList<Vertex> = ArrayList()
+private val normals: ArrayList<Vertex> = ArrayList()
+
 fun parse(fileName: String) {
 	val file = fopen(fileName, "r")
 	val bufferLength = 1024
@@ -46,7 +50,7 @@ private fun addVertexTexture(array: Array<String>) {
 		3 -> Vertex(coords[0], coords[1], coords[2])
 		else -> throw Exception("Vertex texture error: ${array.joinToString(" ")}")
 	}
-	verticesTexture.add(vertex)
+	textures.add(vertex)
 }
 
 private fun addVertexNormal(array: Array<String>) {
@@ -56,34 +60,34 @@ private fun addVertexNormal(array: Array<String>) {
 		3 -> Vertex(coords[0], coords[1], coords[2])
 		else -> throw Exception("Vertex normal error: ${array.joinToString(" ")}")
 	}
-	verticesNormal.add(vertex)
+	normals.add(vertex)
 }
 
 private fun addFace(array: Array<String>) {
-	val vs = mutableListOf<Int>()
-	val vns = mutableListOf<Int>()
-	val vts = mutableListOf<Int>()
+	val vs = mutableListOf<Vertex>()
+	val vns = mutableListOf<Vertex>()
+	val vts = mutableListOf<Vertex>()
 
 	val coords = array.filter { it.isNotBlank() }
 
 	coords.forEach { coord ->
 		val elem = coord.split('/')
 
-		elem[0].toIntOrNull()?.let { vs.add(it - 1) } ?: run {
-			vs.add(vertices.lastIndex)
+		elem[0].toIntOrNull()?.let { vs.add(vertices[it - 1]) } ?: run {
+			vs.add(vertices[vertices.lastIndex])
 		}
 
 		if (elem.size > 1) {
-			elem[1].toIntOrNull()?.let { vts.add(it - 1) } ?: run {
-				elem[2].toIntOrNull()?.let { vns.add(it - 1) } ?: run {
-					vns.add(verticesNormal.lastIndex)
+			elem[1].toIntOrNull()?.let { vts.add(textures[it - 1]) } ?: run {
+				elem[2].toIntOrNull()?.let { vns.add(normals[it - 1]) } ?: run {
+					vns.add(normals[normals.lastIndex])
 				}
 			}
 		}
 
 		if (elem.size > 2) {
-			elem[2].toIntOrNull()?.let { vns.add(it - 1) } ?: run {
-				vns.add(verticesNormal.lastIndex)
+			elem[2].toIntOrNull()?.let { vns.add(normals[it - 1]) } ?: run {
+				vns.add(normals[normals.lastIndex])
 			}
 		}
 	}
