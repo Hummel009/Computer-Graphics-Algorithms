@@ -2,32 +2,9 @@ package com.github.hummel.cga.lab2
 
 import kotlin.math.abs
 
-fun getCenter(face: Face): Vertex {
-	var sum = Vertex(0.0f, 0.0f, 0.0f)
-	for (i in 0..2) {
-		sum += face.vertices[i]
-	}
-	return sum / 3.0f
-}
-
-fun applyMatrix(triangles: Iterable<Face>, matrix: Array<FloatArray>): List<Array<Vertex>> {
-	val list: MutableList<Array<Vertex>> = ArrayList()
-	for ((vertices, _, _) in triangles) {
-		val list1: MutableList<Vertex> = ArrayList()
-		vertices.asSequence().map {
-			multiplyVertexByMatrix(it, matrix)
-		}.mapTo(list1) {
-			it
-		}
-		val array = list1.toTypedArray<Vertex>()
-		list.add(array)
-	}
-	return list
-}
-
-fun addNormals(triangles: Iterable<Face>): MutableList<Face> {
-	val list: MutableList<Face> = ArrayList()
-	for ((vertices, _, _) in triangles) {
+fun addNormals(faces: Collection<Face>): MutableList<Face> {
+	val list = ArrayList<Face>()
+	for ((vertices, _, _) in faces) {
 		val vec1 = vertices[1] - vertices[0]
 		val vec2 = vertices[2] - vertices[1]
 		val normal = (vec2 vectorMul vec1).normalize()
@@ -39,9 +16,23 @@ fun addNormals(triangles: Iterable<Face>): MutableList<Face> {
 	return list
 }
 
-fun filterTriangles(triangles: Iterable<Face>): List<Face> {
-	val list: MutableList<Face> = ArrayList()
-	for (face in triangles) {
+fun applyMatrix(faces: Collection<Face>, matrix: Array<FloatArray>): MutableList<Face> {
+	val faceList = ArrayList<Face>()
+	for ((vertices, _, _) in faces) {
+		val vertexList = ArrayList<Vertex>()
+		vertices.asSequence().map {
+			multiplyVertexByMatrix(it, matrix)
+		}.mapTo(vertexList) {
+			it
+		}
+		faceList.add(Face(vertexList, mutableListOf(), mutableListOf()))
+	}
+	return faceList
+}
+
+fun filterTriangles(faces: Collection<Face>): MutableList<Face> {
+	val list = ArrayList<Face>()
+	for (face in faces) {
 		val viewDir = (face.vertices[0] - eye).normalize()
 		val cos = face.vertices[3] scalarMul viewDir
 		if (cos > 0) {
@@ -97,7 +88,6 @@ fun drawRasterTriangle(
 		// Заполнить пиксели между пересечениями цветом треугольника
 		if (intersectionCount == 2) {
 			for (x in xIntersections[0]..xIntersections[1]) {
-				// Вычисление z-фрагмента
 				val v0 = triangle.vertices[0]
 				val v1 = triangle.vertices[1]
 				val v2 = triangle.vertices[2]

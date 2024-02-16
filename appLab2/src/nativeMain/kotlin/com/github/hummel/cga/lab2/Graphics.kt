@@ -5,21 +5,22 @@ private val zBuffer: FloatArray = FloatArray(width * height)
 
 fun renderObject() {
 	fillBackground(white)
+	zBuffer.fill(Float.POSITIVE_INFINITY)
 
-	val triangleList = addNormals(faces)
-	val filteredList = filterTriangles(triangleList)
+	val filteredList = filterTriangles(faces)
 	val drawList = applyMatrix(filteredList, displayMatrix)
 
-	zBuffer.fill(Float.POSITIVE_INFINITY)
+	println(filteredList.size)
+	println(drawList.size)
 
 	for (i in drawList.indices) {
 		val t = filteredList[i]
 		val drawT = drawList[i]
-		val center = getCenter(t)
+		val center = t.getCenter()
 		val normal = t.vertices[3].normalize()
 		val ray = (center - eye - up).normalize()
 		val cosAngle = normal scalarMul ray
-		drawRasterTriangle(Face(drawT.toMutableList(), mutableListOf(), mutableListOf()), zBuffer, cosAngle)
+		drawRasterTriangle(drawT, zBuffer, cosAngle)
 	}
 }
 
