@@ -31,19 +31,22 @@ fun renderObject() {
 	}
 }
 
+private val optiTemp: Vertex = eye + up
 private fun drawerThread(lpParameter: LPVOID?): DWORD {
 	val parameter = lpParameter?.reinterpret<IntVar>()?.pointed?.value!!
 
-	val filteredFaces = filterFaces(splitFaces[parameter])
+	for (face in splitFaces[parameter]) {
+		val viewDir = (face.vertices[0] - eye).normalize()
+		val cos = face.vertices[3] scalarMul viewDir
+		if (cos > 0) {
+			val ray = (face.getCenter() - optiTemp).normalize()
+			val cosAngle = face.vertices[3].normalize() scalarMul ray
 
-	for (face in filteredFaces) {
-		val ray = (face.getCenter() - eye - up).normalize()
-		val cosAngle = face.vertices[3].normalize() scalarMul ray
+			val vertexList = ArrayList<Vertex>()
+			face.vertices.mapTo(vertexList) { displayTransform(it) }
 
-		val vertexList = ArrayList<Vertex>()
-		face.vertices.mapTo(vertexList) { displayTransform(it) }
-
-		drawRasterTriangle(vertexList, zBuffer, cosAngle)
+			drawRasterTriangle(vertexList, zBuffer, cosAngle)
+		}
 	}
 	return 0u
 }
@@ -87,7 +90,7 @@ private fun drawRasterTriangle(face: MutableList<Vertex>, zBuffer: FloatArray, c
 			val y0 = v0.y.toInt()
 			val y1 = v1.y.toInt()
 			if (y in y0 until y1 || y in y1 until y0) {
-				val t = (y - y0) / (y1 - y0).toDouble()
+				val t = (y - y0) / (y1 - y0).toFloat()
 				val x = (v0.x + t * (v1.x - v0.x)).toInt()
 				xIntersections[intersectionCount] = x
 				intersectionCount++
@@ -130,18 +133,6 @@ private fun drawRasterTriangle(face: MutableList<Vertex>, zBuffer: FloatArray, c
 			}
 		}
 	}
-}
-
-fun filterFaces(faces: Collection<Face>): MutableList<Face> {
-	val list = ArrayList<Face>()
-	for (face in faces) {
-		val viewDir = (face.vertices[0] - eye).normalize()
-		val cos = face.vertices[3] scalarMul viewDir
-		if (cos > 0) {
-			list.add(face)
-		}
-	}
-	return list
 }
 
 private fun <T> split(list: List<T>, parts: Int): Array<List<T>> {
