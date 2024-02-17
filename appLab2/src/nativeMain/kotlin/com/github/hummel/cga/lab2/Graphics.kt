@@ -71,7 +71,7 @@ private fun fillBackground(color: Color) {
 	}
 }
 
-private fun drawRasterTriangle(face: MutableList<Vertex>, zBuffer: FloatArray, cosAngle: Float) {
+private inline fun drawRasterTriangle(face: MutableList<Vertex>, zBuffer: FloatArray, cosAngle: Float) {
 	val colorVal = (0xff * abs(cosAngle)).toInt()
 	val color = Color(colorVal, colorVal, colorVal, 255)
 

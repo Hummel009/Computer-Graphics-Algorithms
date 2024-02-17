@@ -70,7 +70,7 @@ private fun fillBackground(color: Color) {
 	}
 }
 
-private fun drawLine(v1: Vertex, v2: Vertex, color: Color) {
+private inline fun drawLine(v1: Vertex, v2: Vertex, color: Color) {
 	var x1 = v1.x.toInt()
 	val x2 = v2.x.toInt()
 	var y1 = v1.y.toInt()
