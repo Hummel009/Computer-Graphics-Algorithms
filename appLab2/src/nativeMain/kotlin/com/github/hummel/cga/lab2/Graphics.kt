@@ -47,7 +47,7 @@ private fun drawerThread(lpParameter: LPVOID?): DWORD {
 		val viewDir = (face.vertices[0] - eye).normalize()
 		val cos = face.vertices[3] scalarMul viewDir
 		if (cos > 0) {
-			val ray = (face.getCenter() - optiTemp).normalize()
+			val ray = (face.center - optiTemp).normalize()
 			val cosAngle = face.vertices[3].normalize() scalarMul ray
 
 			val vertexList = ArrayList<Vertex>()

@@ -32,12 +32,14 @@ data class Vertex(var x: Float, var y: Float, var z: Float, var w: Float = 1.0f)
 data class Face(
 	val vertices: MutableList<Vertex>
 ) {
-	inline fun getCenter(): Vertex {
+	val center: Vertex
+
+	init {
 		var sum = Vertex(0.0f, 0.0f, 0.0f)
 		for (i in 0..2) {
 			sum += vertices[i]
 		}
-		return sum / 3.0f
+		center = sum / 3.0f
 	}
 }
 
