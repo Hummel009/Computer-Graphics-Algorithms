@@ -62,11 +62,7 @@ private fun drawerThread(lpParameter: LPVOID?): DWORD {
 private fun fillBackground(color: Color) {
 	for (y in 0 until height) {
 		for (x in 0 until width) {
-			val offset = (y * width + x) * 4
-			bitmapData[offset + 0] = color.blue
-			bitmapData[offset + 1] = color.green
-			bitmapData[offset + 2] = color.red
-			bitmapData[offset + 3] = color.alpha
+			setPixel(x, y, color)
 		}
 	}
 }
@@ -130,17 +126,20 @@ private inline fun drawRasterTriangle(face: MutableList<Vertex>, zBuffer: FloatA
 					zBuffer[x * height + y] = zFragment
 
 					if (x in 0 until width && y in 0 until height) {
-						val offset = (y * width + x) shl 2
-
-						bitmapData[offset + 0] = color.blue
-						bitmapData[offset + 1] = color.green
-						bitmapData[offset + 2] = color.red
-						bitmapData[offset + 3] = color.alpha
+						setPixel(x, y, color)
 					}
 				}
 			}
 		}
 	}
+}
+
+private inline fun setPixel(x: Int, y: Int, color: Color) {
+	val offset = (y * width + x) shl 2
+	bitmapData[offset + 0] = color.blue
+	bitmapData[offset + 1] = color.green
+	bitmapData[offset + 2] = color.red
+	bitmapData[offset + 3] = color.alpha
 }
 
 private fun <T> split(list: List<T>, parts: Int): Array<List<T>> {
