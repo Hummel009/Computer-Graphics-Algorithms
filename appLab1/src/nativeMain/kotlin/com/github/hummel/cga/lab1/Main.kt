@@ -146,14 +146,12 @@ private fun wndProc(window: HWND?, msg: UINT, wParam: WPARAM, lParam: LPARAM): L
 			times.add(time)
 
 			if (times.size >= 50) {
-				min = min.coerceAtMost(time)
-				max = max.coerceAtLeast(time)
+				val fps = (1000000000.0 / times.takeLast(50).average()).toLong()
 
-				val fps = (1000000000.0 / times.takeLast(50).average()).toInt()
-				val rangeMin = (1000000000.0 / fps).toInt()
-				val rangeMax = (1000000000.0 / fps).toInt()
+				min = min.coerceAtMost(fps)
+				max = max.coerceAtLeast(fps)
 
-				println("$fps FPS; [$rangeMin, $rangeMax]")
+				println("$fps FPS; [$min, $max]")
 			}
 		}
 
