@@ -33,8 +33,8 @@ data class Face(
 	val vertices: MutableList<Vertex>
 )
 
-data class Color(val red: Byte, val green: Byte, val blue: Byte, val alpha: Byte) {
-	constructor(red: Int, green: Int, blue: Int, alpha: Int) : this(
-		red.toByte(), green.toByte(), blue.toByte(), alpha.toByte()
+data class Color(val red: Byte, val green: Byte, val blue: Byte) {
+	constructor(red: Int, green: Int, blue: Int) : this(
+		red.toByte(), green.toByte(), blue.toByte()
 	)
 }

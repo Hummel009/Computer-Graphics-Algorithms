@@ -6,12 +6,11 @@ import kotlin.math.abs
 
 private val chunks: Int = faces.size / 1000
 private val splitFaces: Array<List<Face>> = split(faces, chunks)
-private val white: Color = Color(255, 255, 255, 255)
-private val black: Color = Color(0, 0, 0, 255)
+private val white: Color = Color(255, 255, 255)
 
 private val times: MutableList<Long> = ArrayList()
 fun renderObject() {
-	fillBackground(white)
+	bitmapData.fill(0)
 
 	memScoped {
 		val params = Array(chunks) {
@@ -40,23 +39,15 @@ private fun drawerThread(lpParameter: LPVOID?): DWORD {
 
 			for (i in vertices) {
 				val currentVertex = multiplyVertexByMatrix(i, displayMatrix)
-				drawLine(previousVertex, currentVertex, black)
+				drawLine(previousVertex, currentVertex, white)
 				previousVertex = currentVertex
 			}
 
 			val firstVertex = multiplyVertexByMatrix(vertices.first(), displayMatrix)
-			drawLine(previousVertex, firstVertex, black)
+			drawLine(previousVertex, firstVertex, white)
 		}
 	}
 	return 0u
-}
-
-private fun fillBackground(color: Color) {
-	for (y in 0 until height) {
-		for (x in 0 until width) {
-			setPixel(x, y, color)
-		}
-	}
 }
 
 private inline fun drawLine(v1: Vertex, v2: Vertex, color: Color) {
@@ -95,7 +86,7 @@ private inline fun setPixel(x: Int, y: Int, color: Color) {
 	bitmapData[offset + 0] = color.blue
 	bitmapData[offset + 1] = color.green
 	bitmapData[offset + 2] = color.red
-	bitmapData[offset + 3] = color.alpha
+	bitmapData[offset + 3] = -1
 }
 
 private fun <T> split(list: List<T>, parts: Int): Array<List<T>> {

@@ -6,11 +6,10 @@ import kotlin.math.abs
 
 private val chunks: Int = faces.size / 100
 private val splitFaces: Array<List<Face>> = split(faces, chunks)
-private val black: Color = Color(0, 0, 0, 255)
 private val zBuffer: FloatArray = FloatArray(width * height)
 
 fun renderObject() {
-	fillBackground(black)
+	bitmapData.fill(0)
 	zBuffer.fill(Float.POSITIVE_INFINITY)
 
 	memScoped {
@@ -51,17 +50,9 @@ private fun drawerThread(lpParameter: LPVOID?): DWORD {
 	return 0u
 }
 
-private fun fillBackground(color: Color) {
-	for (y in 0 until height) {
-		for (x in 0 until width) {
-			setPixel(x, y, color)
-		}
-	}
-}
-
 private inline fun drawRasterTriangle(face: MutableList<Vertex>, zBuffer: FloatArray, cosAngle: Float) {
 	val colorVal = (0xff * abs(cosAngle)).toInt()
-	val color = Color(colorVal, colorVal, colorVal, 255)
+	val color = Color(colorVal, colorVal, colorVal)
 
 	var minY = Int.MAX_VALUE
 	var maxY = Int.MIN_VALUE
@@ -132,7 +123,7 @@ private inline fun setPixel(x: Int, y: Int, color: Color) {
 	bitmapData[offset + 0] = color.blue
 	bitmapData[offset + 1] = color.green
 	bitmapData[offset + 2] = color.red
-	bitmapData[offset + 3] = color.alpha
+	bitmapData[offset + 3] = -1
 }
 
 private fun <T> split(list: List<T>, parts: Int): Array<List<T>> {
