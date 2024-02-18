@@ -51,7 +51,7 @@ private fun drawerThread(lpParameter: LPVOID?): DWORD {
 }
 
 private inline fun drawRasterTriangle(face: MutableList<Vertex>, zBuffer: FloatArray, cosAngle: Float) {
-	val colorVal = (0xff * abs(cosAngle)).toInt()
+	val colorVal = (0xff * abs(cosAngle)).toInt().toByte()
 	val color = Color(colorVal, colorVal, colorVal)
 
 	var minY = Int.MAX_VALUE

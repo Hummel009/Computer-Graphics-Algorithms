@@ -43,8 +43,4 @@ data class Face(
 	}
 }
 
-data class Color(val red: Byte, val green: Byte, val blue: Byte) {
-	constructor(red: Int, green: Int, blue: Int) : this(
-		red.toByte(), green.toByte(), blue.toByte()
-	)
-}
+data class Color(val red: Byte, val green: Byte, val blue: Byte)
