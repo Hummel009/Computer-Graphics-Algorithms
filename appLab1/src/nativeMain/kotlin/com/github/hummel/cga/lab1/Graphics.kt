@@ -71,13 +71,9 @@ private inline fun drawLine(v1: Vertex, v2: Vertex, color: Color) {
 	val sy = if (y1 < y2) 1 else -1
 	var err = dx - dy
 
-	while (true) {
+	while (x1 != x2 || y1 != y2) {
 		if (x1 in 0 until width && y1 in 0 until height) {
 			setPixel(x1, y1, color)
-		}
-
-		if (x1 == x2 && y1 == y2) {
-			break
 		}
 
 		val err2 = 2 * err
