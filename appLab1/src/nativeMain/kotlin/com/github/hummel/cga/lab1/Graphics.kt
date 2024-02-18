@@ -6,11 +6,11 @@ import kotlin.math.abs
 
 private val chunks: Int = faces.size / 1000
 private val splitFaces: Array<List<Face>> = split(faces, chunks)
-private val white: Color = Color(255, 255, 255)
+private val white: Color = Color(0, 0, 0)
 
 private val times: MutableList<Long> = ArrayList()
 fun renderObject() {
-	bitmapData.fill(0)
+	bitmapData.fill(-1)
 
 	memScoped {
 		val params = Array(chunks) {
