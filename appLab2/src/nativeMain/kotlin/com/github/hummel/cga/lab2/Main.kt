@@ -121,7 +121,7 @@ private fun wndProc(window: HWND?, msg: UINT, wParam: WPARAM, lParam: LPARAM): L
 				min = min.coerceAtMost(fps)
 				max = max.coerceAtLeast(fps)
 
-				println("$fps FPS; [$min, $max]")
+				println("$fps FPS, [$min; $max]")
 			}
 		}
 
