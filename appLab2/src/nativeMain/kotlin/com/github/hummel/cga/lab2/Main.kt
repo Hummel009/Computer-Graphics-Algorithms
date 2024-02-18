@@ -66,6 +66,8 @@ fun main() {
 }
 
 private val times: MutableList<Long> = ArrayList()
+private var min: Long = Long.MAX_VALUE
+private var max: Long = Long.MIN_VALUE
 private fun wndProc(window: HWND?, msg: UINT, wParam: WPARAM, lParam: LPARAM): LRESULT {
 	when (msg.toInt()) {
 		WM_KEYDOWN -> {
@@ -113,9 +115,16 @@ private fun wndProc(window: HWND?, msg: UINT, wParam: WPARAM, lParam: LPARAM): L
 
 			times.add(time)
 
-			val fps = (1000000000.0 / times.takeLast(50).average()).toInt()
+			if (times.size >= 50) {
+				min = min.coerceAtMost(time)
+				max = max.coerceAtLeast(time)
 
-			println("$fps FPS")
+				val fps = (1000000000.0 / times.takeLast(50).average()).toInt()
+				val rangeMin = (1000000000.0 / fps).toInt()
+				val rangeMax = (1000000000.0 / fps).toInt()
+
+				println("$fps FPS; [$rangeMin, $rangeMax]")
+			}
 		}
 
 		WM_CLOSE -> DestroyWindow(window)
