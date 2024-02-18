@@ -2,7 +2,6 @@ package com.github.hummel.cga.lab1
 
 import kotlin.math.cos
 import kotlin.math.sin
-import kotlin.time.measureTime
 
 fun translateVertices(shiftX: Float, shiftY: Float) {
 	val vertex = Vertex(shiftX, shiftY, 0.0f)
@@ -74,15 +73,9 @@ fun rotateVerticesAxisZ(angle: Float = 0.2f) {
 
 private val times: MutableList<Long> = ArrayList()
 private inline fun applyTransform(matrix: Array<FloatArray>) {
-	val time = measureTime {
-		for ((vertices) in faces) {
-			for (i in vertices.indices) {
-				vertices[i] = multiplyVertexByMatrix(vertices[i], matrix)
-			}
+	for ((vertices) in faces) {
+		for (i in vertices.indices) {
+			vertices[i] = multiplyVertexByMatrix(vertices[i], matrix)
 		}
-	}.inWholeMilliseconds
-
-	times.add(time)
-
-	println("Transform: ${times.average()}")
+	}
 }
