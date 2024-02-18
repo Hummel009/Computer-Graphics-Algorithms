@@ -13,7 +13,7 @@ jobs:
     runs-on: windows-latest
     strategy:
       matrix:
-        version: [ 'Lab1', 'Lab2', 'Lab3', 'Lab4', 'Lab5' ]
+        version: [ 'Lab1', 'Lab2' ]
     steps:
       - uses: actions/checkout@main
       - name: Set up JDK 21
@@ -29,4 +29,6 @@ jobs:
         uses: actions/upload-artifact@v3.1.3
         with:
           name: compiled-artifact
-          path: ./app${{matrix.version}}/build/libs/*.jar
+          path: |
+            ./app${{matrix.version}}/build/libs/*.jar
+            ./app${{matrix.version}}/build/bin/mingwX64/releaseExecutable/*.exe
