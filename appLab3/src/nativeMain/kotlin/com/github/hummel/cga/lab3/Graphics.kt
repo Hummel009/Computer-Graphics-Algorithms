@@ -42,6 +42,8 @@ private fun drawerThread(lpParameter: LPVOID?): DWORD {
 	return 0u
 }
 
+private val view: Vertex = (target - eye).normalize()
+private val lightPos = Vertex(5.0f, 5.0f, 5.0f)
 private inline fun drawTriangle(face: Face) {
 	val drawFace = Face(
 		arrayOf(
@@ -106,14 +108,13 @@ private inline fun drawTriangle(face: Face) {
 
 						// Проверка z-буфера
 						if (zBuffer[x * height + y] > zFragment) {
+							zBuffer[x * height + y] = zFragment
+
 							// cчитаем diffuse
 							val normal = face.getCenteredVecForNormals(alpha, beta, gamma)
 							val pos = face.getCenteredVecForVertices(alpha, beta, gamma)
-							val view = (target - eye).normalize()
-							val lightPos = Vertex(5.0f, 5.0f, 5.0f)
 							val ray = (pos - lightPos).normalize()
 							val diffuse = normal scalarMul ray * 0.2f
-
 
 							// считаем specular
 							val refr = ray - (normal * 2.0f * (normal scalarMul ray))
@@ -123,8 +124,6 @@ private inline fun drawTriangle(face: Face) {
 							if (colorVal > 0xff) colorVal = 0xff
 
 							val color = Color(colorVal.toByte(), colorVal.toByte(), colorVal.toByte())
-
-							zBuffer[x * height + y] = zFragment
 
 							setPixel(x, y, color)
 						}
