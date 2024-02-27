@@ -6,9 +6,9 @@ import platform.posix.fclose
 import platform.posix.fgets
 import platform.posix.fopen
 
-private val vertices: ArrayList<Vertex> = ArrayList()
-private val textures: ArrayList<Vertex> = ArrayList()
-private val normals: ArrayList<Vertex> = ArrayList()
+private val vertices: MutableList<Vertex> = ArrayList()
+private val textures: MutableList<Vertex> = ArrayList()
+private val normals: MutableList<Vertex> = ArrayList()
 
 fun parse(fileName: String) {
 	val file = fopen(fileName, "r")

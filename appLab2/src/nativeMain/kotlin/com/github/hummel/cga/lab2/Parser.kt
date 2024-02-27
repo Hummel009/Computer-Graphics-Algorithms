@@ -6,9 +6,9 @@ import platform.posix.fclose
 import platform.posix.fgets
 import platform.posix.fopen
 
-private val vertices: ArrayList<Vertex> = ArrayList()
-private val textures: ArrayList<Vertex> = ArrayList()
-private val normals: ArrayList<Vertex> = ArrayList()
+private val vertices: MutableList<Vertex> = ArrayList()
+private val textures: MutableList<Vertex> = ArrayList()
+private val normals: MutableList<Vertex> = ArrayList()
 
 fun parse(fileName: String) {
 	val file = fopen(fileName, "r")
@@ -29,7 +29,7 @@ fun parse(fileName: String) {
 
 	fclose(file)
 
-	faces = addNormals(faces)
+	faces = addNormals()
 }
 
 private fun addVertex(array: Array<String>) {
@@ -97,7 +97,7 @@ private fun addFace(array: Array<String>) {
 	faces.add(Face(vs.toTypedArray()))
 }
 
-private fun addNormals(faces: Collection<Face>): MutableList<Face> {
+private fun addNormals(): MutableList<Face> {
 	val list = ArrayList<Face>()
 	for ((vertices) in faces) {
 		val vec1 = vertices[1] - vertices[0]
