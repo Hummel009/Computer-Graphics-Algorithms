@@ -59,5 +59,3 @@ data class Face(val vertices: Array<Vertex>, var normal: Vertex) {
 		return result
 	}
 }
-
-data class Color(val red: Byte, val green: Byte, val blue: Byte)
