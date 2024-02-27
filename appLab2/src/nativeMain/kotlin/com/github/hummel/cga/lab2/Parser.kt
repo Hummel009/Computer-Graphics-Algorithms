@@ -39,7 +39,7 @@ private fun addVertex(array: Array<String>) {
 
 private fun addFace(array: Array<String>) {
 	val vs = mutableListOf<Vertex>()
-	val vts = mutableListOf<Vertex>()
+	val vns = mutableListOf<Vertex>()
 
 	val coords = array.filter { it.isNotBlank() }
 
@@ -55,7 +55,7 @@ private fun addFace(array: Array<String>) {
 	val vec2 = vs[2] - vs[1]
 	val normal = (vec2 vectorMul vec1).normalize()
 
-	vts.add(normal)
+	vns.add(normal)
 
-	faces.add(Face(vs.toTypedArray(), vts.toTypedArray()))
+	faces.add(Face(vs.toTypedArray(), vns.toTypedArray()))
 }
