@@ -43,11 +43,11 @@ private fun drawerThread(lpParameter: LPVOID?): DWORD {
 private val optiTemp: Vertex = eye + up
 private inline fun drawTriangle(face: Face) {
 	val viewDir = (face.vertices[0] - eye).normalize()
-	val cos = face.normals[0] scalarMul viewDir
+	val cos = face.normal scalarMul viewDir
 
 	if (cos > 0) {
 		val ray = (face.center - optiTemp).normalize()
-		val cosAngle = face.normals[0].normalize() scalarMul ray
+		val cosAngle = face.normal scalarMul ray
 		val colorVal = (0xff * abs(cosAngle)).toInt().toByte()
 		val color = Color(colorVal, colorVal, colorVal)
 
@@ -56,7 +56,7 @@ private inline fun drawTriangle(face: Face) {
 				multiplyVertexByMatrix(face.vertices[0], displayMatrix),
 				multiplyVertexByMatrix(face.vertices[1], displayMatrix),
 				multiplyVertexByMatrix(face.vertices[2], displayMatrix)
-			), face.normals
+			), face.normal
 		)
 
 		var minY = Int.MAX_VALUE

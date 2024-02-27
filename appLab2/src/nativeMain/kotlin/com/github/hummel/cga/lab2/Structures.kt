@@ -31,7 +31,7 @@ data class Vertex(var x: Float, var y: Float, var z: Float, var w: Float = 1.0f)
 
 data class Face(
 	val vertices: Array<Vertex>,
-	val normals: Array<Vertex>
+	var normal: Vertex
 ) {
 	val center: Vertex
 
@@ -49,7 +49,7 @@ data class Face(
 		other as Face
 
 		if (!vertices.contentEquals(other.vertices)) return false
-		if (!normals.contentEquals(other.normals)) return false
+		if (normal != other.normal) return false
 		if (center != other.center) return false
 
 		return true
@@ -57,7 +57,7 @@ data class Face(
 
 	override fun hashCode(): Int {
 		var result = vertices.contentHashCode()
-		result = 31 * result + normals.contentHashCode()
+		result = 31 * result + normal.hashCode()
 		result = 31 * result + center.hashCode()
 		return result
 	}
