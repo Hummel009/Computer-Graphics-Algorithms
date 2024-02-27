@@ -33,15 +33,20 @@ fun renderObject() {
 private fun drawerThread(lpParameter: LPVOID?): DWORD {
 	val parameter = lpParameter?.reinterpret<IntVar>()?.pointed?.value!!
 
-	for ((vertices) in splitFaces[parameter]) {
-		val drawVertex0 = multiplyVertexByMatrix(vertices[0], displayMatrix)
-		val drawVertex1 = multiplyVertexByMatrix(vertices[1], displayMatrix)
-		val drawVertex2 = multiplyVertexByMatrix(vertices[2], displayMatrix)
-		drawLine(drawVertex0, drawVertex1, white)
-		drawLine(drawVertex1, drawVertex2, white)
-		drawLine(drawVertex2, drawVertex0, white)
+	for (face in splitFaces[parameter]) {
+		drawTriangle(face)
 	}
+
 	return 0u
+}
+
+private inline fun drawTriangle(face: Face) {
+	val drawVertex0 = multiplyVertexByMatrix(face.vertices[0], displayMatrix)
+	val drawVertex1 = multiplyVertexByMatrix(face.vertices[1], displayMatrix)
+	val drawVertex2 = multiplyVertexByMatrix(face.vertices[2], displayMatrix)
+	drawLine(drawVertex0, drawVertex1, white)
+	drawLine(drawVertex1, drawVertex2, white)
+	drawLine(drawVertex2, drawVertex0, white)
 }
 
 private inline fun drawLine(v1: Vertex, v2: Vertex, color: Color) {

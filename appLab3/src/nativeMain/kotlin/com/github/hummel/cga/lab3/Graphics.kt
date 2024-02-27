@@ -36,25 +36,24 @@ private fun drawerThread(lpParameter: LPVOID?): DWORD {
 	val parameter = lpParameter?.reinterpret<IntVar>()?.pointed?.value!!
 
 	for (face in splitFaces[parameter]) {
-		val drawFace = Face(
-			arrayOf(
-				multiplyVertexByMatrix(face.vertices[0], displayMatrix),
-				multiplyVertexByMatrix(face.vertices[1], displayMatrix),
-				multiplyVertexByMatrix(face.vertices[2], displayMatrix)
-			),
-			face.normals
-		)
-
-		drawRasterTriangle(face, drawFace, zBuffer)
+		drawTriangle(face, zBuffer)
 	}
+
 	return 0u
 }
 
-private inline fun drawRasterTriangle(
-	wordFace: Face, drawFace: Face, zBuffer: FloatArray
-) {
+private inline fun drawTriangle(face: Face, zBuffer: FloatArray) {
 	var minY = Int.MAX_VALUE
 	var maxY = Int.MIN_VALUE
+
+	val drawFace = Face(
+		arrayOf(
+			multiplyVertexByMatrix(face.vertices[0], displayMatrix),
+			multiplyVertexByMatrix(face.vertices[1], displayMatrix),
+			multiplyVertexByMatrix(face.vertices[2], displayMatrix)
+		), face.normals
+	)
+
 	for (vertex in drawFace.vertices) {
 		val y = vertex.y.toInt()
 		if (y < minY) {
@@ -110,8 +109,8 @@ private inline fun drawRasterTriangle(
 
 
 							// cчитаем diffuse
-							val normal = getCenteredVecForPoint(wordFace.normals, alpha, beta, gamma).normalize()
-							val pos = getCenteredVecForPoint(wordFace.vertices, alpha, beta, gamma)
+							val normal = getCenteredVecForPoint(face.normals, alpha, beta, gamma).normalize()
+							val pos = getCenteredVecForPoint(face.vertices, alpha, beta, gamma)
 							val view = (target - eye).normalize()
 							val lightPos = Vertex(5.0f, 5.0f, 5.0f)
 							val ray = (pos - lightPos).normalize()
