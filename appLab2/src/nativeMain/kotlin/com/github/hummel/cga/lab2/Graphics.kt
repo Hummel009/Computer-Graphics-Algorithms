@@ -41,22 +41,27 @@ private fun drawerThread(lpParameter: LPVOID?): DWORD {
 			val ray = (face.center - optiTemp).normalize()
 			val cosAngle = face.vertices[3].normalize() scalarMul ray
 
-			val vertexList = ArrayList<Vertex>()
-			face.vertices.mapTo(vertexList) { multiplyVertexByMatrix(it, displayMatrix) }
+			val drawFace = Face(
+				arrayOf(
+					multiplyVertexByMatrix(face.vertices[0], displayMatrix),
+					multiplyVertexByMatrix(face.vertices[1], displayMatrix),
+					multiplyVertexByMatrix(face.vertices[2], displayMatrix)
+				)
+			)
 
-			drawRasterTriangle(vertexList, zBuffer, cosAngle)
+			drawRasterTriangle(drawFace, zBuffer, cosAngle)
 		}
 	}
 	return 0u
 }
 
-private inline fun drawRasterTriangle(face: MutableList<Vertex>, zBuffer: FloatArray, cosAngle: Float) {
+private inline fun drawRasterTriangle(drawFace: Face, zBuffer: FloatArray, cosAngle: Float) {
 	val colorVal = (0xff * abs(cosAngle)).toInt().toByte()
 	val color = Color(colorVal, colorVal, colorVal)
 
 	var minY = Int.MAX_VALUE
 	var maxY = Int.MIN_VALUE
-	for (vertex in face) {
+	for (vertex in drawFace.vertices) {
 		val y = vertex.y.toInt()
 		if (y < minY) {
 			minY = y
@@ -73,8 +78,8 @@ private inline fun drawRasterTriangle(face: MutableList<Vertex>, zBuffer: FloatA
 			val xIntersections = IntArray(2)
 			var intersectionCount = 0
 			for (i in 0..2) {
-				val v0 = face[i]
-				val v1 = face[(i + 1) % 3]
+				val v0 = drawFace.vertices[i]
+				val v1 = drawFace.vertices[(i + 1) % 3]
 				val y0 = v0.y.toInt()
 				val y1 = v1.y.toInt()
 				if (y in y0 until y1 || y in y1 until y0) {
@@ -96,9 +101,9 @@ private inline fun drawRasterTriangle(face: MutableList<Vertex>, zBuffer: FloatA
 			if (intersectionCount == 2) {
 				for (x in xIntersections[0]..xIntersections[1]) {
 					if (x in 0 until width) {
-						val v0 = face[0]
-						val v1 = face[1]
-						val v2 = face[2]
+						val v0 = drawFace.vertices[0]
+						val v1 = drawFace.vertices[1]
+						val v2 = drawFace.vertices[2]
 						val alpha =
 							((v1.y - v2.y) * (x - v2.x) + (v2.x - v1.x) * (y - v2.y)) / ((v1.y - v2.y) * (v0.x - v2.x) + (v2.x - v1.x) * (v0.y - v2.y))
 						val beta =

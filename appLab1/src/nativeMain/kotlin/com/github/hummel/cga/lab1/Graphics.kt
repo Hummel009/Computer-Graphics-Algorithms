@@ -34,18 +34,12 @@ private fun drawerThread(lpParameter: LPVOID?): DWORD {
 	val parameter = lpParameter?.reinterpret<IntVar>()?.pointed?.value!!
 
 	for ((vertices) in splitFaces[parameter]) {
-		if (vertices.size >= 3) {
-			var previousVertex = multiplyVertexByMatrix(vertices.last(), displayMatrix)
-
-			for (i in vertices) {
-				val currentVertex = multiplyVertexByMatrix(i, displayMatrix)
-				drawLine(previousVertex, currentVertex, white)
-				previousVertex = currentVertex
-			}
-
-			val firstVertex = multiplyVertexByMatrix(vertices.first(), displayMatrix)
-			drawLine(previousVertex, firstVertex, white)
-		}
+		val drawVertex0 = multiplyVertexByMatrix(vertices[0], displayMatrix)
+		val drawVertex1 = multiplyVertexByMatrix(vertices[1], displayMatrix)
+		val drawVertex2 = multiplyVertexByMatrix(vertices[2], displayMatrix)
+		drawLine(drawVertex0, drawVertex1, white)
+		drawLine(drawVertex1, drawVertex2, white)
+		drawLine(drawVertex2, drawVertex0, white)
 	}
 	return 0u
 }

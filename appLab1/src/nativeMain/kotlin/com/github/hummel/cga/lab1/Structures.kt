@@ -30,7 +30,17 @@ data class Vertex(var x: Float, var y: Float, var z: Float, var w: Float = 1.0f)
 }
 
 data class Face(
-	val vertices: MutableList<Vertex>
-)
+	val vertices: Array<Vertex>
+) {
+	override fun equals(other: Any?): Boolean {
+		if (this === other) return true
+
+		other as Face
+
+		return vertices.contentEquals(other.vertices)
+	}
+
+	override fun hashCode(): Int = vertices.contentHashCode()
+}
 
 data class Color(val red: Byte, val green: Byte, val blue: Byte)
