@@ -43,9 +43,6 @@ private fun drawerThread(lpParameter: LPVOID?): DWORD {
 }
 
 private inline fun drawTriangle(face: Face, zBuffer: FloatArray) {
-	var minY = Int.MAX_VALUE
-	var maxY = Int.MIN_VALUE
-
 	val drawFace = Face(
 		arrayOf(
 			multiplyVertexByMatrix(face.vertices[0], displayMatrix),
@@ -53,6 +50,9 @@ private inline fun drawTriangle(face: Face, zBuffer: FloatArray) {
 			multiplyVertexByMatrix(face.vertices[2], displayMatrix)
 		), face.normals
 	)
+
+	var minY = Int.MAX_VALUE
+	var maxY = Int.MIN_VALUE
 
 	for (vertex in drawFace.vertices) {
 		val y = vertex.y.toInt()
