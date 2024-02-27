@@ -92,5 +92,5 @@ private fun addFace(array: Array<String>) {
 		}
 	}
 
-	faces.add(Face(vs, vns))
+	faces.add(Face(vs.toTypedArray(), vns.toTypedArray()))
 }

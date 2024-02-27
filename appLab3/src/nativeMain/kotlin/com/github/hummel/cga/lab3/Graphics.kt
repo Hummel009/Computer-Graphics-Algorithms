@@ -32,13 +32,18 @@ fun renderObject() {
 	}
 }
 
-private val optiTemp: Vertex = eye + up
 private fun drawerThread(lpParameter: LPVOID?): DWORD {
 	val parameter = lpParameter?.reinterpret<IntVar>()?.pointed?.value!!
 
 	for (face in splitFaces[parameter]) {
-		val drawFace = Face(mutableListOf(), face.normals)
-		face.vertices.mapTo(drawFace.vertices) { multiplyVertexByMatrix(it, displayMatrix) }
+		val drawFace = Face(
+			arrayOf(
+				multiplyVertexByMatrix(face.vertices[0], displayMatrix),
+				multiplyVertexByMatrix(face.vertices[1], displayMatrix),
+				multiplyVertexByMatrix(face.vertices[2], displayMatrix)
+			),
+			face.normals
+		)
 
 		drawRasterTriangle(face, drawFace, zBuffer)
 	}
@@ -133,7 +138,7 @@ private inline fun drawRasterTriangle(
 	}
 }
 
-inline fun getCenteredVecForPoint(vertices: MutableList<Vertex>, alpha: Float, beta: Float, gamma: Float): Vertex =
+inline fun getCenteredVecForPoint(vertices: Array<Vertex>, alpha: Float, beta: Float, gamma: Float): Vertex =
 	vertices[0] * alpha + vertices[1] * beta + vertices[2] * gamma
 
 private inline fun setPixel(x: Int, y: Int, color: Color) {
