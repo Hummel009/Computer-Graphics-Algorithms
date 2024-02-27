@@ -111,13 +111,13 @@ private inline fun drawTriangle(face: Face) {
 							zBuffer[x * height + y] = zFragment
 
 							// cчитаем diffuse
-							val normal = face.getCenteredVecForNormals(alpha, beta, gamma)
+							val normal = face.getCenteredVecForNormals(alpha, beta, gamma).normalize()
 							val pos = face.getCenteredVecForVertices(alpha, beta, gamma)
 							val ray = (pos - lightPos).normalize()
-							val diffuse = normal scalarMul ray * 0.2f
+							val diffuse = (normal scalarMul ray) * 0.2f
 
 							// считаем specular
-							val refr = ray - (normal * 2.0f * (normal scalarMul ray))
+							val refr = ray - ((normal * 2.0f) * (normal scalarMul ray))
 							val specular = max(0.0f, (refr scalarMul view).pow(2.0f) * 0.8f)
 
 							var colorVal = (0xff * abs(diffuse + specular)).toInt()

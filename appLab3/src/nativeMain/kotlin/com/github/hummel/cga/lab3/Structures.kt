@@ -48,7 +48,7 @@ data class Face(val vertices: Array<Vertex>, val normals: Array<Vertex>) {
 	}
 
 	inline fun getCenteredVecForNormals(alpha: Float, beta: Float, gamma: Float): Vertex =
-		(normals[0] * alpha + normals[1] * beta + normals[2] * gamma).normalize()
+		(normals[0] * alpha + normals[1] * beta + normals[2] * gamma)
 
 	inline fun getCenteredVecForVertices(alpha: Float, beta: Float, gamma: Float): Vertex =
 		vertices[0] * alpha + vertices[1] * beta + vertices[2] * gamma
