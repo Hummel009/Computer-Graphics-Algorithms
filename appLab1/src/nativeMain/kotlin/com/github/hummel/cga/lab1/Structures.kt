@@ -40,3 +40,5 @@ data class Face(val vertices: Array<Vertex>) {
 
 	override fun hashCode(): Int = vertices.contentHashCode()
 }
+
+data class Color(val red: Byte, val green: Byte, val blue: Byte)

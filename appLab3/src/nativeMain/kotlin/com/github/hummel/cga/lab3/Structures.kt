@@ -53,3 +53,5 @@ data class Face(val vertices: Array<Vertex>, val normals: Array<Vertex>) {
 	inline fun getCenteredVecForVertices(alpha: Float, beta: Float, gamma: Float): Vertex =
 		vertices[0] * alpha + vertices[1] * beta + vertices[2] * gamma
 }
+
+data class Color(val red: Byte, val green: Byte, val blue: Byte)

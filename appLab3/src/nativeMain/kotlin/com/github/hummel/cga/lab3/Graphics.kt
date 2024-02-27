@@ -121,11 +121,11 @@ private inline fun drawTriangle(face: Face) {
 							val specular = max(0.0f, (refr scalarMul view).pow(2.0f) * 0.8f)
 
 							var colorVal = (0xff * abs(diffuse + specular)).toInt()
-							if (colorVal > 0xff) {
-								colorVal = 0xff
-							}
+							if (colorVal > 0xff) colorVal = 0xff
 
-							setPixel(x, y, colorVal.toByte())
+							val color = Color(colorVal.toByte(), colorVal.toByte(), colorVal.toByte())
+
+							setPixel(x, y, color)
 						}
 					}
 				}
@@ -134,11 +134,11 @@ private inline fun drawTriangle(face: Face) {
 	}
 }
 
-private inline fun setPixel(x: Int, y: Int, colorVal: Byte) {
+private inline fun setPixel(x: Int, y: Int, color: Color) {
 	val offset = (y * width + x) shl 2
-	bitmapData[offset + 0] = colorVal
-	bitmapData[offset + 1] = colorVal
-	bitmapData[offset + 2] = colorVal
+	bitmapData[offset + 0] = color.blue
+	bitmapData[offset + 1] = color.green
+	bitmapData[offset + 2] = color.red
 	bitmapData[offset + 3] = -1
 }
 

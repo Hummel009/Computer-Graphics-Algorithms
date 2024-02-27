@@ -6,6 +6,7 @@ import kotlin.math.abs
 
 private val chunks: Int = faces.size / 1000
 private val splitFaces: Array<List<Face>> = split(faces, chunks)
+private val white: Color = Color(-1, -1, -1)
 
 private val times: MutableList<Long> = ArrayList()
 fun renderObject() {
@@ -48,12 +49,12 @@ private inline fun drawTriangle(face: Face) {
 		)
 	)
 
-	drawLine(drawFace.vertices[0], drawFace.vertices[1], -1)
-	drawLine(drawFace.vertices[1], drawFace.vertices[2], -1)
-	drawLine(drawFace.vertices[2], drawFace.vertices[0], -1)
+	drawLine(drawFace.vertices[0], drawFace.vertices[1], white)
+	drawLine(drawFace.vertices[1], drawFace.vertices[2], white)
+	drawLine(drawFace.vertices[2], drawFace.vertices[0], white)
 }
 
-private inline fun drawLine(v1: Vertex, v2: Vertex, colorVal: Byte) {
+private inline fun drawLine(v1: Vertex, v2: Vertex, color: Color) {
 	var x1 = v1.x.toInt()
 	val x2 = v2.x.toInt()
 	var y1 = v1.y.toInt()
@@ -67,7 +68,7 @@ private inline fun drawLine(v1: Vertex, v2: Vertex, colorVal: Byte) {
 
 	while (x1 != x2 || y1 != y2) {
 		if (x1 in 0 until width && y1 in 0 until height) {
-			setPixel(x1, y1, colorVal)
+			setPixel(x1, y1, color)
 		}
 
 		val err2 = 2 * err
@@ -84,11 +85,11 @@ private inline fun drawLine(v1: Vertex, v2: Vertex, colorVal: Byte) {
 	}
 }
 
-private inline fun setPixel(x: Int, y: Int, colorVal: Byte) {
+private inline fun setPixel(x: Int, y: Int, color: Color) {
 	val offset = (y * width + x) shl 2
-	bitmapData[offset + 0] = colorVal
-	bitmapData[offset + 1] = colorVal
-	bitmapData[offset + 2] = colorVal
+	bitmapData[offset + 0] = color.blue
+	bitmapData[offset + 1] = color.green
+	bitmapData[offset + 2] = color.red
 	bitmapData[offset + 3] = -1
 }
 
