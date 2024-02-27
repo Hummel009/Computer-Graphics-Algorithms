@@ -41,12 +41,17 @@ private fun drawerThread(lpParameter: LPVOID?): DWORD {
 }
 
 private inline fun drawTriangle(face: Face) {
-	val drawVertex0 = multiplyVertexByMatrix(face.vertices[0], displayMatrix)
-	val drawVertex1 = multiplyVertexByMatrix(face.vertices[1], displayMatrix)
-	val drawVertex2 = multiplyVertexByMatrix(face.vertices[2], displayMatrix)
-	drawLine(drawVertex0, drawVertex1, white)
-	drawLine(drawVertex1, drawVertex2, white)
-	drawLine(drawVertex2, drawVertex0, white)
+	val drawFace = Face(
+		arrayOf(
+			multiplyVertexByMatrix(face.vertices[0], displayMatrix),
+			multiplyVertexByMatrix(face.vertices[1], displayMatrix),
+			multiplyVertexByMatrix(face.vertices[2], displayMatrix)
+		)
+	)
+
+	drawLine(drawFace.vertices[0], drawFace.vertices[1], white)
+	drawLine(drawFace.vertices[1], drawFace.vertices[2], white)
+	drawLine(drawFace.vertices[2], drawFace.vertices[0], white)
 }
 
 private inline fun drawLine(v1: Vertex, v2: Vertex, color: Color) {
