@@ -106,8 +106,6 @@ private inline fun drawTriangle(face: Face) {
 
 						// Проверка z-буфера
 						if (zBuffer[x * height + y] > zFragment) {
-
-
 							// cчитаем diffuse
 							val normal = getCenteredVecForPoint(face.normals, alpha, beta, gamma).normalize()
 							val pos = getCenteredVecForPoint(face.vertices, alpha, beta, gamma)
