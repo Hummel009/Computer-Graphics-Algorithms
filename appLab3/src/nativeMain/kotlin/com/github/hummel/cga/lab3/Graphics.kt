@@ -36,13 +36,13 @@ private fun drawerThread(lpParameter: LPVOID?): DWORD {
 	val parameter = lpParameter?.reinterpret<IntVar>()?.pointed?.value!!
 
 	for (face in splitFaces[parameter]) {
-		drawTriangle(face, zBuffer)
+		drawTriangle(face)
 	}
 
 	return 0u
 }
 
-private inline fun drawTriangle(face: Face, zBuffer: FloatArray) {
+private inline fun drawTriangle(face: Face) {
 	val drawFace = Face(
 		arrayOf(
 			multiplyVertexByMatrix(face.vertices[0], displayMatrix),
