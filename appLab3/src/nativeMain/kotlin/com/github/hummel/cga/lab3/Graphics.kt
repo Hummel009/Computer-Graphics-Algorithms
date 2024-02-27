@@ -107,8 +107,8 @@ private inline fun drawTriangle(face: Face) {
 						// Проверка z-буфера
 						if (zBuffer[x * height + y] > zFragment) {
 							// cчитаем diffuse
-							val normal = getCenteredVecForPoint(face.normals, alpha, beta, gamma).normalize()
-							val pos = getCenteredVecForPoint(face.vertices, alpha, beta, gamma)
+							val normal = face.getCenteredVecForNormals(alpha, beta, gamma)
+							val pos = face.getCenteredVecForVertices(alpha, beta, gamma)
 							val view = (target - eye).normalize()
 							val lightPos = Vertex(5.0f, 5.0f, 5.0f)
 							val ray = (pos - lightPos).normalize()
@@ -134,9 +134,6 @@ private inline fun drawTriangle(face: Face) {
 		}
 	}
 }
-
-inline fun getCenteredVecForPoint(vertices: Array<Vertex>, alpha: Float, beta: Float, gamma: Float): Vertex =
-	vertices[0] * alpha + vertices[1] * beta + vertices[2] * gamma
 
 private inline fun setPixel(x: Int, y: Int, color: Color) {
 	val offset = (y * width + x) shl 2

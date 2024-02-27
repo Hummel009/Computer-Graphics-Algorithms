@@ -30,18 +30,8 @@ data class Vertex(var x: Float, var y: Float, var z: Float, var w: Float = 1.0f)
 }
 
 data class Face(
-	val vertices: Array<Vertex>,
-	val normals: Array<Vertex>
+	val vertices: Array<Vertex>, val normals: Array<Vertex>
 ) {
-	val center: Vertex
-
-	init {
-		var sum = Vertex(0.0f, 0.0f, 0.0f)
-		for (i in 0..2) {
-			sum += vertices[i]
-		}
-		center = sum / 3.0f
-	}
 
 	override fun equals(other: Any?): Boolean {
 		if (this === other) return true
@@ -50,7 +40,6 @@ data class Face(
 
 		if (!vertices.contentEquals(other.vertices)) return false
 		if (!normals.contentEquals(other.normals)) return false
-		if (center != other.center) return false
 
 		return true
 	}
@@ -58,9 +47,14 @@ data class Face(
 	override fun hashCode(): Int {
 		var result = vertices.contentHashCode()
 		result = 31 * result + normals.contentHashCode()
-		result = 31 * result + center.hashCode()
 		return result
 	}
+
+	inline fun getCenteredVecForNormals(alpha: Float, beta: Float, gamma: Float): Vertex =
+		(normals[0] * alpha + normals[1] * beta + normals[2] * gamma).normalize()
+
+	inline fun getCenteredVecForVertices(alpha: Float, beta: Float, gamma: Float): Vertex =
+		vertices[0] * alpha + vertices[1] * beta + vertices[2] * gamma
 }
 
 data class Color(val red: Byte, val green: Byte, val blue: Byte)

@@ -30,7 +30,6 @@ fun renderObject() {
 	}
 }
 
-private val optiTemp: Vertex = eye + up
 private fun drawerThread(lpParameter: LPVOID?): DWORD {
 	val parameter = lpParameter?.reinterpret<IntVar>()?.pointed?.value!!
 
@@ -41,9 +40,11 @@ private fun drawerThread(lpParameter: LPVOID?): DWORD {
 	return 0u
 }
 
+private val optiTemp: Vertex = eye + up
 private inline fun drawTriangle(face: Face) {
 	val viewDir = (face.vertices[0] - eye).normalize()
 	val cos = face.vertices[3] scalarMul viewDir
+
 	if (cos > 0) {
 		val ray = (face.center - optiTemp).normalize()
 		val cosAngle = face.vertices[3].normalize() scalarMul ray
