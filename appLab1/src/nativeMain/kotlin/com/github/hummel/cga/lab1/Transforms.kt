@@ -71,7 +71,6 @@ fun rotateVerticesAxisZ(angle: Float = 0.2f) {
 	applyTransform(matrixRotateZ)
 }
 
-private val times: MutableList<Long> = ArrayList()
 private inline fun applyTransform(matrix: Array<FloatArray>) {
 	for ((vertices) in faces) {
 		for (i in vertices.indices) {
