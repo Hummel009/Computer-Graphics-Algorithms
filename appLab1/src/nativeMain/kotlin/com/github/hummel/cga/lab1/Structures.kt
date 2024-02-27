@@ -29,9 +29,7 @@ data class Vertex(var x: Float, var y: Float, var z: Float, var w: Float = 1.0f)
 	inline fun normalize(): Vertex = Vertex(x / magnitude, y / magnitude, z / magnitude)
 }
 
-data class Face(
-	val vertices: Array<Vertex>
-) {
+data class Face(val vertices: Array<Vertex>) {
 	override fun equals(other: Any?): Boolean {
 		if (this === other) return true
 
