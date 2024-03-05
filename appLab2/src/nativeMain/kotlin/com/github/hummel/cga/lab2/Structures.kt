@@ -41,13 +41,21 @@ data class Face(val vertices: Array<Vertex>, var normal: Vertex) {
 	}
 
 	override fun equals(other: Any?): Boolean {
-		if (this === other) return true
+		if (this === other) {
+			return true
+		}
 
 		other as Face
 
-		if (!vertices.contentEquals(other.vertices)) return false
-		if (normal != other.normal) return false
-		if (center != other.center) return false
+		if (!vertices.contentEquals(other.vertices)) {
+			return false
+		}
+		if (normal != other.normal) {
+			return false
+		}
+		if (center != other.center) {
+			return false
+		}
 
 		return true
 	}
