@@ -31,7 +31,9 @@ data class Vertex(var x: Float, var y: Float, var z: Float, var w: Float = 1.0f)
 
 data class Face(val vertices: Array<Vertex>) {
 	override fun equals(other: Any?): Boolean {
-		if (this === other) return true
+		if (this === other) {
+			return true
+		}
 
 		other as Face
 

@@ -3,32 +3,6 @@ package com.github.hummel.cga.lab1
 import kotlin.math.cos
 import kotlin.math.sin
 
-fun translateVertices(shiftX: Float, shiftY: Float) {
-	val vertex = Vertex(shiftX, shiftY, 0.0f)
-
-	val matrix = arrayOf(
-		floatArrayOf(1.0f, 0.0f, 0.0f, vertex.x),
-		floatArrayOf(0.0f, 1.0f, 0.0f, vertex.y),
-		floatArrayOf(0.0f, 0.0f, 1.0f, vertex.z),
-		floatArrayOf(0.0f, 0.0f, 0.0f, 1.0f)
-	)
-
-	applyTransform(matrix)
-}
-
-fun scaleVertices(scale: Float) {
-	val vertex = Vertex(scale, scale, scale)
-
-	val matrix = arrayOf(
-		floatArrayOf(vertex.x, 0.0f, 0.0f, 0.0f),
-		floatArrayOf(0.0f, vertex.y, 0.0f, 0.0f),
-		floatArrayOf(0.0f, 0.0f, vertex.z, 0.0f),
-		floatArrayOf(0.0f, 0.0f, 0.0f, 1.0f)
-	)
-
-	applyTransform(matrix)
-}
-
 fun rotateVerticesAxisX(angle: Float = 0.2f) {
 	val cos = cos(angle)
 	val sin = sin(angle)
