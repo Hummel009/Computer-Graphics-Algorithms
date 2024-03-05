@@ -121,7 +121,6 @@ private inline fun drawTriangle(face: Face) {
 			}
 		}
 	}
-
 }
 
 private inline fun getFromLighting(face: Face): Color {
