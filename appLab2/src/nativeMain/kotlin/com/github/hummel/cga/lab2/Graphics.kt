@@ -109,14 +109,10 @@ private inline fun drawTriangle(face: Face) {
 						val gamma = 1 - alpha - beta
 						val zFragment = alpha * v0.z + beta * v1.z + gamma * v2.z
 
-						// Проверка z-буфера
 						if (zBuffer[x * height + y] > zFragment) {
 							zBuffer[x * height + y] = zFragment
 
-							val ray = (face.center - optiTemp).normalize()
-							val cosAngle = face.normal scalarMul ray
-							val colorVal = (0xff * abs(cosAngle)).toInt().toByte()
-							val color = Color(colorVal, colorVal, colorVal)
+							val color = getFromLighting(face)
 
 							setPixel(x, y, color)
 						}
@@ -126,6 +122,15 @@ private inline fun drawTriangle(face: Face) {
 		}
 	}
 
+}
+
+private inline fun getFromLighting(face: Face): Color {
+	val ray = (face.center - optiTemp).normalize()
+	val cosAngle = face.normal scalarMul ray
+	val colorVal = (0xff * abs(cosAngle)).toInt().toByte()
+	val color = Color(colorVal, colorVal, colorVal)
+
+	return color
 }
 
 private inline fun setPixel(x: Int, y: Int, color: Color) {

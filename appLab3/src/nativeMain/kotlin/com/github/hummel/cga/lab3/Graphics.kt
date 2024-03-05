@@ -104,24 +104,10 @@ private inline fun drawTriangle(face: Face) {
 						val gamma = 1 - alpha - beta
 						val zFragment = alpha * v0.z + beta * v1.z + gamma * v2.z
 
-						// Проверка z-буфера
 						if (zBuffer[x * height + y] > zFragment) {
 							zBuffer[x * height + y] = zFragment
 
-							// cчитаем diffuse
-							val normal = face.getCenteredVecForNormals(alpha, beta, gamma).normalize()
-							val pos = face.getCenteredVecForVertices(alpha, beta, gamma)
-							val ray = (pos - lightPos).normalize()
-							val diffuse = (normal scalarMul ray) * 0.2f
-
-							// считаем specular
-							val refr = ray - ((normal * 2.0f) * (normal scalarMul ray))
-							val specular = max(0.0f, (refr scalarMul view).pow(2.0f) * 0.8f)
-
-							var colorVal = (0xff * abs(diffuse + specular)).toInt()
-							if (colorVal > 0xff) colorVal = 0xff
-
-							val color = Color(colorVal.toByte(), colorVal.toByte(), colorVal.toByte())
+							val color = getFromLighting(face, alpha, beta, gamma)
 
 							setPixel(x, y, color)
 						}
@@ -130,6 +116,28 @@ private inline fun drawTriangle(face: Face) {
 			}
 		}
 	}
+}
+
+private inline fun getFromLighting(
+	face: Face, alpha: Float, beta: Float, gamma: Float
+): Color {
+	// cчитаем diffuse
+	val normal = face.getCenteredVecForNormals(alpha, beta, gamma).normalize()
+	val pos = face.getCenteredVecForVertices(alpha, beta, gamma)
+	val ray = (pos - lightPos).normalize()
+	val diffuse = (normal scalarMul ray) * 0.2f
+
+	// считаем specular
+	val refr = ray - ((normal * 2.0f) * (normal scalarMul ray))
+	val specular = max(0.0f, (refr scalarMul view).pow(2.0f) * 0.8f)
+
+	var colorVal = (0xff * abs(diffuse + specular)).toInt().toByte()
+	if (colorVal > 0xff) {
+		colorVal = 0xff.toByte()
+	}
+
+	val color = Color(colorVal, colorVal, colorVal)
+	return color
 }
 
 private inline fun setPixel(x: Int, y: Int, color: Color) {
