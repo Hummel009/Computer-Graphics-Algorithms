@@ -127,7 +127,9 @@ private inline fun drawTriangle(face: Face) {
 private inline fun getFromLighting(face: Face): Color {
 	val ray = (face.center - optiTemp).normalize()
 	val cosAngle = face.normal scalarMul ray
+
 	val colorVal = (0xff * abs(cosAngle)).toInt().toByte()
+
 	val color = Color(colorVal, colorVal, colorVal)
 
 	return color

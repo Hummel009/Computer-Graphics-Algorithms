@@ -118,9 +118,7 @@ private inline fun drawTriangle(face: Face) {
 	}
 }
 
-private inline fun getFromLighting(
-	face: Face, alpha: Float, beta: Float, gamma: Float
-): Color {
+private inline fun getFromLighting(face: Face, alpha: Float, beta: Float, gamma: Float): Color {
 	// cчитаем diffuse
 	val normal = face.getCenteredVecForNormals(alpha, beta, gamma).normalize()
 	val pos = face.getCenteredVecForVertices(alpha, beta, gamma)
@@ -137,6 +135,7 @@ private inline fun getFromLighting(
 	}
 
 	val color = Color(colorVal, colorVal, colorVal)
+
 	return color
 }
 
