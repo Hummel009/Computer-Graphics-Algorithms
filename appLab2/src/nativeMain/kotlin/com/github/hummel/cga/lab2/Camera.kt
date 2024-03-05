@@ -7,6 +7,8 @@ var eye: Vertex = Vertex(0.0f, 0.0f, 10.0f)
 var target: Vertex = Vertex(0.0f, 0.0f, 0.0f)
 var up: Vertex = Vertex(0.0f, 1.0f, 0.0f)
 
+val optiTemp: Vertex = eye + up
+
 private var fov: Float = PI.toFloat() / 4.0f
 private var aspect = width.toFloat() / height.toFloat()
 

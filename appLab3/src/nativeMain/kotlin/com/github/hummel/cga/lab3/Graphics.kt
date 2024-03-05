@@ -42,8 +42,6 @@ private fun drawerThread(lpParameter: LPVOID?): DWORD {
 	return 0u
 }
 
-private val view: Vertex = (target - eye).normalize()
-private val lightPos = Vertex(5.0f, 5.0f, 5.0f)
 private inline fun drawTriangle(face: Face) {
 	val drawFace = Face(
 		arrayOf(
