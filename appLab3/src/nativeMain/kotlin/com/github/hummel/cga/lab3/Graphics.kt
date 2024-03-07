@@ -6,7 +6,7 @@ import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.pow
 
-private val chunks: Int = faces.size / 100
+private val chunks: Int = if (faces.size / 1000 == 0) 2 else faces.size / 1000
 
 private val splitFaces: Array<List<Face>> = split(faces, chunks)
 private val zBuffer: FloatArray = FloatArray(width * height)
