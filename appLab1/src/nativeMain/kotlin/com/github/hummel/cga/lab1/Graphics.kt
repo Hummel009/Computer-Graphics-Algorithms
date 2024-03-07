@@ -4,7 +4,7 @@ import kotlinx.cinterop.*
 import platform.windows.*
 import kotlin.math.abs
 
-private val chunks: Int = if (faces.size / 1000 == 0) faces.size / 1000 else 1
+private val chunks: Int = if (faces.size / 1000 == 0) 1 else faces.size / 1000
 
 private val splitFaces: Array<List<Face>> = split(faces, chunks)
 private val white: Color = Color(-1, -1, -1)
