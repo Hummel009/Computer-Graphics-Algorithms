@@ -15,8 +15,13 @@ const val height: Int = 580
 var faces: MutableList<Face> = ArrayList()
 var bitmapData: ByteArray = ByteArray(width * height * 4)
 
+lateinit var name: String
+
 fun main() {
-	parse("tie.obj")
+	print("Enter model name (tie|mace): ")
+	name = readln()
+
+	parse("$name.obj")
 
 	memScoped {
 		val className = "Teapot"

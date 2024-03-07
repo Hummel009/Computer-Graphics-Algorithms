@@ -21,6 +21,7 @@ kotlin {
 				entryPoint("com.github.hummel.cga.lab3.main")
 				linkerOpts("-lwinmm")
 				baseName = "${project.name}-${project.version}"
+				runTask?.standardInput = System.`in`
 			}
 		}
 	}
