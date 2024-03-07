@@ -4,7 +4,8 @@ import kotlinx.cinterop.*
 import platform.windows.*
 import kotlin.math.abs
 
-private val chunks: Int = faces.size / 100 + 2
+private val chunks: Int = faces.size / 100
+
 private val splitFaces: Array<List<Face>> = split(faces, chunks)
 private val zBuffer: FloatArray = FloatArray(width * height)
 
