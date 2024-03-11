@@ -8,7 +8,7 @@ var target: Vertex = Vertex(0.0f, 0.0f, 0.0f)
 var up: Vertex = Vertex(0.0f, 1.0f, 0.0f)
 
 val view: Vertex = (target - eye).normalize()
-val lightPos: Vertex = Vertex(5.0f, 5.0f, 5.0f)
+val lightPos: Vertex = eye + up
 
 private var fov: Float = PI.toFloat() / 4.0f
 private var aspect = width.toFloat() / height.toFloat()

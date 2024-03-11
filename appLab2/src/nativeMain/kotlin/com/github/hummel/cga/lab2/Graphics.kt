@@ -43,9 +43,9 @@ private fun drawerThread(lpParameter: LPVOID?): DWORD {
 
 private inline fun drawTriangle(face: Face) {
 	val viewDir = (face.vertices[0] - eye).normalize()
-	val cos = face.normal scalarMul viewDir
+	val cosAngle = face.normal scalarMul viewDir
 
-	if (cos <= 0) {
+	if (cosAngle <= 0) {
 		return
 	}
 
@@ -125,7 +125,7 @@ private inline fun drawTriangle(face: Face) {
 }
 
 private inline fun getFromLighting(face: Face): Color {
-	val ray = (face.center - optiTemp).normalize()
+	val ray = (face.center - lightPos).normalize()
 	val cosAngle = face.normal scalarMul ray
 
 	val colorVal = (0xff * abs(cosAngle)).toInt().toByte()
