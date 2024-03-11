@@ -18,7 +18,7 @@ var bitmapData: ByteArray = ByteArray(width * height * 4)
 lateinit var name: String
 
 fun main() {
-	print("Enter model name (tie|mace): ")
+	print("Enter model name (tie|mace|knight): ")
 	name = readln()
 
 	parse("$name.obj")

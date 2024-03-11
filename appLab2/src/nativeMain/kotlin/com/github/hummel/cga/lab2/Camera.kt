@@ -3,7 +3,14 @@ package com.github.hummel.cga.lab2
 import kotlin.math.PI
 import kotlin.math.tan
 
-var eye: Vertex = Vertex(0.0f, 0.0f, if (name == "tie") 10.0f else 100.0f)
+var eye: Vertex = Vertex(
+	0.0f, 0.0f, when (name) {
+		"tie" -> 10.0f
+		"knight" -> 30.0f
+		"mace" -> 100.0f
+		else -> 0.0f
+	}
+)
 var target: Vertex = Vertex(0.0f, 0.0f, 0.0f)
 var up: Vertex = Vertex(0.0f, 1.0f, 0.0f)
 

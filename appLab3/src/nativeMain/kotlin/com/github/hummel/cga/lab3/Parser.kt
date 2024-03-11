@@ -92,5 +92,10 @@ private fun addFace(array: Array<String>) {
 		}
 	}
 
-	faces.add(Face(vs.toTypedArray(), vns.toTypedArray()))
+	if (vs.size == 4) {
+		faces.add(Face(arrayOf(vs[0], vs[1], vs[2]), vns.toTypedArray()))
+		faces.add(Face(arrayOf(vs[2], vs[3], vs[0]), vns.toTypedArray()))
+	} else {
+		faces.add(Face(vs.toTypedArray(), vns.toTypedArray()))
+	}
 }

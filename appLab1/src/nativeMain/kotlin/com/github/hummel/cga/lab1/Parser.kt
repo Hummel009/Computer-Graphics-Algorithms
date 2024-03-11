@@ -50,5 +50,10 @@ private fun addFace(array: Array<String>) {
 		}
 	}
 
-	faces.add(Face(vs.toTypedArray()))
+	if (vs.size == 4) {
+		faces.add(Face(arrayOf(vs[0], vs[1], vs[2])))
+		faces.add(Face(arrayOf(vs[2], vs[3], vs[0])))
+	} else {
+		faces.add(Face(vs.toTypedArray()))
+	}
 }
