@@ -14,7 +14,6 @@ var eye: Vertex = Vertex(
 var target: Vertex = Vertex(0.0f, 0.0f, 0.0f)
 var up: Vertex = Vertex(0.0f, 1.0f, 0.0f)
 
-val view: Vertex = (target - eye).normalize()
 val lightPos: Vertex = eye + up
 
 private var fov: Float = PI.toFloat() / 4.0f

@@ -128,6 +128,7 @@ private inline fun getFromLighting(face: Face, alpha: Float, beta: Float, gamma:
 
 	// считаем specular
 	val refr = ray - ((normal * 2.0f) * (normal scalarMul ray))
+	val view = (pos - eye).normalize()
 	val specular = max(0.0f, (refr scalarMul view).pow(2.0f) * 0.8f)
 
 	var colorVal = (0xff * abs(diffuse + specular)).toInt().toByte()

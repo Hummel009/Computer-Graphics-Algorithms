@@ -50,20 +50,9 @@ private fun addFace(array: Array<String>) {
 		}
 	}
 
-	if (vs.size == 4) {
-		val vec1 = vs[1] - vs[0]
-		val vec2 = vs[2] - vs[1]
-		val normal1 = (vec2 vectorMul vec1).normalize()
-		faces.add(Face(arrayOf(vs[0], vs[1], vs[2]), normal1))
+	val vec1 = vs[1] - vs[0]
+	val vec2 = vs[2] - vs[1]
+	val normal = (vec2 vectorMul vec1).normalize()
 
-		val vec3 = vs[3] - vs[2]
-		val vec4 = vs[0] - vs[3]
-		val normal2 = (vec4 vectorMul vec3).normalize()
-		faces.add(Face(arrayOf(vs[2], vs[3], vs[0]), normal2))
-	} else {
-		val vec1 = vs[1] - vs[0]
-		val vec2 = vs[2] - vs[1]
-		val normal = (vec2 vectorMul vec1).normalize()
-		faces.add(Face(vs.toTypedArray(), normal))
-	}
+	faces.add(Face(vs.toTypedArray(), normal))
 }
