@@ -3,7 +3,6 @@ package com.github.hummel.cga.lab3
 import kotlinx.cinterop.*
 import platform.windows.*
 import kotlin.math.abs
-import kotlin.math.max
 import kotlin.math.pow
 
 private const val chunks: Int = 8
@@ -119,19 +118,28 @@ private inline fun drawTriangle(face: Face) {
 	}
 }
 
+const val diffuseIntency: Float = 0.2f
+const val specularIntency: Float = 0.8f
+
 private inline fun getFromLighting(face: Face, alpha: Float, beta: Float, gamma: Float): Color {
-	// cчитаем diffuse
+	val point = face.getCenteredVecForVertices(alpha, beta, gamma)
 	val normal = face.getCenteredVecForNormals(alpha, beta, gamma).normalize()
-	val pos = face.getCenteredVecForVertices(alpha, beta, gamma)
-	val ray = (pos - lightPos).normalize()
-	val diffuse = (normal scalarMul ray) * 0.2f
 
-	// считаем specular
-	val refr = ray - ((normal * 2.0f) * (normal scalarMul ray))
-	val view = (pos - eye).normalize()
-	val specular = max(0.0f, (refr scalarMul view).pow(2.0f) * 0.8f)
+	val ray = (lightPos - point).normalize()
+	val cosAngle = normal scalarMul ray
 
-	var colorVal = (0xff * abs(diffuse + specular)).toInt().toByte()
+	val diffuse = abs(cosAngle) * diffuseIntency
+
+	val refr = ((normal * 2.0f) * cosAngle) - ray
+	val view = (eye - point).normalize()
+	val rdotv = refr scalarMul view
+
+	var specular = rdotv.pow(2.0f) * specularIntency
+	if (specular < 0.0f) {
+		specular = 0.0f
+	}
+
+	var colorVal = (0xff * (diffuse + specular)).toInt().toByte()
 	if (colorVal > 0xff) {
 		colorVal = 0xff.toByte()
 	}
