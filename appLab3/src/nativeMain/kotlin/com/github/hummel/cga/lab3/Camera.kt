@@ -6,7 +6,7 @@ import kotlin.math.tan
 var eye: Vertex = Vertex(
 	0.0f, 0.0f, when (name) {
 		"tie" -> 10.0f
-		"knight" -> 30.0f
+		"knight" -> 20.0f
 		"mace" -> 100.0f
 		else -> 0.0f
 	}
