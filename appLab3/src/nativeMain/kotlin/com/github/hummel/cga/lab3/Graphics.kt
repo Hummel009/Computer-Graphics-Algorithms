@@ -112,7 +112,7 @@ private inline fun drawTriangle(face: Face) {
 						if (zBuffer[x * height + y] > zFragment) {
 							zBuffer[x * height + y] = zFragment
 
-							val color = getFromLighting(face, alpha, beta, gamma)
+							val color = getFromLighting(face)
 
 							setPixel(x, y, color)
 						}
