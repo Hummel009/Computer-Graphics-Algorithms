@@ -46,12 +46,13 @@ fun rotateVerticesAxisZ(angle: Float = 0.2f) {
 }
 
 private inline fun applyTransform(matrix: Array<FloatArray>) {
-	for ((vertices, normals) in faces) {
-		for (i in vertices.indices) {
-			vertices[i] = multiplyVertexByMatrix(vertices[i], matrix)
+	for (face in faces) {
+		for (i in face.vertices.indices) {
+			face.vertices[i] = multiplyVertexByMatrix(face.vertices[i], matrix)
 		}
-		for (i in normals.indices) {
-			normals[i] = multiplyVertexByMatrix(normals[i], matrix)
+		for (i in face.normals.indices) {
+			face.normals[i] = multiplyVertexByMatrix(face.normals[i], matrix)
 		}
+		face.poliNormal = multiplyVertexByMatrix(face.poliNormal, matrix)
 	}
 }
