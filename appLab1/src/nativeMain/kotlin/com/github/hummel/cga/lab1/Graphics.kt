@@ -9,7 +9,6 @@ private const val chunks: Int = 8
 private val splitFaces: Array<List<Face>> = split(faces, chunks)
 private val white: Color = Color(-1, -1, -1)
 
-private val times: MutableList<Long> = ArrayList()
 fun renderObject() {
 	bitmapData.fill(0)
 
@@ -47,7 +46,7 @@ private inline fun drawTriangle(face: Face) {
 			multiplyVertexByMatrix(face.vertices[0], displayMatrix),
 			multiplyVertexByMatrix(face.vertices[1], displayMatrix),
 			multiplyVertexByMatrix(face.vertices[2], displayMatrix)
-		)
+		), face.normals, face.poliNormal
 	)
 
 	drawLine(drawFace.vertices[0], drawFace.vertices[1], white)

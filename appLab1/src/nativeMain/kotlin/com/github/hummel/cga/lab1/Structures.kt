@@ -17,6 +17,8 @@ data class Vertex(var x: Float, var y: Float, var z: Float, var w: Float = 1.0f)
 
 	inline operator fun plus(other: Vertex): Vertex = Vertex(x + other.x, y + other.y, z + other.z)
 
+	inline operator fun unaryMinus(): Vertex = Vertex(-x, -y, -z)
+
 	inline infix fun vectorMul(other: Vertex): Vertex {
 		val crossX = y * other.z - z * other.y
 		val crossY = z * other.x - x * other.z
@@ -29,7 +31,7 @@ data class Vertex(var x: Float, var y: Float, var z: Float, var w: Float = 1.0f)
 	inline fun normalize(): Vertex = Vertex(x / magnitude, y / magnitude, z / magnitude)
 }
 
-data class Face(val vertices: Array<Vertex>) {
+data class Face(val vertices: Array<Vertex>, val normals: Array<Vertex>, var poliNormal: Vertex) {
 	override fun equals(other: Any?): Boolean {
 		if (this === other) {
 			return true
@@ -37,10 +39,25 @@ data class Face(val vertices: Array<Vertex>) {
 
 		other as Face
 
-		return vertices.contentEquals(other.vertices)
+		if (!vertices.contentEquals(other.vertices)) {
+			return false
+		}
+		if (!normals.contentEquals(other.normals)) {
+			return false
+		}
+		if (poliNormal != other.poliNormal) {
+			return false
+		}
+
+		return true
 	}
 
-	override fun hashCode(): Int = vertices.contentHashCode()
+	override fun hashCode(): Int {
+		var result = vertices.contentHashCode()
+		result = 31 * result + normals.contentHashCode()
+		result = 31 * result + poliNormal.hashCode()
+		return result
+	}
 }
 
 data class Color(val red: Byte, val green: Byte, val blue: Byte)
