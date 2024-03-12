@@ -33,3 +33,9 @@ inline fun getFromLighting(face: Face, alpha: Float, beta: Float, gamma: Float):
 
 	return color
 }
+
+inline fun Face.getCenteredVecForNormals(alpha: Float, beta: Float, gamma: Float): Vertex =
+	(normals[0] * alpha + normals[1] * beta + normals[2] * gamma)
+
+inline fun Face.getCenteredVecForVertices(alpha: Float, beta: Float, gamma: Float): Vertex =
+	vertices[0] * alpha + vertices[1] * beta + vertices[2] * gamma
