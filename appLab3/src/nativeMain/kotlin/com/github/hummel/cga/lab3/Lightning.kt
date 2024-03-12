@@ -1,6 +1,6 @@
 package com.github.hummel.cga.lab3
 
-inline fun getFromLighting(face: Face): Color {
+inline fun getFromLighting(face: Face, alpha: Float, beta: Float, gamma: Float): Color {
 	val point = face.vertices[0]
 	val normal = face.poliNormal
 
