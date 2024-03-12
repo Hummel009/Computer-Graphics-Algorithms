@@ -92,5 +92,9 @@ private fun addFace(array: Array<String>) {
 		}
 	}
 
-	faces.add(Face(vs.toTypedArray(), vns.toTypedArray()))
+	var normal = Vertex(0.0f, 0.0f, 0.0f)
+
+	vns.forEach { normal += it }
+
+	faces.add(Face(vs.toTypedArray(), vns.toTypedArray(), normal))
 }

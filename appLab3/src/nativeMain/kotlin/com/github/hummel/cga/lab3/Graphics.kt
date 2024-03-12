@@ -2,8 +2,6 @@ package com.github.hummel.cga.lab3
 
 import kotlinx.cinterop.*
 import platform.windows.*
-import kotlin.math.abs
-import kotlin.math.pow
 
 private const val chunks: Int = 8
 
@@ -43,12 +41,19 @@ private fun drawerThread(lpParameter: LPVOID?): DWORD {
 }
 
 private inline fun drawTriangle(face: Face) {
+	val viewDir = -face.vertices[0] + eye
+	val cosAngle = (face.poliNormal / face.normals.size.toFloat()) scalarMul viewDir
+
+	if (cosAngle <= 0) {
+		return
+	}
+
 	val drawFace = Face(
 		arrayOf(
 			multiplyVertexByMatrix(face.vertices[0], displayMatrix),
 			multiplyVertexByMatrix(face.vertices[1], displayMatrix),
 			multiplyVertexByMatrix(face.vertices[2], displayMatrix)
-		), face.normals
+		), face.normals, face.poliNormal
 	)
 
 	var minY = Int.MAX_VALUE
