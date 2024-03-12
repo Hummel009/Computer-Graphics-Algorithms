@@ -2,10 +2,10 @@ package com.github.hummel.cga.lab3
 
 import kotlin.math.pow
 
-const val generalIntencity: Float = 1.0f
+const val generalIntencity: Float = 0.8f
 
-const val diffuseIntencity: Float = 0.7f
-const val specularIntencity: Float = 0.8f
+const val diffuseIntencity: Float = 1.0f
+const val specularIntencity: Float = 1.0f
 
 inline fun getColor(face: Face, alpha: Float, beta: Float, gamma: Float): Color {
 	val point = face.getCenteredVecForVertices(alpha, beta, gamma)

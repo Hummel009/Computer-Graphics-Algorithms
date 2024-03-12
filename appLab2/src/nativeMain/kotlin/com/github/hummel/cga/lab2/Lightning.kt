@@ -1,6 +1,6 @@
 package com.github.hummel.cga.lab2
 
-const val generalIntencity: Float = 1.0f
+const val generalIntencity: Float = 0.8f
 
 inline fun getColor(face: Face): Color {
 	val point = face.vertices[0]
