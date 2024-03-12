@@ -2,7 +2,6 @@ package com.github.hummel.cga.lab2
 
 import kotlinx.cinterop.*
 import platform.windows.*
-import kotlin.math.abs
 
 private const val chunks: Int = 8
 
@@ -42,8 +41,8 @@ private fun drawerThread(lpParameter: LPVOID?): DWORD {
 }
 
 private inline fun drawTriangle(face: Face) {
-	val viewDir = (face.vertices[0] - eye).normalize()
-	val cosAngle = face.normal scalarMul viewDir
+	val viewDir = -face.vertices[0] + eye
+	val cosAngle = (face.poliNormal / face.normals.size.toFloat()) scalarMul viewDir
 
 	if (cosAngle <= 0) {
 		return
@@ -54,7 +53,7 @@ private inline fun drawTriangle(face: Face) {
 			multiplyVertexByMatrix(face.vertices[0], displayMatrix),
 			multiplyVertexByMatrix(face.vertices[1], displayMatrix),
 			multiplyVertexByMatrix(face.vertices[2], displayMatrix)
-		), face.normal
+		), face.normals, face.poliNormal
 	)
 
 	var minY = Int.MAX_VALUE
@@ -122,25 +121,6 @@ private inline fun drawTriangle(face: Face) {
 			}
 		}
 	}
-}
-
-private inline fun getFromLighting(face: Face): Color {
-	val point = face.center
-	val normal = face.normal
-
-	val ray = (lightPos - point).normalize()
-	val cosAngle = normal scalarMul ray
-
-	val diffuse = abs(cosAngle)
-
-	var colorVal = (0xff * diffuse).toInt().toByte()
-	if (colorVal > 0xff) {
-		colorVal = 0xff.toByte()
-	}
-
-	val color = Color(colorVal, colorVal, colorVal)
-
-	return color
 }
 
 private inline fun setPixel(x: Int, y: Int, color: Color) {

@@ -50,6 +50,6 @@ private inline fun applyTransform(matrix: Array<FloatArray>) {
 		for (i in face.vertices.indices) {
 			face.vertices[i] = multiplyVertexByMatrix(face.vertices[i], matrix)
 		}
-		face.normal = multiplyVertexByMatrix(face.normal, matrix)
+		face.poliNormal = multiplyVertexByMatrix(face.poliNormal, matrix)
 	}
 }
