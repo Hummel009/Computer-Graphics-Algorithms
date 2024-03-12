@@ -17,6 +17,8 @@ data class Vertex(var x: Float, var y: Float, var z: Float, var w: Float = 1.0f)
 
 	inline operator fun plus(other: Vertex): Vertex = Vertex(x + other.x, y + other.y, z + other.z)
 
+	inline operator fun unaryMinus(): Vertex = Vertex(-x, -y, -z)
+
 	inline infix fun vectorMul(other: Vertex): Vertex {
 		val crossX = y * other.z - z * other.y
 		val crossY = z * other.x - x * other.z
@@ -52,12 +54,6 @@ data class Face(val vertices: Array<Vertex>, val normals: Array<Vertex>) {
 		result = 31 * result + normals.contentHashCode()
 		return result
 	}
-
-	inline fun getCenteredVecForNormals(alpha: Float, beta: Float, gamma: Float): Vertex =
-		(normals[0] * alpha + normals[1] * beta + normals[2] * gamma)
-
-	inline fun getCenteredVecForVertices(alpha: Float, beta: Float, gamma: Float): Vertex =
-		vertices[0] * alpha + vertices[1] * beta + vertices[2] * gamma
 }
 
 data class Color(val red: Byte, val green: Byte, val blue: Byte)
