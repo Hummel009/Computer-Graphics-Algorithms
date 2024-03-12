@@ -16,6 +16,7 @@ inline fun getColor(face: Face): Color {
 }
 
 inline fun calculateLight(point: Vertex, normal: Vertex): Float {
+	//diffuse
 	val ray = lightPos - point
 	var lightResult = 0.0f
 	val angle = normal scalarMul ray

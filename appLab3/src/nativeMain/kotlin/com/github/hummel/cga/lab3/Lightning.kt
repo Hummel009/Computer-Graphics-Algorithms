@@ -4,7 +4,7 @@ import kotlin.math.pow
 
 const val generalIntencity: Float = 1.0f
 
-const val diffuseIntencity: Float = 0.2f
+const val diffuseIntencity: Float = 0.7f
 const val specularIntencity: Float = 0.8f
 
 inline fun getColor(face: Face, alpha: Float, beta: Float, gamma: Float): Color {
@@ -13,28 +13,28 @@ inline fun getColor(face: Face, alpha: Float, beta: Float, gamma: Float): Color 
 
 	val light = calculateLight(point, normal)
 
-	val colorValR = (if (light.x * 255 > 255) 255 else light.x * 255).toByte()
-	val colorValG = (if (light.y * 255 > 255) 255 else light.y * 255).toByte()
-	val colorValB = (if (light.z * 255 > 255) 255 else light.z * 255).toByte()
+	val colorVal = (if (light * 255 > 255) 255 else light * 255).toByte()
 
-	val color = Color(colorValR, colorValG, colorValB)
+	val color = Color(colorVal, colorVal, colorVal)
 
 	return color
 }
 
-inline fun calculateLight(point: Vertex, normal: Vertex): Vertex {
+inline fun calculateLight(point: Vertex, normal: Vertex): Float {
+	//diffuse
 	val ray = lightPos - point
-	var lightResult = Vertex(0.0f, 0.0f, 0.0f)
-
+	var lightResult = 0.0f
 	val angle = normal scalarMul ray
 
 	if (angle > 0) {
 		lightResult += generalIntencity * diffuseIntencity * angle / (ray.magnitude * normal.magnitude)
 	}
 
+	//specular
 	val refr = normal * 2.0f * angle - ray
 	val view = eye - point
 	val rDotV = refr scalarMul view
+
 	if (rDotV > 0) {
 		lightResult += generalIntencity * specularIntencity * (rDotV / (refr.magnitude * view.magnitude)).pow(2.0f)
 	}
