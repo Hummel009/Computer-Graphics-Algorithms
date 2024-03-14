@@ -130,12 +130,3 @@ private inline fun setPixel(x: Int, y: Int, color: Color) {
 	bitmapData[offset + 2] = color.red
 	bitmapData[offset + 3] = -1
 }
-
-private fun <T> split(list: List<T>, parts: Int): Array<List<T>> {
-	require(parts > 0) { "Number of parts must be greater than zero." }
-
-	val size = list.size
-	val chunkSize = (size + parts - 1) / parts
-
-	return list.chunked(chunkSize).toTypedArray()
-}
