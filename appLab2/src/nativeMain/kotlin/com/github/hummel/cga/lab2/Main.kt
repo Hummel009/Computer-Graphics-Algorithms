@@ -96,7 +96,7 @@ private fun wndProc(window: HWND?, msg: UINT, wParam: WPARAM, lParam: LPARAM): L
 
 					else -> {}
 				}
-			}.inWholeMilliseconds
+			}.inWholeNanoseconds
 
 			execTime[0] = time
 		}
@@ -121,11 +121,11 @@ private fun wndProc(window: HWND?, msg: UINT, wParam: WPARAM, lParam: LPARAM): L
 					DeleteDC(hdcMem)
 					EndPaint(window, ps.ptr)
 				}
-			}.inWholeMilliseconds
+			}.inWholeNanoseconds
 
 			execTime[1] = time
 
-			val fps = (1000.0 / execTime.sum()).toLong()
+			val fps = (1_000_000_000.0 / execTime.sum()).toLong()
 
 			execTimes.add(fps)
 
