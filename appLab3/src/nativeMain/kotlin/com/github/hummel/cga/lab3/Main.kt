@@ -70,7 +70,8 @@ fun main() {
 	}
 }
 
-private val times: Array<Long> = arrayOf(0, 0)
+private val execTimes: MutableList<Long> = mutableListOf()
+private val execTime: Array<Long> = arrayOf(0, 0)
 private var min: Long = Long.MAX_VALUE
 private var max: Long = Long.MIN_VALUE
 private fun wndProc(window: HWND?, msg: UINT, wParam: WPARAM, lParam: LPARAM): LRESULT {
@@ -97,7 +98,7 @@ private fun wndProc(window: HWND?, msg: UINT, wParam: WPARAM, lParam: LPARAM): L
 				}
 			}.inWholeMilliseconds
 
-			times[0] = time
+			execTime[0] = time
 		}
 
 		WM_PAINT -> {
@@ -122,14 +123,18 @@ private fun wndProc(window: HWND?, msg: UINT, wParam: WPARAM, lParam: LPARAM): L
 				}
 			}.inWholeMilliseconds
 
-			times[1] = time
+			execTime[1] = time
 
-			val fps = (1000.0 / times.sum()).toLong()
+			val fps = (1000.0 / execTime.sum()).toLong()
+
+			execTimes.add(fps)
 
 			min = min.coerceAtMost(fps)
 			max = max.coerceAtLeast(fps)
 
-			println("$fps FPS, [$min; $max]; Maths ${times[0]}ms; Graphics ${times[1]}ms")
+			val avg = execTimes.average().toLong()
+
+			println("$fps FPS, [$min; $max]; AVG: $avg; MLag: ${execTime[0]}ms; GLag: ${execTime[1]}ms")
 		}
 
 		WM_CLOSE -> DestroyWindow(window)
