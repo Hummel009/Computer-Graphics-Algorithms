@@ -70,30 +70,34 @@ fun main() {
 	}
 }
 
-private val times: MutableList<Long> = ArrayList()
+private val times: Array<Long> = arrayOf(0, 0)
 private var min: Long = Long.MAX_VALUE
 private var max: Long = Long.MIN_VALUE
 private fun wndProc(window: HWND?, msg: UINT, wParam: WPARAM, lParam: LPARAM): LRESULT {
 	when (msg.toInt()) {
 		WM_KEYDOWN -> {
-			when (wParam.toInt()) {
-				VK_Z -> {
-					rotateVerticesAxisZ()
-					InvalidateRect(window, null, FALSE)
-				}
+			val time = measureTime {
+				when (wParam.toInt()) {
+					VK_Z -> {
+						rotateVerticesAxisZ()
+						InvalidateRect(window, null, FALSE)
+					}
 
-				VK_X -> {
-					rotateVerticesAxisX()
-					InvalidateRect(window, null, FALSE)
-				}
+					VK_X -> {
+						rotateVerticesAxisX()
+						InvalidateRect(window, null, FALSE)
+					}
 
-				VK_C -> {
-					rotateVerticesAxisY()
-					InvalidateRect(window, null, FALSE)
-				}
+					VK_C -> {
+						rotateVerticesAxisY()
+						InvalidateRect(window, null, FALSE)
+					}
 
-				else -> {}
-			}
+					else -> {}
+				}
+			}.inWholeMilliseconds
+
+			times[0] = time
 		}
 
 		WM_PAINT -> {
@@ -116,18 +120,16 @@ private fun wndProc(window: HWND?, msg: UINT, wParam: WPARAM, lParam: LPARAM): L
 					DeleteDC(hdcMem)
 					EndPaint(window, ps.ptr)
 				}
-			}.inWholeNanoseconds
+			}.inWholeMilliseconds
 
-			times.add(time)
+			times[1] = time
 
-			if (times.size >= 50) {
-				val fps = (1000000000.0 / times.takeLast(50).average()).toLong()
+			val fps = (1000.0 / times.sum()).toLong()
 
-				min = min.coerceAtMost(fps)
-				max = max.coerceAtLeast(fps)
+			min = min.coerceAtMost(fps)
+			max = max.coerceAtLeast(fps)
 
-				println("$fps FPS, [$min; $max]")
-			}
+			println("$fps FPS, [$min; $max]; Maths ${times[0]}ms; Graphics ${times[1]}ms")
 		}
 
 		WM_CLOSE -> DestroyWindow(window)
