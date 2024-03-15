@@ -8,10 +8,9 @@ const val diffuseIntencity: Float = 1.0f
 const val specularIntencity: Float = 1.0f
 
 fun getShading(face: Face, alpha: Float, beta: Float, gamma: Float): Int {
-	var texVec = getCenteredVecForSet(face.textures, alpha, beta, gamma)
-	texVec = Vertex(texVec.x, 1.0f - texVec.y, 0.0f)
+	val texVec = getCenteredVecForSet(face.textures, alpha, beta, gamma)
 	val texX = (texVec.x * textureImage.width).toInt().coerceIn(0, 4095)
-	val texY = (texVec.y * textureImage.height).toInt().coerceIn(0, 4095)
+	val texY = ((1.0f - texVec.y) * textureImage.height).toInt().coerceIn(0, 4095)
 
 	val point = getCenteredVecForSet(face.vertices, alpha, beta, gamma)
 

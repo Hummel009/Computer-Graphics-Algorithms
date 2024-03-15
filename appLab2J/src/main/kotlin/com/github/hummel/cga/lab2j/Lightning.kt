@@ -2,20 +2,20 @@ package com.github.hummel.cga.lab2j
 
 const val generalIntencity: Float = 0.8f
 
-fun getColor(face: Face): Int {
+fun getShading(face: Face): Int {
 	val point = face.vertices[0]
 	val normal = face.poliNormal
 
-	val light = calculateLight(point, normal)
+	val brightness = getBrightness(point, normal)
 
-	val colorVal = (if (light * 255 > 255) 255 else light * 255).toInt()
+	val colorVal = (if (brightness * 255 > 255) 255 else brightness * 255).toInt()
 
 	val color = (colorVal shl 16) or (colorVal shl 8) or colorVal
 
 	return color
 }
 
-fun calculateLight(point: Vertex, normal: Vertex): Float {
+fun getBrightness(point: Vertex, normal: Vertex): Float {
 	//diffuse
 	val ray = lightPos - point
 	var lightResult = 0.0f

@@ -97,9 +97,9 @@ private fun drawTriangle(face: Face) {
 						if (zBuffer[x * hHeight + y] > zFragment) {
 							zBuffer[x * hHeight + y] = zFragment
 
-							val color = getShading(face, alpha, beta, gamma)
+							val shading = getShading(face, alpha, beta, gamma)
 
-							bufferedImage.setRGB(x, y, color)
+							bufferedImage.setRGB(x, y, shading)
 						}
 					}
 				}
