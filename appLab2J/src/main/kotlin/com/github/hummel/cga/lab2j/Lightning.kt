@@ -18,12 +18,12 @@ fun getShading(face: Face): Int {
 fun getBrightness(point: Vertex, normal: Vertex): Float {
 	//diffuse
 	val ray = lightPos - point
-	var lightResult = 0.0f
+	var brightness = 0.0f
 	val angle = normal scalarMul ray
 
 	if (angle > 0) {
-		lightResult = diffuseIntencity * angle / (ray.magnitude * normal.magnitude)
+		brightness = diffuseIntencity * angle / (ray.magnitude * normal.magnitude)
 	}
 
-	return lightResult
+	return brightness
 }

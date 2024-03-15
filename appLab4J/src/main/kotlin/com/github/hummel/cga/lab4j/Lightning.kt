@@ -38,11 +38,11 @@ fun getShading(face: Face, alpha: Float, beta: Float, gamma: Float): Int {
 fun getBrightness(point: Vertex, normal: Vertex, mrao: Vertex): Float {
 	//diffuse
 	val ray = lightPos - point
-	var lightResult = 0.0f
+	var brightness = 0.0f
 	val angle = normal scalarMul ray
 
 	if (angle > 0) {
-		lightResult += diffuseIntencity * angle / (ray.magnitude * normal.magnitude)
+		brightness += diffuseIntencity * angle / (ray.magnitude * normal.magnitude)
 	}
 
 	//specular
@@ -51,10 +51,10 @@ fun getBrightness(point: Vertex, normal: Vertex, mrao: Vertex): Float {
 	val rDotV = refr scalarMul view
 
 	if (rDotV > 0) {
-		lightResult += specularIntencity * mrao.x * (rDotV / (refr.magnitude * view.magnitude)).pow(2.0f)
+		brightness += specularIntencity * mrao.x * (rDotV / (refr.magnitude * view.magnitude)).pow(2.0f)
 	}
 
-	return lightResult + ambientIntencity
+	return brightness + ambientIntencity
 }
 
 fun applyBrightness(color: Int, brightness: Float): Int {
