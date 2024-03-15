@@ -154,11 +154,3 @@ private inline fun setPixel(x: Int, y: Int, shading: Triple<Byte, Byte, Byte>) {
 	bitmapData[offset + 2] = shading.third
 	bitmapData[offset + 3] = -1
 }
-
-private inline fun ByteArray.getPixel(x: Int, y: Int): Triple<Byte, Byte, Byte> {
-	val offset = (y * hWidth + x) shl 2
-	val red = this[offset + 0]
-	val green = this[offset + 1]
-	val blue = this[offset + 2]
-	return Triple(red, green, blue)
-}
