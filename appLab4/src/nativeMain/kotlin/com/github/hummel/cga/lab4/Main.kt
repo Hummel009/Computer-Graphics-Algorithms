@@ -33,9 +33,9 @@ private var dist: Float = 20.0f
 fun main() {
 	val name = "knight"
 
-	//normalData = ???
-	//mraoData = ???
-	//textureData = ???
+	normalData = readBytesFromFile("knight_normal.bmp")
+	mraoData = readBytesFromFile("knight_mrao.bmp")
+	textureData = readBytesFromFile("knight_texture.bmp")
 
 	parse("$name.obj")
 
