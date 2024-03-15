@@ -13,7 +13,7 @@ fun renderObject(eye: Vertex) {
 
 	zBuffer.fill(Float.POSITIVE_INFINITY)
 
-	faces.parallelStream().forEach { drawTriangle(it) }
+	faces.forEach { drawTriangle(it) }
 }
 
 private fun drawTriangle(face: Face) {
