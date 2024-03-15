@@ -20,6 +20,8 @@ plugins {
 }
 
 include(":appLab1")
+include(":appLab1J")
 include(":appLab2")
+include(":appLab2J")
 include(":appLab3")
-include(":appLab4")
+include(":appLab3J")
