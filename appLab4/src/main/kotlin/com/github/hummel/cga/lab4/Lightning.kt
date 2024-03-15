@@ -15,7 +15,9 @@ fun getColor(face: Face, alpha: Float, beta: Float, gamma: Float): Int {
 
 	val colorVal = (if (light * 255 > 255) 255 else light * 255).toInt()
 
-	return colorVal
+	val color = (colorVal shl 16) or (colorVal shl 8) or colorVal
+
+	return color
 }
 
 fun calculateLight(point: Vertex, normal: Vertex): Float {
