@@ -22,9 +22,9 @@ const val hHeight: Int = 580
 
 var bitmapData: ByteArray = ByteArray(hWidth * hHeight * 4)
 
-var normalData: ByteArray = ByteArray(4096 * 4096 * 4) { 0 }
-var mraoData: ByteArray = ByteArray(4096 * 4096 * 4) { 0 }
-var textureData: ByteArray = ByteArray(4096 * 4096 * 4) { 0 }
+var normalData: ByteArray = ByteArray(4096 * 4096 * 4) { -1 }
+var mraoData: ByteArray = ByteArray(4096 * 4096 * 4) { -1 }
+var textureData: ByteArray = ByteArray(4096 * 4096 * 4) { -1 }
 
 var faces: MutableList<Face> = mutableListOf()
 
@@ -32,6 +32,10 @@ private var dist: Float = 20.0f
 
 fun main() {
 	val name = "knight"
+
+	//normalData = ???
+	//mraoData = ???
+	//textureData = ???
 
 	parse("$name.obj")
 
