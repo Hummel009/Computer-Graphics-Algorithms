@@ -96,5 +96,5 @@ private fun addFace(array: Array<String>) {
 
 	vns.forEach { normal += it }
 
-	faces.add(Face(vs.toTypedArray(), vns.toTypedArray(), normal))
+	faces.add(Face(vs.toTypedArray(), vns.toTypedArray(), vts.toTypedArray(), null, normal))
 }
