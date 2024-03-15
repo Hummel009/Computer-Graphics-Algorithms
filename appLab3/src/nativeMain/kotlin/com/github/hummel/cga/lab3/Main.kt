@@ -185,6 +185,8 @@ private fun wndProc(window: HWND?, msg: UINT, wParam: WPARAM, lParam: LPARAM): L
 			val avg = execTimes.average().toLong()
 
 			println("$fps FPS, [$min; $max]; AVG: $avg; MLag: ${execTime[0] / 1_000_000}ms; GLag: ${execTime[1] / 1_000_000}ms")
+
+			execTime.fill(0)
 		}
 
 		WM_CLOSE -> DestroyWindow(window)
