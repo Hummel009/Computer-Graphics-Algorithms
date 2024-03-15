@@ -29,7 +29,7 @@ private fun drawTriangle(face: Face) {
 			multiplyVertexByMatrix(face.vertices[0], displayMatrix),
 			multiplyVertexByMatrix(face.vertices[1], displayMatrix),
 			multiplyVertexByMatrix(face.vertices[2], displayMatrix)
-		), face.normals, face.poliNormal
+		), face.normals, face.textures, null, face.poliNormal
 	)
 
 	var minY = Int.MAX_VALUE
@@ -78,11 +78,20 @@ private fun drawTriangle(face: Face) {
 						val v0 = drawFace.vertices[0]
 						val v1 = drawFace.vertices[1]
 						val v2 = drawFace.vertices[2]
-						val alpha =
-							((v1.y - v2.y) * (x - v2.x) + (v2.x - v1.x) * (y - v2.y)) / ((v1.y - v2.y) * (v0.x - v2.x) + (v2.x - v1.x) * (v0.y - v2.y))
-						val beta =
-							((v2.y - v0.y) * (x - v2.x) + (v0.x - v2.x) * (y - v2.y)) / ((v1.y - v2.y) * (v0.x - v2.x) + (v2.x - v1.x) * (v0.y - v2.y))
-						val gamma = 1 - alpha - beta
+
+						val barycCords = drawFace.getBarycentricCoordinates(x, y)
+
+						var alpha = barycCords[0]
+						var beta = barycCords[1]
+						var gamma = barycCords[2]
+						drawFace.depthArr?.let { alpha /= it[0] }
+						drawFace.depthArr?.let { beta /= it[1] }
+						drawFace.depthArr?.let { gamma /= it[2] }
+						val sum = alpha + beta + gamma
+						alpha /= sum
+						beta /= sum
+						gamma /= sum
+
 						val zFragment = alpha * v0.z + beta * v1.z + gamma * v2.z
 
 						if (zBuffer[x * hHeight + y] > zFragment) {
