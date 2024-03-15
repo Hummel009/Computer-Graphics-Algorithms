@@ -2,8 +2,9 @@ package com.github.hummel.cga.lab3j
 
 import kotlin.math.pow
 
-const val diffuseIntencity: Float = 1.0f
-const val specularIntencity: Float = 1.0f
+const val ambientIntencity: Float = 0.0f
+const val diffuseIntencity: Float = 0.8f
+const val specularIntencity: Float = 0.8f
 
 fun getShading(face: Face, alpha: Float, beta: Float, gamma: Float): Int {
 	val point = getCenteredVecForSet(face.vertices, alpha, beta, gamma)
@@ -37,7 +38,7 @@ fun getBrightness(point: Vertex, normal: Vertex): Float {
 		lightResult += specularIntencity * (rDotV / (refr.magnitude * view.magnitude)).pow(2.0f)
 	}
 
-	return lightResult
+	return lightResult + ambientIntencity
 }
 
 fun getCenteredVecForSet(set: Array<Vertex>, alpha: Float, beta: Float, gamma: Float): Vertex =

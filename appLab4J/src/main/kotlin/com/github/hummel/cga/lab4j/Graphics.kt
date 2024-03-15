@@ -1,6 +1,5 @@
 package com.github.hummel.cga.lab4j
 
-
 val zBuffer: FloatArray = FloatArray(hWidth * hHeight)
 
 lateinit var displayMatrix: Array<FloatArray>
