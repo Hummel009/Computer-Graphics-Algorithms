@@ -103,9 +103,9 @@ private fun wndProc(window: HWND?, msg: UINT, wParam: WPARAM, lParam: LPARAM): L
 
 				prevMouseX = currMouseX
 				prevMouseY = currMouseY
-			}
 
-			InvalidateRect(window, null, FALSE)
+				InvalidateRect(window, null, FALSE)
+			}
 		}
 
 		WM_LBUTTONDOWN -> {

@@ -5,10 +5,6 @@ import platform.windows.*
 import kotlin.math.cos
 import kotlin.math.sin
 
-private const val chunks: Int = 8
-
-private val splitFaces: Array<List<Face>> = split(faces, chunks)
-
 private val cos: Float = cos(0.2f)
 private val sin: Float = sin(0.2f)
 
@@ -33,16 +29,23 @@ private val matrixRotateZ: Array<FloatArray> = arrayOf(
 	floatArrayOf(0.0f, 0.0f, 0.0f, 1.0f)
 )
 
-fun rotateVerticesAxisX() {
+fun rotateVertices(type: String) {
+	val threadFunction = when (type) {
+		"x" -> staticCFunction(::tfRotateVerticesX)
+		"y" -> staticCFunction(::tfRotateVerticesY)
+		"z" -> staticCFunction(::tfRotateVerticesZ)
+		else -> throw Exception("Wrong axis!")
+	}
+
 	memScoped {
-		val params = Array(chunks) {
+		val params = Array(kernels) {
 			alloc<IntVar>()
 		}
 
 		params.forEachIndexed { index, param -> param.value = index }
 
-		val threads = Array(chunks) {
-			CreateThread(null, 0u, staticCFunction(::xRotateThread), params[it].ptr, 0u, null)
+		val threads = Array(kernels) {
+			CreateThread(null, 0u, threadFunction, params[it].ptr, 0u, null)
 		}
 
 		for (thread in threads) {
@@ -52,48 +55,10 @@ fun rotateVerticesAxisX() {
 	}
 }
 
-fun rotateVerticesAxisY() {
-	memScoped {
-		val params = Array(chunks) {
-			alloc<IntVar>()
-		}
-
-		params.forEachIndexed { index, param -> param.value = index }
-
-		val threads = Array(chunks) {
-			CreateThread(null, 0u, staticCFunction(::yRotateThread), params[it].ptr, 0u, null)
-		}
-
-		for (thread in threads) {
-			WaitForSingleObject(thread, INFINITE)
-			CloseHandle(thread)
-		}
-	}
-}
-
-fun rotateVerticesAxisZ() {
-	memScoped {
-		val params = Array(chunks) {
-			alloc<IntVar>()
-		}
-
-		params.forEachIndexed { index, param -> param.value = index }
-
-		val threads = Array(chunks) {
-			CreateThread(null, 0u, staticCFunction(::zRotateThread), params[it].ptr, 0u, null)
-		}
-
-		for (thread in threads) {
-			WaitForSingleObject(thread, INFINITE)
-			CloseHandle(thread)
-		}
-	}
-}
-
-private fun xRotateThread(lpParameter: LPVOID?): DWORD {
+private fun tfRotateVerticesX(lpParameter: LPVOID?): DWORD {
 	val parameter = lpParameter?.reinterpret<IntVar>()?.pointed?.value!!
 
-	for (face in splitFaces[parameter]) {
+	for (face in threadFaces[parameter]) {
 		for (i in face.vertices.indices) {
 			face.vertices[i] = multiplyVertexByMatrix(face.vertices[i], matrixRotateX)
 		}
@@ -106,10 +71,10 @@ private fun xRotateThread(lpParameter: LPVOID?): DWORD {
 	return 0u
 }
 
-private fun yRotateThread(lpParameter: LPVOID?): DWORD {
+private fun tfRotateVerticesY(lpParameter: LPVOID?): DWORD {
 	val parameter = lpParameter?.reinterpret<IntVar>()?.pointed?.value!!
 
-	for (face in splitFaces[parameter]) {
+	for (face in threadFaces[parameter]) {
 		for (i in face.vertices.indices) {
 			face.vertices[i] = multiplyVertexByMatrix(face.vertices[i], matrixRotateY)
 		}
@@ -122,10 +87,10 @@ private fun yRotateThread(lpParameter: LPVOID?): DWORD {
 	return 0u
 }
 
-private fun zRotateThread(lpParameter: LPVOID?): DWORD {
+private fun tfRotateVerticesZ(lpParameter: LPVOID?): DWORD {
 	val parameter = lpParameter?.reinterpret<IntVar>()?.pointed?.value!!
 
-	for (face in splitFaces[parameter]) {
+	for (face in threadFaces[parameter]) {
 		for (i in face.vertices.indices) {
 			face.vertices[i] = multiplyVertexByMatrix(face.vertices[i], matrixRotateZ)
 		}

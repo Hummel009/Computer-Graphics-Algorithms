@@ -4,23 +4,29 @@ import kotlinx.cinterop.*
 import platform.windows.*
 import kotlin.math.abs
 
-private const val chunks: Int = 8
+private val zBuffer: FloatArray = FloatArray(width * height)
 
-private val splitFaces: Array<List<Face>> = split(faces, chunks)
-private val white: Color = Color(-1, -1, -1)
+lateinit var displayMatrix: Array<FloatArray>
+lateinit var lightPos: Vertex
+lateinit var eyePos: Vertex
 
-fun renderObject() {
+fun renderObject(eye: Vertex) {
+	displayMatrix = getDisplayMatrix(eye)
+	lightPos = getLightPos(eye)
+	eyePos = eye
+
 	bitmapData.fill(0)
+	zBuffer.fill(Float.POSITIVE_INFINITY)
 
 	memScoped {
-		val params = Array(chunks) {
+		val params = Array(kernels) {
 			alloc<IntVar>()
 		}
 
 		params.forEachIndexed { index, param -> param.value = index }
 
-		val threads = Array(chunks) {
-			CreateThread(null, 0u, staticCFunction(::drawerThread), params[it].ptr, 0u, null)
+		val threads = Array(kernels) {
+			CreateThread(null, 0u, staticCFunction(::tfDrawVertices), params[it].ptr, 0u, null)
 		}
 
 		for (thread in threads) {
@@ -30,10 +36,10 @@ fun renderObject() {
 	}
 }
 
-private fun drawerThread(lpParameter: LPVOID?): DWORD {
+private fun tfDrawVertices(lpParameter: LPVOID?): DWORD {
 	val parameter = lpParameter?.reinterpret<IntVar>()?.pointed?.value!!
 
-	for (face in splitFaces[parameter]) {
+	for (face in threadFaces[parameter]) {
 		drawTriangle(face)
 	}
 
@@ -49,9 +55,11 @@ private inline fun drawTriangle(face: Face) {
 		), face.normals, face.poliNormal
 	)
 
-	drawLine(drawFace.vertices[0], drawFace.vertices[1], white)
-	drawLine(drawFace.vertices[1], drawFace.vertices[2], white)
-	drawLine(drawFace.vertices[2], drawFace.vertices[0], white)
+	val color = Color(-1, -1, -1)
+
+	drawLine(drawFace.vertices[0], drawFace.vertices[1], color)
+	drawLine(drawFace.vertices[1], drawFace.vertices[2], color)
+	drawLine(drawFace.vertices[2], drawFace.vertices[0], color)
 }
 
 private inline fun drawLine(v1: Vertex, v2: Vertex, color: Color) {
