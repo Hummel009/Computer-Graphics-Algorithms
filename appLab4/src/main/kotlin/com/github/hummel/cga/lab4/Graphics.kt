@@ -1,9 +1,6 @@
 package com.github.hummel.cga.lab4
 
-import kotlinx.cinterop.*
-import platform.windows.*
-
-private val zBuffer: FloatArray = FloatArray(width * height)
+val zBuffer: FloatArray = FloatArray(hWidth * hHeight)
 
 lateinit var displayMatrix: Array<FloatArray>
 lateinit var lightPos: Vertex
@@ -14,38 +11,12 @@ fun renderObject(eye: Vertex) {
 	lightPos = getLightPos(eye)
 	eyePos = eye
 
-	bitmapData.fill(0)
 	zBuffer.fill(Float.POSITIVE_INFINITY)
 
-	memScoped {
-		val params = Array(kernels) {
-			alloc<IntVar>()
-		}
-
-		params.forEachIndexed { index, param -> param.value = index }
-
-		val threads = Array(kernels) {
-			CreateThread(null, 0u, staticCFunction(::tfDrawVertices), params[it].ptr, 0u, null)
-		}
-
-		for (thread in threads) {
-			WaitForSingleObject(thread, INFINITE)
-			CloseHandle(thread)
-		}
-	}
+	faces.parallelStream().forEach { drawTriangle(it) }
 }
 
-private fun tfDrawVertices(lpParameter: LPVOID?): DWORD {
-	val parameter = lpParameter?.reinterpret<IntVar>()?.pointed?.value!!
-
-	for (face in threadFaces[parameter]) {
-		drawTriangle(face)
-	}
-
-	return 0u
-}
-
-private inline fun drawTriangle(face: Face) {
+private fun drawTriangle(face: Face) {
 	val viewDir = -face.vertices[0] + eyePos
 	val cosAngle = (face.poliNormal / face.normals.size.toFloat()) scalarMul viewDir
 
@@ -76,7 +47,7 @@ private inline fun drawTriangle(face: Face) {
 
 	// Создать цикл по каждой строке изображения
 	for (y in minY..maxY) {
-		if (y in 0 until height) {
+		if (y in 0 until hHeight) {
 			// Найти пересечения текущей строки с каждой из сторон треугольника
 			val xIntersections = IntArray(2)
 			var intersectionCount = 0
@@ -103,7 +74,7 @@ private inline fun drawTriangle(face: Face) {
 			// Заполнить пиксели между пересечениями цветом треугольника
 			if (intersectionCount == 2) {
 				for (x in xIntersections[0]..xIntersections[1]) {
-					if (x in 0 until width) {
+					if (x in 0 until hWidth) {
 						val v0 = drawFace.vertices[0]
 						val v1 = drawFace.vertices[1]
 						val v2 = drawFace.vertices[2]
@@ -114,24 +85,16 @@ private inline fun drawTriangle(face: Face) {
 						val gamma = 1 - alpha - beta
 						val zFragment = alpha * v0.z + beta * v1.z + gamma * v2.z
 
-						if (zBuffer[x * height + y] > zFragment) {
-							zBuffer[x * height + y] = zFragment
+						if (zBuffer[x * hHeight + y] > zFragment) {
+							zBuffer[x * hHeight + y] = zFragment
 
 							val color = getColor(face, alpha, beta, gamma)
 
-							setPixel(x, y, color)
+							bufferedImage.setRGB(x, y, color)
 						}
 					}
 				}
 			}
 		}
 	}
-}
-
-private inline fun setPixel(x: Int, y: Int, color: Color) {
-	val offset = (y * width + x) shl 2
-	bitmapData[offset + 0] = color.blue
-	bitmapData[offset + 1] = color.green
-	bitmapData[offset + 2] = color.red
-	bitmapData[offset + 3] = -1
 }

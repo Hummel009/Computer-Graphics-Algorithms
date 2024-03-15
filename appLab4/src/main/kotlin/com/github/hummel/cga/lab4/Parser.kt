@@ -1,33 +1,29 @@
 package com.github.hummel.cga.lab4
 
-import kotlinx.cinterop.refTo
-import kotlinx.cinterop.toKString
-import platform.posix.fclose
-import platform.posix.fgets
-import platform.posix.fopen
+import java.io.File
 
 private val vertices: MutableList<Vertex> = ArrayList()
 private val textures: MutableList<Vertex> = ArrayList()
 private val normals: MutableList<Vertex> = ArrayList()
 
 fun parse(fileName: String) {
-	val file = fopen(fileName, "r")
-	val bufferLength = 1024
-	val buffer = ByteArray(bufferLength)
+	val file = File(fileName)
 
-	while (fgets(buffer.refTo(0), bufferLength, file) != null) {
-		val line = buffer.toKString()
-		val array = line.trim().split("\\s+".toRegex()).toTypedArray()
+	file.bufferedReader().use { reader ->
+		var line = reader.readLine()
+		while (line != null) {
+			val array = line.trim().split("\\s+".toRegex()).toTypedArray()
 
-		when (array[0]) {
-			"v" -> addVertex(array.drop(1).toTypedArray())
-			"vt" -> addVertexTexture(array.drop(1).toTypedArray())
-			"vn" -> addVertexNormal(array.drop(1).toTypedArray())
-			"f" -> addFace(array.drop(1).toTypedArray())
+			when (array[0]) {
+				"v" -> addVertex(array.drop(1).toTypedArray())
+				"vt" -> addVertexTexture(array.drop(1).toTypedArray())
+				"vn" -> addVertexNormal(array.drop(1).toTypedArray())
+				"f" -> addFace(array.drop(1).toTypedArray())
+			}
+
+			line = reader.readLine()
 		}
 	}
-
-	fclose(file)
 }
 
 private fun addVertex(array: Array<String>) {

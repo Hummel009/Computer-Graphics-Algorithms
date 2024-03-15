@@ -7,7 +7,7 @@ private val target: Vertex = Vertex(0.0f, 0.0f, 0.0f)
 private val up: Vertex = Vertex(0.0f, 1.0f, 0.0f)
 
 private var fov: Float = PI.toFloat() / 4.0f
-private var aspect = width.toFloat() / height.toFloat()
+private var aspect = hWidth.toFloat() / hHeight.toFloat()
 
 private var zNear: Float = 1.0f
 private var zFar: Float = 100.0f
@@ -20,8 +20,8 @@ private val matrixProjection: Array<FloatArray> = arrayOf(
 )
 
 private val matrixViewport: Array<FloatArray> = arrayOf(
-	floatArrayOf(width.toFloat() / 2.0f, 0.0f, 0.0f, width.toFloat() / 2.0f),
-	floatArrayOf(0.0f, height.toFloat() / 2.0f, 0.0f, height.toFloat() / 2.0f),
+	floatArrayOf(hWidth.toFloat() / 2.0f, 0.0f, 0.0f, hWidth.toFloat() / 2.0f),
+	floatArrayOf(0.0f, hHeight.toFloat() / 2.0f, 0.0f, hHeight.toFloat() / 2.0f),
 	floatArrayOf(0.0f, 0.0f, 1.0f, 0.0f),
 	floatArrayOf(0.0f, 0.0f, 0.0f, 1.0f)
 )

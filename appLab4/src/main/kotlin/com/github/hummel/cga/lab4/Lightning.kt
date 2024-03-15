@@ -7,20 +7,18 @@ const val generalIntencity: Float = 0.8f
 const val diffuseIntencity: Float = 1.0f
 const val specularIntencity: Float = 1.0f
 
-inline fun getColor(face: Face, alpha: Float, beta: Float, gamma: Float): Color {
+fun getColor(face: Face, alpha: Float, beta: Float, gamma: Float): Int {
 	val point = face.getCenteredVecForVertices(alpha, beta, gamma)
 	val normal = face.getCenteredVecForNormals(alpha, beta, gamma).normalize()
 
 	val light = calculateLight(point, normal)
 
-	val colorVal = (if (light * 255 > 255) 255 else light * 255).toByte()
+	val colorVal = (if (light * 255 > 255) 255 else light * 255).toInt()
 
-	val color = Color(colorVal, colorVal, colorVal)
-
-	return color
+	return colorVal
 }
 
-inline fun calculateLight(point: Vertex, normal: Vertex): Float {
+fun calculateLight(point: Vertex, normal: Vertex): Float {
 	//diffuse
 	val ray = lightPos - point
 	var lightResult = 0.0f
@@ -42,8 +40,8 @@ inline fun calculateLight(point: Vertex, normal: Vertex): Float {
 	return lightResult
 }
 
-inline fun Face.getCenteredVecForNormals(alpha: Float, beta: Float, gamma: Float): Vertex =
+fun Face.getCenteredVecForNormals(alpha: Float, beta: Float, gamma: Float): Vertex =
 	normals[0] * alpha + normals[1] * beta + normals[2] * gamma
 
-inline fun Face.getCenteredVecForVertices(alpha: Float, beta: Float, gamma: Float): Vertex =
+fun Face.getCenteredVecForVertices(alpha: Float, beta: Float, gamma: Float): Vertex =
 	vertices[0] * alpha + vertices[1] * beta + vertices[2] * gamma

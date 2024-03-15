@@ -1,6 +1,6 @@
 package com.github.hummel.cga.lab4
 
-inline fun multiplyVertexByMatrix(vertex: Vertex, matrix: Array<FloatArray>): Vertex {
+fun multiplyVertexByMatrix(vertex: Vertex, matrix: Array<FloatArray>): Vertex {
 	val result = FloatArray(4)
 
 	for (i in 0 until 4) {
@@ -11,7 +11,7 @@ inline fun multiplyVertexByMatrix(vertex: Vertex, matrix: Array<FloatArray>): Ve
 	return Vertex(result[0] / w, result[1] / w, result[2] / w)
 }
 
-inline fun multiplyMatrixByMatrix(matrixA: Array<FloatArray>, matrixB: Array<FloatArray>): Array<FloatArray> {
+fun multiplyMatrixByMatrix(matrixA: Array<FloatArray>, matrixB: Array<FloatArray>): Array<FloatArray> {
 	val result = Array(4) { FloatArray(4) }
 
 	for (i in 0 until 4) {

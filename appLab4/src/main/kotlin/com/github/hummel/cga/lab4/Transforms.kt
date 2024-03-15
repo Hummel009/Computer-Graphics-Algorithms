@@ -1,7 +1,6 @@
 package com.github.hummel.cga.lab4
 
-import kotlinx.cinterop.*
-import platform.windows.*
+import kotlin.concurrent.thread
 import kotlin.math.cos
 import kotlin.math.sin
 
@@ -31,33 +30,18 @@ private val matrixRotateZ: Array<FloatArray> = arrayOf(
 
 fun rotateVertices(type: String) {
 	val threadFunction = when (type) {
-		"x" -> staticCFunction(::tfRotateVerticesX)
-		"y" -> staticCFunction(::tfRotateVerticesY)
-		"z" -> staticCFunction(::tfRotateVerticesZ)
+		"x" -> ::tfRotateVerticesX
+		"y" -> ::tfRotateVerticesY
+		"z" -> ::tfRotateVerticesZ
 		else -> throw Exception("Wrong axis!")
 	}
 
-	memScoped {
-		val params = Array(kernels) {
-			alloc<IntVar>()
-		}
+	val threads = Array(kernels) { thread { threadFunction(it) } }
 
-		params.forEachIndexed { index, param -> param.value = index }
-
-		val threads = Array(kernels) {
-			CreateThread(null, 0u, threadFunction, params[it].ptr, 0u, null)
-		}
-
-		for (thread in threads) {
-			WaitForSingleObject(thread, INFINITE)
-			CloseHandle(thread)
-		}
-	}
+	threads.forEach { it.join() }
 }
 
-private fun tfRotateVerticesX(lpParameter: LPVOID?): DWORD {
-	val parameter = lpParameter?.reinterpret<IntVar>()?.pointed?.value!!
-
+private fun tfRotateVerticesX(parameter: Int) {
 	for (face in threadFaces[parameter]) {
 		for (i in face.vertices.indices) {
 			face.vertices[i] = multiplyVertexByMatrix(face.vertices[i], matrixRotateX)
@@ -67,13 +51,9 @@ private fun tfRotateVerticesX(lpParameter: LPVOID?): DWORD {
 		}
 		face.poliNormal = multiplyVertexByMatrix(face.poliNormal, matrixRotateX)
 	}
-
-	return 0u
 }
 
-private fun tfRotateVerticesY(lpParameter: LPVOID?): DWORD {
-	val parameter = lpParameter?.reinterpret<IntVar>()?.pointed?.value!!
-
+private fun tfRotateVerticesY(parameter: Int) {
 	for (face in threadFaces[parameter]) {
 		for (i in face.vertices.indices) {
 			face.vertices[i] = multiplyVertexByMatrix(face.vertices[i], matrixRotateY)
@@ -83,13 +63,9 @@ private fun tfRotateVerticesY(lpParameter: LPVOID?): DWORD {
 		}
 		face.poliNormal = multiplyVertexByMatrix(face.poliNormal, matrixRotateY)
 	}
-
-	return 0u
 }
 
-private fun tfRotateVerticesZ(lpParameter: LPVOID?): DWORD {
-	val parameter = lpParameter?.reinterpret<IntVar>()?.pointed?.value!!
-
+private fun tfRotateVerticesZ(parameter: Int) {
 	for (face in threadFaces[parameter]) {
 		for (i in face.vertices.indices) {
 			face.vertices[i] = multiplyVertexByMatrix(face.vertices[i], matrixRotateZ)
@@ -99,6 +75,4 @@ private fun tfRotateVerticesZ(lpParameter: LPVOID?): DWORD {
 		}
 		face.poliNormal = multiplyVertexByMatrix(face.poliNormal, matrixRotateZ)
 	}
-
-	return 0u
 }
