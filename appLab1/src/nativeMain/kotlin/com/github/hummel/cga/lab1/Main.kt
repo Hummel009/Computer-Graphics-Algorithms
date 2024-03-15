@@ -17,11 +17,12 @@ private val execTimes: MutableList<Long> = mutableListOf()
 private var min: Long = Long.MAX_VALUE
 private var max: Long = Long.MIN_VALUE
 
-const val width: Int = 1040
-const val height: Int = 580
+const val hWidth: Int = 1040
+const val hHeight: Int = 580
+
+var bitmapData: ByteArray = ByteArray(hWidth * hHeight * 4)
 
 var faces: MutableList<Face> = mutableListOf()
-var bitmapData: ByteArray = ByteArray(width * height * 4)
 
 private var dist: Float = 0.0f
 
@@ -61,8 +62,8 @@ fun main() {
 		val screenWidth = GetSystemMetrics(SM_CXSCREEN)
 		val screenHeight = GetSystemMetrics(SM_CYSCREEN)
 
-		val windowX = max(0, (screenWidth - width) / 2)
-		val windowY = max(0, (screenHeight - height) / 2)
+		val windowX = max(0, (screenWidth - hWidth) / 2)
+		val windowY = max(0, (screenHeight - hHeight) / 2)
 
 		CreateWindowExW(
 			0u,
@@ -71,8 +72,8 @@ fun main() {
 			(WS_VISIBLE or WS_CAPTION or WS_SYSMENU).toUInt(),
 			windowX,
 			windowY,
-			width,
-			height,
+			hWidth,
+			hHeight,
 			null,
 			null,
 			null,
@@ -131,10 +132,10 @@ private fun wndProc(window: HWND?, msg: UINT, wParam: WPARAM, lParam: LPARAM): L
 
 					renderObject(eye)
 
-					val hBitmap = CreateBitmap(width, height, 1u, 32u, bitmapData.refTo(0))
+					val hBitmap = CreateBitmap(hWidth, hHeight, 1u, 32u, bitmapData.refTo(0))
 					val hOldBitmap = SelectObject(hdcMem, hBitmap)
 
-					BitBlt(hdc, 0, 0, width, height, hdcMem, 0, 0, SRCCOPY)
+					BitBlt(hdc, 0, 0, hWidth, hHeight, hdcMem, 0, 0, SRCCOPY)
 
 					SelectObject(hdcMem, hOldBitmap)
 					DeleteObject(hBitmap)

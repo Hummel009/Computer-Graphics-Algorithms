@@ -4,7 +4,7 @@ import kotlinx.cinterop.*
 import platform.windows.*
 import kotlin.math.abs
 
-private val zBuffer: FloatArray = FloatArray(width * height)
+private val zBuffer: FloatArray = FloatArray(hWidth * hHeight)
 
 lateinit var displayMatrix: Array<FloatArray>
 lateinit var lightPos: Vertex
@@ -52,17 +52,17 @@ private inline fun drawTriangle(face: Face) {
 			multiplyVertexByMatrix(face.vertices[0], displayMatrix),
 			multiplyVertexByMatrix(face.vertices[1], displayMatrix),
 			multiplyVertexByMatrix(face.vertices[2], displayMatrix)
-		), face.normals, face.poliNormal
+		), face.normals, face.textures, face.depthArr, face.poliNormal
 	)
 
-	val color = Color(-1, -1, -1)
+	val shading = 255.toByte()
 
-	drawLine(drawFace.vertices[0], drawFace.vertices[1], color)
-	drawLine(drawFace.vertices[1], drawFace.vertices[2], color)
-	drawLine(drawFace.vertices[2], drawFace.vertices[0], color)
+	drawLine(drawFace.vertices[0], drawFace.vertices[1], shading)
+	drawLine(drawFace.vertices[1], drawFace.vertices[2], shading)
+	drawLine(drawFace.vertices[2], drawFace.vertices[0], shading)
 }
 
-private inline fun drawLine(v1: Vertex, v2: Vertex, color: Color) {
+private inline fun drawLine(v1: Vertex, v2: Vertex, shading: Byte) {
 	var x1 = v1.x.toInt()
 	val x2 = v2.x.toInt()
 	var y1 = v1.y.toInt()
@@ -75,8 +75,8 @@ private inline fun drawLine(v1: Vertex, v2: Vertex, color: Color) {
 	var err = dx - dy
 
 	while (x1 != x2 || y1 != y2) {
-		if (x1 in 0 until width && y1 in 0 until height) {
-			setPixel(x1, y1, color)
+		if (x1 in 0 until hWidth && y1 in 0 until hHeight) {
+			setPixel(x1, y1, shading)
 		}
 
 		val err2 = 2 * err
@@ -93,10 +93,10 @@ private inline fun drawLine(v1: Vertex, v2: Vertex, color: Color) {
 	}
 }
 
-private inline fun setPixel(x: Int, y: Int, color: Color) {
-	val offset = (y * width + x) shl 2
-	bitmapData[offset + 0] = color.blue
-	bitmapData[offset + 1] = color.green
-	bitmapData[offset + 2] = color.red
+private inline fun setPixel(x: Int, y: Int, shading: Byte) {
+	val offset = (y * hWidth + x) shl 2
+	bitmapData[offset + 0] = shading
+	bitmapData[offset + 1] = shading
+	bitmapData[offset + 2] = shading
 	bitmapData[offset + 3] = -1
 }
