@@ -37,6 +37,7 @@ fun main() {
 		"tie" -> 10.0f
 		"knight" -> 20.0f
 		"mace" -> 100.0f
+		"car" -> 5.0f
 		else -> 50.0f
 	}
 
