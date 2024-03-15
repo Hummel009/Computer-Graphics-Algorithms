@@ -24,7 +24,7 @@ private fun drawTriangle(face: Face) {
 			multiplyVertexByMatrix(face.vertices[0], displayMatrix),
 			multiplyVertexByMatrix(face.vertices[1], displayMatrix),
 			multiplyVertexByMatrix(face.vertices[2], displayMatrix)
-		), face.normals, face.poliNormal
+		), face.normals, face.textures, face.depthArr, face.poliNormal
 	)
 
 	val color = (255 shl 16) or (255 shl 8) or 255

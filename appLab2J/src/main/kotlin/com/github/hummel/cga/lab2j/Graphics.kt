@@ -29,7 +29,7 @@ private fun drawTriangle(face: Face) {
 			multiplyVertexByMatrix(face.vertices[0], displayMatrix),
 			multiplyVertexByMatrix(face.vertices[1], displayMatrix),
 			multiplyVertexByMatrix(face.vertices[2], displayMatrix)
-		), face.normals, face.textures, null, face.poliNormal
+		), face.normals, face.textures, face.depthArr, face.poliNormal
 	)
 
 	var minY = Int.MAX_VALUE
