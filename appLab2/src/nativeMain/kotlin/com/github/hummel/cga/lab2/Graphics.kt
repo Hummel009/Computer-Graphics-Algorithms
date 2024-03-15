@@ -3,7 +3,7 @@ package com.github.hummel.cga.lab2
 import kotlinx.cinterop.*
 import platform.windows.*
 
-private val zBuffer: FloatArray = FloatArray(width * height)
+private val zBuffer: FloatArray = FloatArray(hWidth * hHeight)
 
 lateinit var displayMatrix: Array<FloatArray>
 lateinit var lightPos: Vertex
@@ -58,7 +58,7 @@ private inline fun drawTriangle(face: Face) {
 			multiplyVertexByMatrix(face.vertices[0], displayMatrix),
 			multiplyVertexByMatrix(face.vertices[1], displayMatrix),
 			multiplyVertexByMatrix(face.vertices[2], displayMatrix)
-		), face.normals, face.poliNormal
+		), face.normals, face.textures, face.depthArr, face.poliNormal
 	)
 
 	var minY = Int.MAX_VALUE
@@ -76,7 +76,7 @@ private inline fun drawTriangle(face: Face) {
 
 	// Создать цикл по каждой строке изображения
 	for (y in minY..maxY) {
-		if (y in 0 until height) {
+		if (y in 0 until hHeight) {
 			// Найти пересечения текущей строки с каждой из сторон треугольника
 			val xIntersections = IntArray(2)
 			var intersectionCount = 0
@@ -103,23 +103,32 @@ private inline fun drawTriangle(face: Face) {
 			// Заполнить пиксели между пересечениями цветом треугольника
 			if (intersectionCount == 2) {
 				for (x in xIntersections[0]..xIntersections[1]) {
-					if (x in 0 until width) {
+					if (x in 0 until hWidth) {
 						val v0 = drawFace.vertices[0]
 						val v1 = drawFace.vertices[1]
 						val v2 = drawFace.vertices[2]
-						val alpha =
-							((v1.y - v2.y) * (x - v2.x) + (v2.x - v1.x) * (y - v2.y)) / ((v1.y - v2.y) * (v0.x - v2.x) + (v2.x - v1.x) * (v0.y - v2.y))
-						val beta =
-							((v2.y - v0.y) * (x - v2.x) + (v0.x - v2.x) * (y - v2.y)) / ((v1.y - v2.y) * (v0.x - v2.x) + (v2.x - v1.x) * (v0.y - v2.y))
-						val gamma = 1 - alpha - beta
+
+						val barycCords = drawFace.getBarycentricCoordinates(x, y)
+
+						var alpha = barycCords[0]
+						var beta = barycCords[1]
+						var gamma = barycCords[2]
+						drawFace.depthArr?.let { alpha /= it[0] }
+						drawFace.depthArr?.let { beta /= it[1] }
+						drawFace.depthArr?.let { gamma /= it[2] }
+						val sum = alpha + beta + gamma
+						alpha /= sum
+						beta /= sum
+						gamma /= sum
+
 						val zFragment = alpha * v0.z + beta * v1.z + gamma * v2.z
 
-						if (zBuffer[x * height + y] > zFragment) {
-							zBuffer[x * height + y] = zFragment
+						if (zBuffer[x * hHeight + y] > zFragment) {
+							zBuffer[x * hHeight + y] = zFragment
 
-							val color = getColor(face)
+							val shading = getShading(face)
 
-							setPixel(x, y, color)
+							setPixel(x, y, shading)
 						}
 					}
 				}
@@ -128,10 +137,10 @@ private inline fun drawTriangle(face: Face) {
 	}
 }
 
-private inline fun setPixel(x: Int, y: Int, color: Color) {
-	val offset = (y * width + x) shl 2
-	bitmapData[offset + 0] = color.blue
-	bitmapData[offset + 1] = color.green
-	bitmapData[offset + 2] = color.red
+private inline fun setPixel(x: Int, y: Int, shading: Byte) {
+	val offset = (y * hWidth + x) shl 2
+	bitmapData[offset + 0] = shading
+	bitmapData[offset + 1] = shading
+	bitmapData[offset + 2] = shading
 	bitmapData[offset + 3] = -1
 }
