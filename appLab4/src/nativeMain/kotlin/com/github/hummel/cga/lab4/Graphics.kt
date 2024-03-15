@@ -147,10 +147,18 @@ private inline fun drawTriangle(face: Face) {
 	}
 }
 
-private inline fun setPixel(x: Int, y: Int, shading: Byte) {
+private inline fun setPixel(x: Int, y: Int, shading: Triple<Byte, Byte, Byte>) {
 	val offset = (y * hWidth + x) shl 2
-	bitmapData[offset + 0] = shading
-	bitmapData[offset + 1] = shading
-	bitmapData[offset + 2] = shading
+	bitmapData[offset + 0] = shading.first
+	bitmapData[offset + 1] = shading.second
+	bitmapData[offset + 2] = shading.third
 	bitmapData[offset + 3] = -1
+}
+
+private inline fun ByteArray.getPixel(x: Int, y: Int): Triple<Byte, Byte, Byte> {
+	val offset = (y * hWidth + x) shl 2
+	val red = this[offset + 0]
+	val green = this[offset + 1]
+	val blue = this[offset + 2]
+	return Triple(red, green, blue)
 }

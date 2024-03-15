@@ -6,7 +6,7 @@ const val ambientIntencity: Float = 0.4f
 const val diffuseIntencity: Float = 0.8f
 const val specularIntencity: Float = 0.8f
 
-fun getShading(face: Face, alpha: Float, beta: Float, gamma: Float): Int {
+fun getShading(face: Face, alpha: Float, beta: Float, gamma: Float): Triple<Byte, Byte, Byte> {
 	val tex = getCenteredVecForSet(face.textures, alpha, beta, gamma)
 	val texX = (tex.x * 4096).toInt().coerceIn(0, 4095)
 	val texY = ((1.0f - tex.y) * 4096).toInt().coerceIn(0, 4095)
@@ -57,14 +57,14 @@ fun getBrightness(point: Vertex, normal: Vertex, mrao: Vertex): Float {
 	return brightness + ambientIntencity
 }
 
-fun applyBrightness(color: Int, brightness: Float): Int {
+fun applyBrightness(color: Int, brightness: Float): Triple<Byte, Byte, Byte> {
 	var r = (color and 0x00ff0000) shr 16
 	var g = (color and 0x0000ff00) shr 8
 	var b = (color and 0x000000ff)
 	r = (r * brightness).toInt()
 	g = (g * brightness).toInt()
 	b = (b * brightness).toInt()
-	return (r shl 16) or (g shl 8) or b
+	return Triple(r.toByte(), g.toByte(), b.toByte())
 }
 
 fun getCenteredVecForSet(set: Array<Vertex>, alpha: Float, beta: Float, gamma: Float): Vertex =
