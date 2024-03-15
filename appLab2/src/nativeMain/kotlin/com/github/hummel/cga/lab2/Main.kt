@@ -7,10 +7,6 @@ import kotlin.math.max
 import kotlin.math.sin
 import kotlin.time.measureTime
 
-private const val VK_Z: Int = 0x5A
-private const val VK_X: Int = 0x58
-private const val VK_C: Int = 0x43
-
 private var rotateX: Float = 0.0f
 private var rotateY: Float = 0.0f
 private var prevMouseX: Int = 0
@@ -18,20 +14,19 @@ private var prevMouseY: Int = 0
 private var isDragging: Boolean = false
 
 private val execTimes: MutableList<Long> = mutableListOf()
-private val execTime: Array<Long> = arrayOf(0, 0)
 private var min: Long = Long.MAX_VALUE
 private var max: Long = Long.MIN_VALUE
 
 const val width: Int = 1040
 const val height: Int = 580
 
-var faces: MutableList<Face> = ArrayList()
+var faces: MutableList<Face> = mutableListOf()
 var bitmapData: ByteArray = ByteArray(width * height * 4)
 
 private var dist: Float = 0.0f
 
 fun main() {
-	print("Enter model name (tie|mace|knight): ")
+	print("Enter model name (tie|mace|knight|car): ")
 
 	val name = readln()
 
@@ -121,31 +116,6 @@ private fun wndProc(window: HWND?, msg: UINT, wParam: WPARAM, lParam: LPARAM): L
 			ReleaseCapture()
 		}
 
-		WM_KEYDOWN -> {
-			val time = measureTime {
-				when (wParam.toInt()) {
-					VK_Z -> {
-						rotateVertices("z")
-						InvalidateRect(window, null, FALSE)
-					}
-
-					VK_X -> {
-						rotateVertices("x")
-						InvalidateRect(window, null, FALSE)
-					}
-
-					VK_C -> {
-						rotateVertices("y")
-						InvalidateRect(window, null, FALSE)
-					}
-
-					else -> {}
-				}
-			}.inWholeNanoseconds
-
-			execTime[0] = time
-		}
-
 		WM_PAINT -> {
 			val time = measureTime {
 				memScoped {
@@ -174,9 +144,7 @@ private fun wndProc(window: HWND?, msg: UINT, wParam: WPARAM, lParam: LPARAM): L
 				}
 			}.inWholeNanoseconds
 
-			execTime[1] = time
-
-			val fps = (1_000_000_000.0 / execTime.sum()).toLong()
+			val fps = (1_000_000_000.0 / time).toLong()
 
 			execTimes.add(fps)
 
@@ -185,9 +153,7 @@ private fun wndProc(window: HWND?, msg: UINT, wParam: WPARAM, lParam: LPARAM): L
 
 			val avg = execTimes.average().toLong()
 
-			println("$fps FPS, [$min; $max]; AVG: $avg; MLag: ${execTime[0] / 1_000_000}ms; GLag: ${execTime[1] / 1_000_000}ms")
-
-			execTime.fill(0)
+			println("$fps FPS, [$min; $max]; AVG: $avg; Lag: ${time / 1_000_000}ms")
 		}
 
 		WM_CLOSE -> DestroyWindow(window)
