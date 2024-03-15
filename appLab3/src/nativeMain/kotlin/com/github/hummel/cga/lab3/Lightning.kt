@@ -10,14 +10,14 @@ inline fun getShading(face: Face, alpha: Float, beta: Float, gamma: Float): Byte
 	val point = getCenteredVecForSet(face.vertices, alpha, beta, gamma)
 	val normal = getCenteredVecForSet(face.normals, alpha, beta, gamma).normalize()
 
-	val brightness = calculateBrightness(point, normal)
+	val brightness = getBrightness(point, normal)
 
 	val colorVal = (if (brightness * 255 > 255) 255 else brightness * 255).toByte()
 
 	return colorVal
 }
 
-inline fun calculateBrightness(point: Vertex, normal: Vertex): Float {
+inline fun getBrightness(point: Vertex, normal: Vertex): Float {
 	//diffuse
 	val ray = lightPos - point
 	var brightness = 0.0f
