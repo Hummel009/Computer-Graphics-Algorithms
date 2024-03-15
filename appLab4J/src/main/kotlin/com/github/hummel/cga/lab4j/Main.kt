@@ -33,21 +33,10 @@ lateinit var mraoImage: BufferedImage
 
 var faces: MutableList<Face> = ArrayList()
 
-private var dist: Float = 0.0f
+private var dist: Float = 20.0f
 
 fun main() {
-	print("Enter model name (tie|mace|knight|car): ")
-
-	val name = readln()
-
-	dist = when (name) {
-		"tie" -> 10.0f
-		"knight" -> 20.0f
-		"mace" -> 100.0f
-		"car" -> 5.0f
-		else -> 50.0f
-	}
-
+	val name = "knight"
 	parse("$name.obj")
 
 	textureImage = ImageIO.read(File("${name}_texture.bmp"))
