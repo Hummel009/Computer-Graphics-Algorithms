@@ -20,8 +20,8 @@ private val execTimes: MutableList<Long> = mutableListOf()
 private var min: Long = Long.MAX_VALUE
 private var max: Long = Long.MIN_VALUE
 
-const val hWidth: Int = 1040
-const val hHeight: Int = 580
+const val hWidth: Int = (1040.0f * 1.25f).toInt()
+const val hHeight: Int = (580.0f * 1.25f).toInt()
 
 val bufferedImage: BufferedImage = BufferedImage(hWidth, hHeight, BufferedImage.TYPE_INT_RGB)
 var faces: MutableList<Face> = ArrayList()
