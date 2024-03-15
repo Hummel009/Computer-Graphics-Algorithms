@@ -9,12 +9,15 @@ import java.awt.Graphics2D
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
 import java.awt.image.BufferedImage
+import java.io.File
+import javax.imageio.ImageIO
 import javax.swing.JFrame
 import javax.swing.JPanel
 import javax.swing.UIManager
 import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.time.measureTime
+
 
 private val execTimes: MutableList<Long> = mutableListOf()
 private var min: Long = Long.MAX_VALUE
@@ -24,6 +27,11 @@ const val hWidth: Int = (1040.0f * 1.25f).toInt()
 const val hHeight: Int = (580.0f * 1.25f).toInt()
 
 val bufferedImage: BufferedImage = BufferedImage(hWidth, hHeight, BufferedImage.TYPE_INT_RGB)
+
+lateinit var textureImage: BufferedImage
+lateinit var normalImage: BufferedImage
+lateinit var mraoImage: BufferedImage
+
 var faces: MutableList<Face> = ArrayList()
 
 private var dist: Float = 0.0f
@@ -42,6 +50,10 @@ fun main() {
 	}
 
 	parse("$name.obj")
+
+	textureImage = ImageIO.read(File("${name}_texture.bmp"))
+	normalImage = ImageIO.read(File("${name}_normal.bmp"))
+	mraoImage = ImageIO.read(File("${name}_mrao.bmp"))
 
 	FlatLightLaf.setup()
 	EventQueue.invokeLater {

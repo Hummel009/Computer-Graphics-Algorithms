@@ -19,6 +19,12 @@ data class Vertex(var x: Float, var y: Float, var z: Float, var w: Float = 1.0f)
 
 	operator fun unaryMinus(): Vertex = Vertex(-x, -y, -z)
 
+	fun divSelf(float: Float) {
+		x /= float
+		y /= float
+		z /= float
+	}
+
 	infix fun vectorMul(other: Vertex): Vertex {
 		val crossX = y * other.z - z * other.y
 		val crossY = z * other.x - x * other.z
@@ -31,7 +37,13 @@ data class Vertex(var x: Float, var y: Float, var z: Float, var w: Float = 1.0f)
 	fun normalize(): Vertex = Vertex(x / magnitude, y / magnitude, z / magnitude)
 }
 
-data class Face(val vertices: Array<Vertex>, val normals: Array<Vertex>, var poliNormal: Vertex) {
+data class Face(
+	val vertices: Array<Vertex>,
+	val normals: Array<Vertex>,
+	val textures: Array<Vertex>,
+	var depthArr: FloatArray?,
+	var poliNormal: Vertex
+) {
 	override fun equals(other: Any?): Boolean {
 		if (this === other) {
 			return true
@@ -45,6 +57,12 @@ data class Face(val vertices: Array<Vertex>, val normals: Array<Vertex>, var pol
 		if (!normals.contentEquals(other.normals)) {
 			return false
 		}
+		if (!textures.contentEquals(other.textures)) {
+			return false
+		}
+		if (!depthArr.contentEquals(other.depthArr)) {
+			return false
+		}
 		if (poliNormal != other.poliNormal) {
 			return false
 		}
@@ -55,7 +73,28 @@ data class Face(val vertices: Array<Vertex>, val normals: Array<Vertex>, var pol
 	override fun hashCode(): Int {
 		var result = vertices.contentHashCode()
 		result = 31 * result + normals.contentHashCode()
+		result = 31 * result + textures.contentHashCode()
+		result = 31 * result + depthArr.contentHashCode()
 		result = 31 * result + poliNormal.hashCode()
 		return result
+	}
+
+	fun getBarycentricCoordinates(x: Int, y: Int): FloatArray {
+		val barycentricCoordinates = FloatArray(3)
+
+		val x1 = vertices[0].x
+		val y1 = vertices[0].y
+		val x2 = vertices[1].x
+		val y2 = vertices[1].y
+		val x3 = vertices[2].x
+		val y3 = vertices[2].y
+
+		val denominator = ((y2 - y3) * (x1 - x3) + (x3 - x2) * (y1 - y3))
+
+		barycentricCoordinates[0] = ((y2 - y3) * (x - x3) + (x3 - x2) * (y - y3)) / denominator
+		barycentricCoordinates[1] = ((y3 - y1) * (x - x3) + (x1 - x3) * (y - y3)) / denominator
+		barycentricCoordinates[2] = 1 - barycentricCoordinates[0] - barycentricCoordinates[1]
+
+		return barycentricCoordinates
 	}
 }
