@@ -29,7 +29,7 @@ private fun drawTriangle(face: Face) {
 			multiplyVertexByMatrix(face.vertices[0], displayMatrix),
 			multiplyVertexByMatrix(face.vertices[1], displayMatrix),
 			multiplyVertexByMatrix(face.vertices[2], displayMatrix)
-		), face.normals, face.poliNormal
+		), face.normals, face.textures, null, face.poliNormal
 	)
 
 	var minY = Int.MAX_VALUE
@@ -84,6 +84,9 @@ private fun drawTriangle(face: Face) {
 						var alpha = barycCords[0]
 						var beta = barycCords[1]
 						var gamma = barycCords[2]
+						drawFace.depthArr?.let { alpha /= it[0] }
+						drawFace.depthArr?.let { beta /= it[1] }
+						drawFace.depthArr?.let { gamma /= it[2] }
 						val sum = alpha + beta + gamma
 						alpha /= sum
 						beta /= sum

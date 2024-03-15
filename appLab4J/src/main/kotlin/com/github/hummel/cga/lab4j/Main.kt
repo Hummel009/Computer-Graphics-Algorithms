@@ -18,7 +18,6 @@ import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.time.measureTime
 
-
 private val execTimes: MutableList<Long> = mutableListOf()
 private var min: Long = Long.MAX_VALUE
 private var max: Long = Long.MIN_VALUE

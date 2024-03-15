@@ -31,7 +31,13 @@ data class Vertex(var x: Float, var y: Float, var z: Float, var w: Float = 1.0f)
 	fun normalize(): Vertex = Vertex(x / magnitude, y / magnitude, z / magnitude)
 }
 
-data class Face(val vertices: Array<Vertex>, val normals: Array<Vertex>, var poliNormal: Vertex) {
+data class Face(
+	val vertices: Array<Vertex>,
+	val normals: Array<Vertex>,
+	val textures: Array<Vertex>,
+	var depthArr: FloatArray?,
+	var poliNormal: Vertex
+) {
 	override fun equals(other: Any?): Boolean {
 		if (this === other) {
 			return true
@@ -45,6 +51,12 @@ data class Face(val vertices: Array<Vertex>, val normals: Array<Vertex>, var pol
 		if (!normals.contentEquals(other.normals)) {
 			return false
 		}
+		if (!textures.contentEquals(other.textures)) {
+			return false
+		}
+		if (!depthArr.contentEquals(other.depthArr)) {
+			return false
+		}
 		if (poliNormal != other.poliNormal) {
 			return false
 		}
@@ -55,6 +67,8 @@ data class Face(val vertices: Array<Vertex>, val normals: Array<Vertex>, var pol
 	override fun hashCode(): Int {
 		var result = vertices.contentHashCode()
 		result = 31 * result + normals.contentHashCode()
+		result = 31 * result + textures.contentHashCode()
+		result = 31 * result + depthArr.contentHashCode()
 		result = 31 * result + poliNormal.hashCode()
 		return result
 	}

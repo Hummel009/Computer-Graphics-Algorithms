@@ -38,7 +38,7 @@ private fun drawTriangle(face: Face) {
 
 	for (i in vertices.indices) {
 		depthArr[i] = vertices[i].w
-		vertices[i].divSelf(vertices[i].w)
+		vertices[i] divSelf vertices[i].w
 	}
 
 	drawFace.depthArr = depthArr
@@ -95,9 +95,9 @@ private fun drawTriangle(face: Face) {
 						var alpha = barycCords[0]
 						var beta = barycCords[1]
 						var gamma = barycCords[2]
-						alpha /= (drawFace.depthArr ?: return)[0]
-						beta /= (drawFace.depthArr ?: return)[1]
-						gamma /= (drawFace.depthArr ?: return)[2]
+						drawFace.depthArr?.let { alpha /= it[0] }
+						drawFace.depthArr?.let { beta /= it[1] }
+						drawFace.depthArr?.let { gamma /= it[2] }
 						val sum = alpha + beta + gamma
 						alpha /= sum
 						beta /= sum

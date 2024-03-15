@@ -24,6 +24,7 @@ const val hWidth: Int = (1040.0f * 1.25f).toInt()
 const val hHeight: Int = (580.0f * 1.25f).toInt()
 
 val bufferedImage: BufferedImage = BufferedImage(hWidth, hHeight, BufferedImage.TYPE_INT_RGB)
+
 var faces: MutableList<Face> = ArrayList()
 
 private var dist: Float = 0.0f

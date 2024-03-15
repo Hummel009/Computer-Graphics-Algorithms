@@ -19,7 +19,7 @@ data class Vertex(var x: Float, var y: Float, var z: Float, var w: Float = 1.0f)
 
 	operator fun unaryMinus(): Vertex = Vertex(-x, -y, -z)
 
-	fun divSelf(float: Float) {
+	infix fun divSelf(float: Float) {
 		x /= float
 		y /= float
 		z /= float
