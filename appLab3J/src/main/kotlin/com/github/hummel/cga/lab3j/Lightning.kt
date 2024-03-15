@@ -2,8 +2,6 @@ package com.github.hummel.cga.lab3j
 
 import kotlin.math.pow
 
-const val generalIntencity: Float = 0.8f
-
 const val diffuseIntencity: Float = 1.0f
 const val specularIntencity: Float = 1.0f
 
@@ -27,7 +25,7 @@ fun getBrightness(point: Vertex, normal: Vertex): Float {
 	val angle = normal scalarMul ray
 
 	if (angle > 0) {
-		lightResult += generalIntencity * diffuseIntencity * angle / (ray.magnitude * normal.magnitude)
+		lightResult += diffuseIntencity * angle / (ray.magnitude * normal.magnitude)
 	}
 
 	//specular
@@ -36,7 +34,7 @@ fun getBrightness(point: Vertex, normal: Vertex): Float {
 	val rDotV = refr scalarMul view
 
 	if (rDotV > 0) {
-		lightResult += generalIntencity * specularIntencity * (rDotV / (refr.magnitude * view.magnitude)).pow(2.0f)
+		lightResult += specularIntencity * (rDotV / (refr.magnitude * view.magnitude)).pow(2.0f)
 	}
 
 	return lightResult

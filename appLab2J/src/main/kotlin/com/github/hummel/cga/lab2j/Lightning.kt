@@ -1,6 +1,6 @@
 package com.github.hummel.cga.lab2j
 
-const val generalIntencity: Float = 0.8f
+const val diffuseIntencity: Float = 0.8f
 
 fun getShading(face: Face): Int {
 	val point = face.vertices[0]
@@ -22,7 +22,7 @@ fun getBrightness(point: Vertex, normal: Vertex): Float {
 	val angle = normal scalarMul ray
 
 	if (angle > 0) {
-		lightResult = generalIntencity * angle / (ray.magnitude * normal.magnitude)
+		lightResult = diffuseIntencity * angle / (ray.magnitude * normal.magnitude)
 	}
 
 	return lightResult

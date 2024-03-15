@@ -2,15 +2,13 @@ package com.github.hummel.cga.lab4j
 
 import kotlin.math.pow
 
-const val generalIntencity: Float = 0.8f
-
 const val diffuseIntencity: Float = 1.0f
 const val specularIntencity: Float = 1.0f
 
 fun getShading(face: Face, alpha: Float, beta: Float, gamma: Float): Int {
-	val texVec = getCenteredVecForSet(face.textures, alpha, beta, gamma)
-	val texX = (texVec.x * textureImage.width).toInt().coerceIn(0, 4095)
-	val texY = ((1.0f - texVec.y) * textureImage.height).toInt().coerceIn(0, 4095)
+	val tex = getCenteredVecForSet(face.textures, alpha, beta, gamma)
+	val texX = (tex.x * textureImage.width).toInt().coerceIn(0, 4095)
+	val texY = ((1.0f - tex.y) * textureImage.height).toInt().coerceIn(0, 4095)
 
 	val point = getCenteredVecForSet(face.vertices, alpha, beta, gamma)
 
@@ -22,7 +20,7 @@ fun getShading(face: Face, alpha: Float, beta: Float, gamma: Float): Int {
 	)
 
 	val mraoData = mraoImage.getRGB(texX, texY)
-	val mraoVec = Vertex(
+	val mrao = Vertex(
 		((mraoData shr 16) and (0x000000ff)) / 256.0f,
 		((mraoData shr 8) and (0x000000ff)) / 256.0f,
 		((mraoData) and (0x000000ff)) / 256.0f
@@ -30,20 +28,20 @@ fun getShading(face: Face, alpha: Float, beta: Float, gamma: Float): Int {
 
 	val color = textureImage.getRGB(texX, texY)
 
-	val brightness = getBrightness(point, normal)
+	val brightness = getBrightness(point, normal, mrao)
 
 	val resultColor = applyBrightness(color, brightness)
 	return resultColor
 }
 
-fun getBrightness(point: Vertex, normal: Vertex): Float {
+fun getBrightness(point: Vertex, normal: Vertex, mrao: Vertex): Float {
 	//diffuse
 	val ray = lightPos - point
 	var lightResult = 0.0f
 	val angle = normal scalarMul ray
 
 	if (angle > 0) {
-		lightResult += generalIntencity * diffuseIntencity * angle / (ray.magnitude * normal.magnitude)
+		lightResult += diffuseIntencity * angle / (ray.magnitude * normal.magnitude)
 	}
 
 	//specular
@@ -52,7 +50,7 @@ fun getBrightness(point: Vertex, normal: Vertex): Float {
 	val rDotV = refr scalarMul view
 
 	if (rDotV > 0) {
-		lightResult += generalIntencity * specularIntencity * (rDotV / (refr.magnitude * view.magnitude)).pow(2.0f)
+		lightResult += specularIntencity * mrao.x * (rDotV / (refr.magnitude * view.magnitude)).pow(2.0f)
 	}
 
 	return lightResult
