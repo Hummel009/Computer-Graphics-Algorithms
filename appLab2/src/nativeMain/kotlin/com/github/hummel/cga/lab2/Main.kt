@@ -45,8 +45,8 @@ fun main() {
 	parse("$name.obj")
 
 	memScoped {
-		val className = "Teapot"
-		val windowTitle = "Windows API: Kotlin Native"
+		val className = "Renderer"
+		val windowTitle = "Renderer: Kotlin Native"
 
 		val windowClass = alloc<WNDCLASS>()
 		windowClass.style = 0u
