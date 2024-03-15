@@ -3,35 +3,14 @@ package com.github.hummel.cga.lab3
 import kotlin.math.PI
 import kotlin.math.tan
 
-var eye: Vertex = Vertex(
-	0.0f, 0.0f, when (name) {
-		"tie" -> 10.0f
-		"knight" -> 20.0f
-		"mace" -> 100.0f
-		else -> 0.0f
-	}
-)
-var target: Vertex = Vertex(0.0f, 0.0f, 0.0f)
-var up: Vertex = Vertex(0.0f, 1.0f, 0.0f)
-
-val lightPos: Vertex = eye + up
+private val target: Vertex = Vertex(0.0f, 0.0f, 0.0f)
+private val up: Vertex = Vertex(0.0f, 1.0f, 0.0f)
 
 private var fov: Float = PI.toFloat() / 4.0f
 private var aspect = width.toFloat() / height.toFloat()
 
 private var zNear: Float = 1.0f
 private var zFar: Float = 100.0f
-
-private val zAxis = (eye - target).normalize()
-private val xAxis = (up vectorMul zAxis).normalize()
-private val yAxis = xAxis vectorMul zAxis
-
-private val matrixView: Array<FloatArray> = arrayOf(
-	floatArrayOf(xAxis.x, xAxis.y, xAxis.z, -(xAxis scalarMul eye)),
-	floatArrayOf(yAxis.x, yAxis.y, yAxis.z, -(yAxis scalarMul eye)),
-	floatArrayOf(zAxis.x, zAxis.y, zAxis.z, -(zAxis scalarMul eye)),
-	floatArrayOf(0.0f, 0.0f, 0.0f, 1.0f)
-)
 
 private val matrixProjection: Array<FloatArray> = arrayOf(
 	floatArrayOf(1.0f / (aspect * tan(fov / 2.0f)), 0.0f, 0.0f, 0.0f),
@@ -47,5 +26,21 @@ private val matrixViewport: Array<FloatArray> = arrayOf(
 	floatArrayOf(0.0f, 0.0f, 0.0f, 1.0f)
 )
 
-val displayMatrix: Array<FloatArray> =
-	multiplyMatrixByMatrix(multiplyMatrixByMatrix(matrixViewport, matrixProjection), matrixView)
+private val staticMultiplier: Array<FloatArray> = multiplyMatrixByMatrix(matrixViewport, matrixProjection)
+
+fun getDisplayMatrix(eye: Vertex): Array<FloatArray> {
+	val zAxis = (eye - target).normalize()
+	val xAxis = (up vectorMul zAxis).normalize()
+	val yAxis = xAxis vectorMul zAxis
+
+	val matrixView = arrayOf(
+		floatArrayOf(xAxis.x, xAxis.y, xAxis.z, -(xAxis scalarMul eye)),
+		floatArrayOf(yAxis.x, yAxis.y, yAxis.z, -(yAxis scalarMul eye)),
+		floatArrayOf(zAxis.x, zAxis.y, zAxis.z, -(zAxis scalarMul eye)),
+		floatArrayOf(0.0f, 0.0f, 0.0f, 1.0f)
+	)
+
+	return multiplyMatrixByMatrix(staticMultiplier, matrixView)
+}
+
+fun getLightPos(eye: Vertex): Vertex = eye + up

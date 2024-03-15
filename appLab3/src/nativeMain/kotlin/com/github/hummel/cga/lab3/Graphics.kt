@@ -3,24 +3,29 @@ package com.github.hummel.cga.lab3
 import kotlinx.cinterop.*
 import platform.windows.*
 
-private const val chunks: Int = 8
-
-private val splitFaces: Array<List<Face>> = split(faces, chunks)
 private val zBuffer: FloatArray = FloatArray(width * height)
 
-fun renderObject() {
+lateinit var displayMatrix: Array<FloatArray>
+lateinit var lightPos: Vertex
+lateinit var eyePos: Vertex
+
+fun renderObject(eye: Vertex) {
+	displayMatrix = getDisplayMatrix(eye)
+	lightPos = getLightPos(eye)
+	eyePos = eye
+
 	bitmapData.fill(0)
 	zBuffer.fill(Float.POSITIVE_INFINITY)
 
 	memScoped {
-		val params = Array(chunks) {
+		val params = Array(kernels) {
 			alloc<IntVar>()
 		}
 
 		params.forEachIndexed { index, param -> param.value = index }
 
-		val threads = Array(chunks) {
-			CreateThread(null, 0u, staticCFunction(::drawerThread), params[it].ptr, 0u, null)
+		val threads = Array(kernels) {
+			CreateThread(null, 0u, staticCFunction(::tfDrawVertices), params[it].ptr, 0u, null)
 		}
 
 		for (thread in threads) {
@@ -30,10 +35,10 @@ fun renderObject() {
 	}
 }
 
-private fun drawerThread(lpParameter: LPVOID?): DWORD {
+private fun tfDrawVertices(lpParameter: LPVOID?): DWORD {
 	val parameter = lpParameter?.reinterpret<IntVar>()?.pointed?.value!!
 
-	for (face in splitFaces[parameter]) {
+	for (face in threadFaces[parameter]) {
 		drawTriangle(face)
 	}
 
@@ -41,7 +46,7 @@ private fun drawerThread(lpParameter: LPVOID?): DWORD {
 }
 
 private inline fun drawTriangle(face: Face) {
-	val viewDir = -face.vertices[0] + eye
+	val viewDir = -face.vertices[0] + eyePos
 	val cosAngle = (face.poliNormal / face.normals.size.toFloat()) scalarMul viewDir
 
 	if (cosAngle <= 0) {

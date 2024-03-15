@@ -32,7 +32,7 @@ inline fun calculateLight(point: Vertex, normal: Vertex): Float {
 
 	//specular
 	val refr = normal * 2.0f * angle - ray
-	val view = eye - point
+	val view = eyePos - point
 	val rDotV = refr scalarMul view
 
 	if (rDotV > 0) {
