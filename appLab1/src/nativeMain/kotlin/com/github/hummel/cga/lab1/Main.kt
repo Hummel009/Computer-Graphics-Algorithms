@@ -92,8 +92,8 @@ private fun wndProc(window: HWND?, msg: UINT, wParam: WPARAM, lParam: LPARAM): L
 	when (msg.toInt()) {
 		WM_MOUSEMOVE -> {
 			if (isDragging) {
-				val currMouseX = lParam.toInt() and 0xFFFF
-				val currMouseY = (lParam.toInt() shr 16) and 0xFFFF
+				val currMouseX = lParam.toInt() and 0xffff
+				val currMouseY = (lParam.toInt() shr 16) and 0xffff
 
 				rotateY += (currMouseX - prevMouseX) / 200.0f
 				rotateX += (currMouseY - prevMouseY) / 200.0f
@@ -107,8 +107,8 @@ private fun wndProc(window: HWND?, msg: UINT, wParam: WPARAM, lParam: LPARAM): L
 
 		WM_LBUTTONDOWN -> {
 			isDragging = true
-			prevMouseX = lParam.toInt() and 0xFFFF
-			prevMouseY = (lParam.toInt() shr 16) and 0xFFFF
+			prevMouseX = lParam.toInt() and 0xffff
+			prevMouseY = (lParam.toInt() shr 16) and 0xffff
 			SetCapture(window)
 		}
 

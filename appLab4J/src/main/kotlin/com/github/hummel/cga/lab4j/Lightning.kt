@@ -6,36 +6,37 @@ const val ambientIntencity: Float = 0.4f
 const val diffuseIntencity: Float = 0.8f
 const val specularIntencity: Float = 0.8f
 
-fun getShading(face: Face, alpha: Float, beta: Float, gamma: Float): Int {
+fun getResultRgb(face: Face, alpha: Float, beta: Float, gamma: Float): RGB {
 	val tex = getCenteredVecForSet(face.textures, alpha, beta, gamma)
 	val texX = (tex.x * 4096).toInt().coerceIn(0, 4095)
 	val texY = ((1.0f - tex.y) * 4096).toInt().coerceIn(0, 4095)
 
 	val point = getCenteredVecForSet(face.vertices, alpha, beta, gamma)
 
-	val normalData = normalImage.getRGB(texX, texY)
+	val normalData = normalImage.getRGB(texX, texY).decompose()
 	val normal = -Vertex(
-		(((normalData shr 16) and (0x000000ff)) / 256.0f) * 2.0f - 1.0f,
-		(((normalData shr 8) and (0x000000ff)) / 256.0f) * 2.0f - 1.0f,
-		(((normalData) and (0x000000ff)) / 256.0f) * 2.0f - 1.0f
+		(normalData.r / 256.0f) * 2.0f - 1.0f,
+		(normalData.g / 256.0f) * 2.0f - 1.0f,
+		(normalData.b / 256.0f) * 2.0f - 1.0f
 	)
 
-	val mraoData = mraoImage.getRGB(texX, texY)
+	val mraoData = mraoImage.getRGB(texX, texY).decompose()
 	val mrao = Vertex(
-		((mraoData shr 16) and (0x000000ff)) / 256.0f,
-		((mraoData shr 8) and (0x000000ff)) / 256.0f,
-		((mraoData) and (0x000000ff)) / 256.0f
+		mraoData.r / 256.0f,
+		mraoData.g / 256.0f,
+		mraoData.b / 256.0f
 	)
 
-	val color = textureImage.getRGB(texX, texY)
+	val rgb = textureImage.getRGB(texX, texY).decompose()
 
 	val brightness = getBrightness(point, normal, mrao)
 
-	val resultColor = applyBrightness(color, brightness)
-	return resultColor
+	val resultRgb = applyBrightness(rgb, brightness)
+
+	return resultRgb
 }
 
-fun getBrightness(point: Vertex, normal: Vertex, mrao: Vertex): Float {
+private fun getBrightness(point: Vertex, normal: Vertex, mrao: Vertex): Float {
 	//diffuse
 	val ray = lightPos - point
 	var brightness = 0.0f
@@ -57,15 +58,12 @@ fun getBrightness(point: Vertex, normal: Vertex, mrao: Vertex): Float {
 	return brightness + ambientIntencity
 }
 
-fun applyBrightness(color: Int, brightness: Float): Int {
-	var r = (color and 0x00ff0000) shr 16
-	var g = (color and 0x0000ff00) shr 8
-	var b = (color and 0x000000ff)
+private fun applyBrightness(rgb: RGB, brightness: Float): RGB {
+	var r = rgb.r
+	var g = rgb.g
+	var b = rgb.b
 	r = (r * brightness).toInt()
 	g = (g * brightness).toInt()
 	b = (b * brightness).toInt()
-	return (r shl 16) or (g shl 8) or b
+	return RGB(r, g, b)
 }
-
-fun getCenteredVecForSet(set: Array<Vertex>, alpha: Float, beta: Float, gamma: Float): Vertex =
-	set[0] * alpha + set[1] * beta + set[2] * gamma

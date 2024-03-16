@@ -19,7 +19,7 @@ data class Vertex(var x: Float, var y: Float, var z: Float, var w: Float = 1.0f)
 
 	inline operator fun unaryMinus(): Vertex = Vertex(-x, -y, -z)
 
-	infix fun divSelf(float: Float) {
+	inline infix fun divSelf(float: Float) {
 		x /= float
 		y /= float
 		z /= float
@@ -79,7 +79,7 @@ data class Face(
 		return result
 	}
 
-	fun getBarycentricCoordinates(x: Int, y: Int): FloatArray {
+	inline fun getBarycentricCoordinates(x: Int, y: Int): FloatArray {
 		val barycentricCoordinates = FloatArray(3)
 
 		val x1 = vertices[0].x
@@ -98,3 +98,5 @@ data class Face(
 		return barycentricCoordinates
 	}
 }
+
+data class RGB(val r: Int, val g: Int, val b: Int)

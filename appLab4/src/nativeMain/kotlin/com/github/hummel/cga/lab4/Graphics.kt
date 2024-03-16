@@ -136,21 +136,13 @@ private inline fun drawTriangle(face: Face) {
 						if (zBuffer[x * hHeight + y] > zFragment) {
 							zBuffer[x * hHeight + y] = zFragment
 
-							val shading = getShading(face, alpha, beta, gamma)
+							val rgb = getResultRgb(face, alpha, beta, gamma)
 
-							setPixel(x, y, shading)
+							bitmapData.setRGB(x, y, rgb)
 						}
 					}
 				}
 			}
 		}
 	}
-}
-
-private inline fun setPixel(x: Int, y: Int, shading: Triple<Byte, Byte, Byte>) {
-	val offset = (y * hWidth + x) shl 2
-	bitmapData[offset + 0] = shading.first
-	bitmapData[offset + 1] = shading.second
-	bitmapData[offset + 2] = shading.third
-	bitmapData[offset + 3] = -1
 }
