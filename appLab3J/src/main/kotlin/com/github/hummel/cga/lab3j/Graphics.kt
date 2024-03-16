@@ -1,6 +1,6 @@
 package com.github.hummel.cga.lab3j
 
-val zBuffer: FloatArray = FloatArray(windowWidth * windowHeight)
+private val zBuffer: FloatArray = FloatArray(windowWidth * windowHeight)
 
 lateinit var displayMatrix: Array<FloatArray>
 lateinit var lightPos: Vertex
