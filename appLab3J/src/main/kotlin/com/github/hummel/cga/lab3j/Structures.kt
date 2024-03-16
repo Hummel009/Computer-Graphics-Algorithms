@@ -73,7 +73,7 @@ data class Face(
 		return result
 	}
 
-	fun getBarycentricCoordinates(x: Int, y: Int): FloatArray {
+	fun getBarycentricCoords(x: Int, y: Int): FloatArray {
 		val barycentricCoordinates = FloatArray(3)
 
 		val x1 = vertices[0].x
@@ -92,3 +92,5 @@ data class Face(
 		return barycentricCoordinates
 	}
 }
+
+data class RGB(val r: Int, val g: Int, val b: Int)

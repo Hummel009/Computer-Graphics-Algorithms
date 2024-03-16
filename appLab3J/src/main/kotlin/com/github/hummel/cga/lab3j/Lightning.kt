@@ -6,20 +6,18 @@ const val ambientIntencity: Float = 0.0f
 const val diffuseIntencity: Float = 0.8f
 const val specularIntencity: Float = 0.8f
 
-fun getShading(face: Face, alpha: Float, beta: Float, gamma: Float): Int {
-	val point = getCenteredVecForSet(face.vertices, alpha, beta, gamma)
-	val normal = getCenteredVecForSet(face.normals, alpha, beta, gamma).normalize()
+fun getResultRgb(face: Face, alpha: Float, beta: Float, gamma: Float): RGB {
+	val point = getCenteredVertex(face.vertices, alpha, beta, gamma)
+	val normal = getCenteredVertex(face.normals, alpha, beta, gamma).normalize()
 
 	val brightness = getBrightness(point, normal)
 
 	val colorVal = (if (brightness * 255 > 255) 255 else brightness * 255).toInt()
 
-	val color = (colorVal shl 16) or (colorVal shl 8) or colorVal
-
-	return color
+	return RGB(colorVal, colorVal, colorVal)
 }
 
-fun getBrightness(point: Vertex, normal: Vertex): Float {
+private fun getBrightness(point: Vertex, normal: Vertex): Float {
 	//diffuse
 	val ray = lightPos - point
 	var brightness = 0.0f
@@ -40,6 +38,3 @@ fun getBrightness(point: Vertex, normal: Vertex): Float {
 
 	return brightness + ambientIntencity
 }
-
-fun getCenteredVecForSet(set: Array<Vertex>, alpha: Float, beta: Float, gamma: Float): Vertex =
-	set[0] * alpha + set[1] * beta + set[2] * gamma
