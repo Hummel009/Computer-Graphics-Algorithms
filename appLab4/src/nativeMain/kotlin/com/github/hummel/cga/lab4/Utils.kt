@@ -26,9 +26,9 @@ inline fun ByteArray.setRGB(x: Int, y: Int, rgb: RGB) {
 
 inline fun ByteArray.getRGB(x: Int, y: Int): RGB {
 	val offset = (y * windowWidth + x) shl 2
-	val r = this[offset + 0].toInt()
+	val b = this[offset + 0].toInt()
 	val g = this[offset + 1].toInt()
-	val b = this[offset + 2].toInt()
+	val r = this[offset + 2].toInt()
 	return RGB(r, g, b)
 }
 
