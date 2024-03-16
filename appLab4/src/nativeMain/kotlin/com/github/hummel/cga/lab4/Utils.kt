@@ -35,10 +35,10 @@ inline fun ByteArray.getRGB(x: Int, y: Int): RGB {
 inline fun readBytesFromFile(filePath: String): ByteArray {
 	val file = fopen(filePath, "rb") ?: throw Exception()
 
-	fseek(file, 54, SEEK_SET)
+	fseek(file, 0, SEEK_SET)
 	fseek(file, 0, SEEK_END)
-	val fileSize = ftell(file) - 54
-	fseek(file, 54, SEEK_SET)
+	val fileSize = ftell(file)
+	fseek(file, 0, SEEK_SET)
 
 	val buffer = ByteArray(fileSize)
 	fread(buffer.refTo(0), fileSize.toULong(), 1u, file)
