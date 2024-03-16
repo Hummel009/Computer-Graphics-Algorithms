@@ -59,16 +59,6 @@ private inline fun drawTriangle(face: Face) {
 		), face.normals, face.textures, face.depthArr, face.poliNormal
 	)
 
-	val depthArr = FloatArray(3)
-	val vertices = drawFace.vertices
-
-	for (i in vertices.indices) {
-		depthArr[i] = vertices[i].w
-		vertices[i] divSelf vertices[i].w
-	}
-
-	drawFace.depthArr = depthArr
-
 	var minY = Int.MAX_VALUE
 	var maxY = Int.MIN_VALUE
 
