@@ -2,9 +2,7 @@ package com.github.hummel.cga.lab1j
 
 import kotlin.math.abs
 
-private val zBuffer: FloatArray = FloatArray(windowWidth * windowHeight)
-
-private val color: Int = RGB(255, 255, 255).compose()
+private val rgb: Int = RGB(255, 255, 255).compose()
 
 private lateinit var displayMatrix: Array<FloatArray>
 private lateinit var lightPos: Vertex
@@ -14,8 +12,6 @@ fun renderObject(eye: Vertex) {
 	displayMatrix = getDisplayMatrix(eye)
 	lightPos = getLightPos(eye)
 	eyePos = eye
-
-	zBuffer.fill(Float.POSITIVE_INFINITY)
 
 	faces.forEach { drawTriangle(it) }
 }
@@ -29,12 +25,12 @@ private fun drawTriangle(face: Face) {
 		), face.normals, face.textures, face.depthArr, face.poliNormal
 	)
 
-	drawLine(drawFace.vertices[0], drawFace.vertices[1], color)
-	drawLine(drawFace.vertices[1], drawFace.vertices[2], color)
-	drawLine(drawFace.vertices[2], drawFace.vertices[0], color)
+	drawLine(drawFace.vertices[0], drawFace.vertices[1], rgb)
+	drawLine(drawFace.vertices[1], drawFace.vertices[2], rgb)
+	drawLine(drawFace.vertices[2], drawFace.vertices[0], rgb)
 }
 
-private fun drawLine(v1: Vertex, v2: Vertex, color: Int) {
+private fun drawLine(v1: Vertex, v2: Vertex, rgb: Int) {
 	var x1 = v1.x.toInt()
 	val x2 = v2.x.toInt()
 	var y1 = v1.y.toInt()
@@ -48,7 +44,7 @@ private fun drawLine(v1: Vertex, v2: Vertex, color: Int) {
 
 	while (x1 != x2 || y1 != y2) {
 		if (x1 in 0 until windowWidth && y1 in 0 until windowHeight) {
-			bufferedImage.setRGB(x1, y1, color)
+			bufferedImage.setRGB(x1, y1, rgb)
 		}
 
 		val err2 = 2 * err

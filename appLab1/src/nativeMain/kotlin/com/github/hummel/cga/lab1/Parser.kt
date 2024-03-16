@@ -6,12 +6,13 @@ import platform.posix.fclose
 import platform.posix.fgets
 import platform.posix.fopen
 
-private val vertices: MutableList<Vertex> = ArrayList()
-private val textures: MutableList<Vertex> = ArrayList()
-private val normals: MutableList<Vertex> = ArrayList()
+private val vertices: MutableList<Vertex> = mutableListOf()
+private val textures: MutableList<Vertex> = mutableListOf()
+private val normals: MutableList<Vertex> = mutableListOf()
 
 fun parse(fileName: String) {
 	val file = fopen(fileName, "r")
+
 	val bufferLength = 1024
 	val buffer = ByteArray(bufferLength)
 
@@ -30,7 +31,7 @@ fun parse(fileName: String) {
 	fclose(file)
 }
 
-private fun addVertex(array: Array<String>) {
+private inline fun addVertex(array: Array<String>) {
 	val coords = array.map { it.toFloat() }
 
 	val vertex = when (coords.size) {
@@ -41,7 +42,7 @@ private fun addVertex(array: Array<String>) {
 	vertices.add(vertex)
 }
 
-private fun addVertexTexture(array: Array<String>) {
+private inline fun addVertexTexture(array: Array<String>) {
 	val coords = array.map { it.toFloat() }
 
 	val vertex = when (coords.size) {
@@ -53,7 +54,7 @@ private fun addVertexTexture(array: Array<String>) {
 	textures.add(vertex)
 }
 
-private fun addVertexNormal(array: Array<String>) {
+private inline fun addVertexNormal(array: Array<String>) {
 	val coords = array.map { it.toFloat() }
 
 	val vertex = when (coords.size) {
@@ -63,7 +64,7 @@ private fun addVertexNormal(array: Array<String>) {
 	normals.add(vertex)
 }
 
-private fun addFace(array: Array<String>) {
+private inline fun addFace(array: Array<String>) {
 	val vs = mutableListOf<Vertex>()
 	val vns = mutableListOf<Vertex>()
 	val vts = mutableListOf<Vertex>()

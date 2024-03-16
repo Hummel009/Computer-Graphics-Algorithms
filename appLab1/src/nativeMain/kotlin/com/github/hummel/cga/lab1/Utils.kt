@@ -12,3 +12,11 @@ fun <T> split(list: List<T>, parts: Int): Array<List<T>> {
 
 	return list.chunked(chunkSize).toTypedArray()
 }
+
+inline fun ByteArray.setRGB(x: Int, y: Int, rgb: RGB) {
+	val offset = (y * windowWidth + x) shl 2
+	this[offset + 0] = rgb.b.toByte()
+	this[offset + 1] = rgb.g.toByte()
+	this[offset + 2] = rgb.r.toByte()
+	this[offset + 3] = -1
+}

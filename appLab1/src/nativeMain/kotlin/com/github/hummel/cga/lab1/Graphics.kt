@@ -4,7 +4,7 @@ import kotlinx.cinterop.*
 import platform.windows.*
 import kotlin.math.abs
 
-private val zBuffer: FloatArray = FloatArray(hWidth * hHeight)
+private val rgb: RGB = RGB(255, 255, 255)
 
 lateinit var displayMatrix: Array<FloatArray>
 lateinit var lightPos: Vertex
@@ -16,7 +16,6 @@ fun renderObject(eye: Vertex) {
 	eyePos = eye
 
 	bitmapData.fill(0)
-	zBuffer.fill(Float.POSITIVE_INFINITY)
 
 	memScoped {
 		val params = Array(kernels) {
@@ -29,19 +28,17 @@ fun renderObject(eye: Vertex) {
 			CreateThread(null, 0u, staticCFunction(::tfDrawVertices), params[it].ptr, 0u, null)
 		}
 
-		for (thread in threads) {
-			WaitForSingleObject(thread, INFINITE)
-			CloseHandle(thread)
+		threads.forEach {
+			WaitForSingleObject(it, INFINITE)
+			CloseHandle(it)
 		}
 	}
 }
 
-private fun tfDrawVertices(lpParameter: LPVOID?): DWORD {
-	val parameter = lpParameter?.reinterpret<IntVar>()?.pointed?.value!!
+private fun tfDrawVertices(parameters: LPVOID?): DWORD {
+	val id = parameters?.reinterpret<IntVar>()?.pointed?.value!!
 
-	for (face in threadFaces[parameter]) {
-		drawTriangle(face)
-	}
+	threadFaces[id].forEach { drawTriangle(it) }
 
 	return 0u
 }
@@ -55,14 +52,12 @@ private inline fun drawTriangle(face: Face) {
 		), face.normals, face.textures, face.depthArr, face.poliNormal
 	)
 
-	val shading = 255.toByte()
-
-	drawLine(drawFace.vertices[0], drawFace.vertices[1], shading)
-	drawLine(drawFace.vertices[1], drawFace.vertices[2], shading)
-	drawLine(drawFace.vertices[2], drawFace.vertices[0], shading)
+	drawLine(drawFace.vertices[0], drawFace.vertices[1], rgb)
+	drawLine(drawFace.vertices[1], drawFace.vertices[2], rgb)
+	drawLine(drawFace.vertices[2], drawFace.vertices[0], rgb)
 }
 
-private inline fun drawLine(v1: Vertex, v2: Vertex, shading: Byte) {
+private fun drawLine(v1: Vertex, v2: Vertex, rgb: RGB) {
 	var x1 = v1.x.toInt()
 	val x2 = v2.x.toInt()
 	var y1 = v1.y.toInt()
@@ -75,8 +70,8 @@ private inline fun drawLine(v1: Vertex, v2: Vertex, shading: Byte) {
 	var err = dx - dy
 
 	while (x1 != x2 || y1 != y2) {
-		if (x1 in 0 until hWidth && y1 in 0 until hHeight) {
-			setPixel(x1, y1, shading)
+		if (x1 in 0 until windowWidth && y1 in 0 until windowHeight) {
+			bitmapData.setRGB(x1, y1, rgb)
 		}
 
 		val err2 = 2 * err
@@ -91,12 +86,4 @@ private inline fun drawLine(v1: Vertex, v2: Vertex, shading: Byte) {
 			y1 += sy
 		}
 	}
-}
-
-private inline fun setPixel(x: Int, y: Int, shading: Byte) {
-	val offset = (y * hWidth + x) shl 2
-	bitmapData[offset + 0] = shading
-	bitmapData[offset + 1] = shading
-	bitmapData[offset + 2] = shading
-	bitmapData[offset + 3] = -1
 }
