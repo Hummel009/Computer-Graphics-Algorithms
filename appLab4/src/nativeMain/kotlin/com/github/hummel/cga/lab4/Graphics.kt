@@ -3,7 +3,7 @@ package com.github.hummel.cga.lab4
 import kotlinx.cinterop.*
 import platform.windows.*
 
-private val zBuffer: FloatArray = FloatArray(hWidth * hHeight)
+private val zBuffer: FloatArray = FloatArray(windowWidth * windowHeight)
 
 lateinit var displayMatrix: Array<FloatArray>
 lateinit var lightPos: Vertex
@@ -28,19 +28,17 @@ fun renderObject(eye: Vertex) {
 			CreateThread(null, 0u, staticCFunction(::tfDrawVertices), params[it].ptr, 0u, null)
 		}
 
-		for (thread in threads) {
-			WaitForSingleObject(thread, INFINITE)
-			CloseHandle(thread)
+		threads.forEach {
+			WaitForSingleObject(it, INFINITE)
+			CloseHandle(it)
 		}
 	}
 }
 
-private fun tfDrawVertices(lpParameter: LPVOID?): DWORD {
-	val parameter = lpParameter?.reinterpret<IntVar>()?.pointed?.value!!
+private fun tfDrawVertices(parameters: LPVOID?): DWORD {
+	val id = parameters?.reinterpret<IntVar>()?.pointed?.value!!
 
-	for (face in threadFaces[parameter]) {
-		drawTriangle(face)
-	}
+	threadFaces[id].forEach { drawTriangle(it) }
 
 	return 0u
 }
@@ -74,8 +72,8 @@ private inline fun drawTriangle(face: Face) {
 	var minY = Int.MAX_VALUE
 	var maxY = Int.MIN_VALUE
 
-	for (vertex in drawFace.vertices) {
-		val y = vertex.y.toInt()
+	drawFace.vertices.forEach {
+		val y = it.y.toInt()
 		if (y < minY) {
 			minY = y
 		}
@@ -86,7 +84,7 @@ private inline fun drawTriangle(face: Face) {
 
 	// Создать цикл по каждой строке изображения
 	for (y in minY..maxY) {
-		if (y in 0 until hHeight) {
+		if (y in 0 until windowHeight) {
 			// Найти пересечения текущей строки с каждой из сторон треугольника
 			val xIntersections = IntArray(2)
 			var intersectionCount = 0
@@ -113,28 +111,31 @@ private inline fun drawTriangle(face: Face) {
 			// Заполнить пиксели между пересечениями цветом треугольника
 			if (intersectionCount == 2) {
 				for (x in xIntersections[0]..xIntersections[1]) {
-					if (x in 0 until hWidth) {
+					if (x in 0 until windowWidth) {
 						val v0 = drawFace.vertices[0]
 						val v1 = drawFace.vertices[1]
 						val v2 = drawFace.vertices[2]
 
-						val barycCords = drawFace.getBarycentricCoordinates(x, y)
+						val coords = drawFace.getBarycentricCoords(x, y)
 
-						var alpha = barycCords[0]
-						var beta = barycCords[1]
-						var gamma = barycCords[2]
+						var alpha = coords[0]
+						var beta = coords[1]
+						var gamma = coords[2]
+
 						drawFace.depthArr?.let { alpha /= it[0] }
 						drawFace.depthArr?.let { beta /= it[1] }
 						drawFace.depthArr?.let { gamma /= it[2] }
+
 						val sum = alpha + beta + gamma
+
 						alpha /= sum
 						beta /= sum
 						gamma /= sum
 
 						val zFragment = alpha * v0.z + beta * v1.z + gamma * v2.z
 
-						if (zBuffer[x * hHeight + y] > zFragment) {
-							zBuffer[x * hHeight + y] = zFragment
+						if (zBuffer[x * windowHeight + y] > zFragment) {
+							zBuffer[x * windowHeight + y] = zFragment
 
 							val rgb = getResultRgb(face, alpha, beta, gamma)
 

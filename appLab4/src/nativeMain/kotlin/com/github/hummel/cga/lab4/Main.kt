@@ -7,24 +7,18 @@ import kotlin.math.max
 import kotlin.math.sin
 import kotlin.time.measureTime
 
-private var rotateX: Float = 0.0f
-private var rotateY: Float = 0.0f
-private var prevMouseX: Int = 0
-private var prevMouseY: Int = 0
-private var isDragging: Boolean = false
-
 private val execTimes: MutableList<Long> = mutableListOf()
 private var min: Long = Long.MAX_VALUE
 private var max: Long = Long.MIN_VALUE
 
-const val hWidth: Int = 1040
-const val hHeight: Int = 580
+const val windowWidth: Int = 1040
+const val windowHeight: Int = 580
 
-var bitmapData: ByteArray = ByteArray(hWidth * hHeight * 4)
+var bitmapData: ByteArray = ByteArray(windowWidth * windowHeight * 4)
 
-var normalData: ByteArray = ByteArray(4096 * 4096 * 4) { -1 }
-var mraoData: ByteArray = ByteArray(4096 * 4096 * 4) { -1 }
-var textureData: ByteArray = ByteArray(4096 * 4096 * 4) { -1 }
+lateinit var mraoData: ByteArray
+lateinit var normalData: ByteArray
+lateinit var textureData: ByteArray
 
 var faces: MutableList<Face> = mutableListOf()
 
@@ -33,8 +27,8 @@ private var dist: Float = 20.0f
 fun main() {
 	val name = "knight"
 
-	normalData = readBytesFromFile("knight_normal.bmp")
 	mraoData = readBytesFromFile("knight_mrao.bmp")
+	normalData = readBytesFromFile("knight_normal.bmp")
 	textureData = readBytesFromFile("knight_texture.bmp")
 
 	parse("$name.obj")
@@ -60,8 +54,8 @@ fun main() {
 		val screenWidth = GetSystemMetrics(SM_CXSCREEN)
 		val screenHeight = GetSystemMetrics(SM_CYSCREEN)
 
-		val windowX = max(0, (screenWidth - hWidth) / 2)
-		val windowY = max(0, (screenHeight - hHeight) / 2)
+		val windowX = max(0, (screenWidth - windowWidth) / 2)
+		val windowY = max(0, (screenHeight - windowHeight) / 2)
 
 		CreateWindowExW(
 			0u,
@@ -70,8 +64,8 @@ fun main() {
 			(WS_VISIBLE or WS_CAPTION or WS_SYSMENU).toUInt(),
 			windowX,
 			windowY,
-			hWidth,
-			hHeight,
+			windowWidth,
+			windowHeight,
 			null,
 			null,
 			null,
@@ -85,6 +79,12 @@ fun main() {
 		}
 	}
 }
+
+private var rotateX: Float = 0.0f
+private var rotateY: Float = 0.0f
+private var prevMouseX: Int = 0
+private var prevMouseY: Int = 0
+private var isDragging: Boolean = false
 
 private fun wndProc(window: HWND?, msg: UINT, wParam: WPARAM, lParam: LPARAM): LRESULT {
 	when (msg.toInt()) {
@@ -118,9 +118,9 @@ private fun wndProc(window: HWND?, msg: UINT, wParam: WPARAM, lParam: LPARAM): L
 		WM_PAINT -> {
 			val time = measureTime {
 				memScoped {
-					val ps = alloc<PAINTSTRUCT>()
-					val hdc = BeginPaint(window, ps.ptr)
-					val hdcMem = CreateCompatibleDC(hdc)
+					val paintStructure = alloc<PAINTSTRUCT>()
+					val deviceContext = BeginPaint(window, paintStructure.ptr)
+					val deviceContextMemory = CreateCompatibleDC(deviceContext)
 
 					val eye = Vertex(
 						dist * cos(rotateX) * cos(rotateY),
@@ -130,16 +130,16 @@ private fun wndProc(window: HWND?, msg: UINT, wParam: WPARAM, lParam: LPARAM): L
 
 					renderObject(eye)
 
-					val hBitmap = CreateBitmap(hWidth, hHeight, 1u, 32u, bitmapData.refTo(0))
-					val hOldBitmap = SelectObject(hdcMem, hBitmap)
+					val bitmap = CreateBitmap(windowWidth, windowHeight, 1u, 32u, bitmapData.refTo(0))
+					val bitmapOld = SelectObject(deviceContextMemory, bitmap)
 
-					BitBlt(hdc, 0, 0, hWidth, hHeight, hdcMem, 0, 0, SRCCOPY)
+					BitBlt(deviceContext, 0, 0, windowWidth, windowHeight, deviceContextMemory, 0, 0, SRCCOPY)
 
-					SelectObject(hdcMem, hOldBitmap)
-					DeleteObject(hBitmap)
+					SelectObject(deviceContextMemory, bitmapOld)
+					DeleteObject(bitmap)
 
-					DeleteDC(hdcMem)
-					EndPaint(window, ps.ptr)
+					DeleteDC(deviceContextMemory)
+					EndPaint(window, paintStructure.ptr)
 				}
 			}.inWholeNanoseconds
 

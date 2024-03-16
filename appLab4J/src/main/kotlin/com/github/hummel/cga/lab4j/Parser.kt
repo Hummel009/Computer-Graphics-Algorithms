@@ -2,9 +2,9 @@ package com.github.hummel.cga.lab4j
 
 import java.io.File
 
-private val vertices: MutableList<Vertex> = ArrayList()
-private val textures: MutableList<Vertex> = ArrayList()
-private val normals: MutableList<Vertex> = ArrayList()
+private val vertices: MutableList<Vertex> = mutableListOf()
+private val textures: MutableList<Vertex> = mutableListOf()
+private val normals: MutableList<Vertex> = mutableListOf()
 
 fun parse(fileName: String) {
 	val file = File(fileName)

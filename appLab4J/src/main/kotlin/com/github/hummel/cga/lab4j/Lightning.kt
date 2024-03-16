@@ -7,31 +7,31 @@ const val diffuseIntencity: Float = 0.8f
 const val specularIntencity: Float = 0.8f
 
 fun getResultRgb(face: Face, alpha: Float, beta: Float, gamma: Float): RGB {
-	val tex = getCenteredVecForSet(face.textures, alpha, beta, gamma)
+	val tex = getCenteredVertex(face.textures, alpha, beta, gamma)
 	val texX = (tex.x * 4096).toInt().coerceIn(0, 4095)
 	val texY = ((1.0f - tex.y) * 4096).toInt().coerceIn(0, 4095)
 
-	val point = getCenteredVecForSet(face.vertices, alpha, beta, gamma)
+	val point = getCenteredVertex(face.vertices, alpha, beta, gamma)
 
-	val normalData = normalImage.getRGB(texX, texY).decompose()
+	val normalRgb = normalImage.getRGB(texX, texY).decompose()
 	val normal = -Vertex(
-		(normalData.r / 256.0f) * 2.0f - 1.0f,
-		(normalData.g / 256.0f) * 2.0f - 1.0f,
-		(normalData.b / 256.0f) * 2.0f - 1.0f
+		(normalRgb.r / 256.0f) * 2.0f - 1.0f,
+		(normalRgb.g / 256.0f) * 2.0f - 1.0f,
+		(normalRgb.b / 256.0f) * 2.0f - 1.0f
 	)
 
-	val mraoData = mraoImage.getRGB(texX, texY).decompose()
+	val mraoRgb = mraoImage.getRGB(texX, texY).decompose()
 	val mrao = Vertex(
-		mraoData.r / 256.0f,
-		mraoData.g / 256.0f,
-		mraoData.b / 256.0f
+		mraoRgb.r / 256.0f,
+		mraoRgb.g / 256.0f,
+		mraoRgb.b / 256.0f
 	)
 
-	val rgb = textureImage.getRGB(texX, texY).decompose()
+	val texRgb = textureImage.getRGB(texX, texY).decompose()
 
 	val brightness = getBrightness(point, normal, mrao)
 
-	val resultRgb = applyBrightness(rgb, brightness)
+	val resultRgb = applyBrightness(texRgb, brightness)
 
 	return resultRgb
 }
@@ -59,11 +59,8 @@ private fun getBrightness(point: Vertex, normal: Vertex, mrao: Vertex): Float {
 }
 
 private fun applyBrightness(rgb: RGB, brightness: Float): RGB {
-	var r = rgb.r
-	var g = rgb.g
-	var b = rgb.b
-	r = (r * brightness).toInt()
-	g = (g * brightness).toInt()
-	b = (b * brightness).toInt()
+	val r = (rgb.r * brightness).toInt()
+	val g = (rgb.g * brightness).toInt()
+	val b = (rgb.b * brightness).toInt()
 	return RGB(r, g, b)
 }

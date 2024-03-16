@@ -22,26 +22,27 @@ private val execTimes: MutableList<Long> = mutableListOf()
 private var min: Long = Long.MAX_VALUE
 private var max: Long = Long.MIN_VALUE
 
-const val hWidth: Int = (1040.0f * 1.25f).toInt()
-const val hHeight: Int = (580.0f * 1.25f).toInt()
+const val windowWidth: Int = (1040.0f * 1.25f).toInt()
+const val windowHeight: Int = (580.0f * 1.25f).toInt()
 
-val bufferedImage: BufferedImage = BufferedImage(hWidth, hHeight, BufferedImage.TYPE_INT_RGB)
+val bufferedImage: BufferedImage = BufferedImage(windowWidth, windowHeight, BufferedImage.TYPE_INT_RGB)
 
-lateinit var textureImage: BufferedImage
-lateinit var normalImage: BufferedImage
 lateinit var mraoImage: BufferedImage
+lateinit var normalImage: BufferedImage
+lateinit var textureImage: BufferedImage
 
-var faces: MutableList<Face> = ArrayList()
+var faces: MutableList<Face> = mutableListOf()
 
 private var dist: Float = 20.0f
 
 fun main() {
 	val name = "knight"
-	parse("$name.obj")
 
-	textureImage = ImageIO.read(File("${name}_texture.bmp"))
-	normalImage = ImageIO.read(File("${name}_normal.bmp"))
 	mraoImage = ImageIO.read(File("${name}_mrao.bmp"))
+	normalImage = ImageIO.read(File("${name}_normal.bmp"))
+	textureImage = ImageIO.read(File("${name}_texture.bmp"))
+
+	parse("$name.obj")
 
 	FlatLightLaf.setup()
 	EventQueue.invokeLater {
@@ -59,7 +60,7 @@ class GUI : JFrame() {
 	init {
 		title = "Renderer: Kotlin JVM"
 		defaultCloseOperation = EXIT_ON_CLOSE
-		setSize(hWidth, hHeight)
+		setSize(windowWidth, windowHeight)
 
 		val drawingPanel = object : JPanel() {
 			private var prevMouseX = 0
@@ -105,7 +106,7 @@ class GUI : JFrame() {
 					val g2d = g as Graphics2D
 					g.setColor(Color.GREEN)
 
-					imgGraphics.clearRect(0, 0, hWidth, hHeight)
+					imgGraphics.clearRect(0, 0, windowWidth, windowHeight)
 
 					val eye = Vertex(
 						dist * cos(rotateX) * cos(rotateY), dist * sin(rotateX), dist * cos(rotateX) * sin(rotateY)
@@ -113,7 +114,7 @@ class GUI : JFrame() {
 
 					renderObject(eye)
 
-					g2d.drawImage(bufferedImage, 0, 0, hWidth, hHeight, null)
+					g2d.drawImage(bufferedImage, 0, 0, windowWidth, windowHeight, null)
 				}.inWholeNanoseconds
 
 				val fps = (1_000_000_000.0 / time).toLong()
@@ -128,7 +129,7 @@ class GUI : JFrame() {
 				println("$fps FPS, [$min; $max]; AVG: $avg; Lag: ${time / 1_000_000}ms")
 			}
 		}
-		drawingPanel.setSize(hWidth, hHeight)
+		drawingPanel.setSize(windowWidth, windowHeight)
 
 		add(drawingPanel)
 
