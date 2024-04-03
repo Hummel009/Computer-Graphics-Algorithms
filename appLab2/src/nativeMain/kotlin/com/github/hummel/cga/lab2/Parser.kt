@@ -97,5 +97,23 @@ private inline fun addFace(array: Array<String>) {
 
 	vns.forEach { normal += it }
 
-	faces.add(Face(vs.toTypedArray(), vns.toTypedArray(), vts.toTypedArray(), null, normal))
+	if (vs.size > 3) {
+		for (i in 1 until vs.size - 1) {
+			faces.add(
+				Face(
+					arrayOf(vs[0], vs[i], vs[i + 1]),
+					arrayOf(vns[0], vns[i], vns[i + 1]),
+					arrayOf(vts[0], vts[i], vts[i + 1]),
+					null,
+					normal
+				)
+			)
+		}
+	} else {
+		faces.add(
+			Face(
+				vs.toTypedArray(), vns.toTypedArray(), vts.toTypedArray(), null, normal
+			)
+		)
+	}
 }
