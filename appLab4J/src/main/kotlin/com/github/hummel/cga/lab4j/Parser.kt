@@ -97,17 +97,23 @@ private fun addFace(array: Array<String>) {
 			faces.add(
 				Face(
 					arrayOf(vs[0], vs[i], vs[i + 1]),
+					arrayOf(vs[0], vs[i], vs[i + 1]),
 					arrayOf(vns[0], vns[i], vns[i + 1]),
 					arrayOf(vts[0], vts[i], vts[i + 1]),
-					null,
-					normal
+					normal / vns.size.toFloat(),
+					null
 				)
 			)
 		}
 	} else {
 		faces.add(
 			Face(
-				vs.toTypedArray(), vns.toTypedArray(), vts.toTypedArray(), null, normal
+				vs.toTypedArray(),
+				vs.toTypedArray(),
+				vns.toTypedArray(),
+				vts.toTypedArray(),
+				normal / vns.size.toFloat(),
+				null
 			)
 		)
 	}
