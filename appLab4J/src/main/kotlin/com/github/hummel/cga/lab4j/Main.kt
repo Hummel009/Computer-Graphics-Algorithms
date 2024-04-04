@@ -16,6 +16,7 @@ import javax.swing.JPanel
 import javax.swing.UIManager
 import kotlin.math.cos
 import kotlin.math.sin
+import kotlin.properties.Delegates
 import kotlin.time.measureTime
 
 private val execTimes: MutableList<Long> = mutableListOf()
@@ -30,17 +31,19 @@ val bufferedImage: BufferedImage = BufferedImage(windowWidth, windowHeight, Buff
 lateinit var mraoImage: BufferedImage
 lateinit var normalImage: BufferedImage
 lateinit var textureImage: BufferedImage
+var imgSize: Int by Delegates.notNull()
 
 var faces: MutableList<Face> = mutableListOf()
 
 const val dist: Float = 7.0f
-const val imgSize: Int = 512
 const val modelName: String = "box"
 
 fun main() {
 	mraoImage = ImageIO.read(File("${modelName}_mrao.bmp"))
 	normalImage = ImageIO.read(File("${modelName}_normal.bmp"))
 	textureImage = ImageIO.read(File("${modelName}_texture.bmp"))
+
+	imgSize = textureImage.width
 
 	parse("$modelName.obj")
 
