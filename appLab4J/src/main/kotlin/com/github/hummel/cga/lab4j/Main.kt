@@ -33,16 +33,16 @@ lateinit var textureImage: BufferedImage
 
 var faces: MutableList<Face> = mutableListOf()
 
-private var dist: Float = 20.0f
+const val dist: Float = 7.0f
+const val imgSize: Int = 512
+const val modelName: String = "box"
 
 fun main() {
-	val name = "knight"
+	mraoImage = ImageIO.read(File("${modelName}_mrao.bmp"))
+	normalImage = ImageIO.read(File("${modelName}_normal.bmp"))
+	textureImage = ImageIO.read(File("${modelName}_texture.bmp"))
 
-	mraoImage = ImageIO.read(File("${name}_mrao.bmp"))
-	normalImage = ImageIO.read(File("${name}_normal.bmp"))
-	textureImage = ImageIO.read(File("${name}_texture.bmp"))
-
-	parse("$name.obj")
+	parse("$modelName.obj")
 
 	FlatLightLaf.setup()
 	EventQueue.invokeLater {

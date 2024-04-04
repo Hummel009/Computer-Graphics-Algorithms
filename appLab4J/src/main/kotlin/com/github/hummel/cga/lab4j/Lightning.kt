@@ -3,13 +3,13 @@ package com.github.hummel.cga.lab4j
 import kotlin.math.pow
 
 const val ambientIntencity: Float = 0.4f
-const val diffuseIntencity: Float = 0.8f
-const val specularIntencity: Float = 0.8f
+const val diffuseIntencity: Float = 0.4f
+const val specularIntencity: Float = 0.2f
 
 fun getResultRgb(face: Face, alpha: Float, beta: Float, gamma: Float): RGB {
 	val tex = getCenteredVertex(face.textels, alpha, beta, gamma)
-	val texX = (tex.x * 4096).toInt().coerceIn(0, 4095)
-	val texY = ((1.0f - tex.y) * 4096).toInt().coerceIn(0, 4095)
+	val texX = (tex.x * imgSize).toInt().coerceIn(0, imgSize - 1)
+	val texY = ((1.0f - tex.y) * imgSize).toInt().coerceIn(0, imgSize - 1)
 
 	val point = getCenteredVertex(face.realVertices, alpha, beta, gamma)
 
@@ -52,7 +52,7 @@ private fun getBrightness(point: Vertex, normal: Vertex, mrao: Vertex): Float {
 	val rDotV = refr scalarMul view
 
 	if (rDotV > 0) {
-		brightness += specularIntencity * mrao.x * (rDotV / (refr.magnitude * view.magnitude)).pow(2.0f)
+		brightness += specularIntencity * mrao.x * (rDotV / (refr.magnitude * view.magnitude)).pow(10.0f)
 	}
 
 	return brightness + ambientIntencity
