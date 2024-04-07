@@ -157,8 +157,8 @@ object AlgoUtils {
 					val zFragment = alpha * v0[2] + beta * v1[2] + gamma * v2[2]
 
 					val ambientCoeff = 0.0
-					val diffuseCoeff = 0.5
-					val specularCoeff = 0.6
+					val diffuseCoeff = 0.4
+					val specularCoeff = 0.2
 
 					// Проверка z-буфера
 					if (zBuffer[x * Main.height + y] > zFragment) {

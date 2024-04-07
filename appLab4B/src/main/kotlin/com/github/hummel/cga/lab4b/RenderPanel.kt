@@ -47,16 +47,18 @@ class RenderPanel(private val faces: List<Face?>?) : JPanel() {
 			override fun mouseDragged(e: MouseEvent) {
 				super.mouseDragged(e)
 
-				if (rotateX > Math.PI / 2 - 0.1) {
-					rotateX = Math.PI / 2 - 0.05
-				} else if (rotateX < -Math.PI / 2 + 0.1) {
-					rotateX = -Math.PI / 2 - 0.05
+				if (rotateX > Math.PI / 2 - 0.1f) {
+					rotateX = Math.PI / 2 - 0.05f
+				} else if (rotateX < -Math.PI / 2 + 0.1f) {
+					rotateX = -Math.PI / 2 - 0.05f
 				}
-				rotateY -= (e.x - prevMouseX) / 200.0
-				rotateX -= (e.y - prevMouseY) / 200.0
+				rotateY += (e.x - prevMouseX) / 200.0f
+				rotateX += (e.y - prevMouseY) / 200.0f
 
 				prevMouseX = e.x
 				prevMouseY = e.y
+
+				repaint()
 			}
 
 			override fun mouseMoved(e: MouseEvent) {

@@ -1,10 +1,14 @@
 package com.github.hummel.cga.lab4b
 
+import com.formdev.flatlaf.FlatLightLaf
+import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatGitHubDarkIJTheme
+import java.awt.EventQueue
 import java.awt.image.BufferedImage
 import java.io.File
 import java.io.IOException
 import java.util.*
 import javax.imageio.ImageIO
+import javax.swing.UIManager
 
 object Main {
 	const val width: Int = (1040.0f * 1.25f).toInt()
@@ -16,7 +20,7 @@ object Main {
 	var textureImage: BufferedImage? = null
 	var normalMapImage: BufferedImage? = null
 	var mraoImage: BufferedImage? = null
-	const val dist: Double = 3.0 // dist
+	const val dist: Double = 3.0
 
 	init {
 		try {
@@ -28,19 +32,20 @@ object Main {
 		}
 	}
 
-	// teapot 8.0
-	// destroyer 3000.0
-	// doom 300.0
 	@Throws(Exception::class)
 	@JvmStatic
 	fun main(args: Array<String>) {
 		val faceList = ParsingHelper.parse(modelPath)
 
-		val canvas = Canvas(faceList)
-		canvas.isVisible = true
-
-		while (true) {
-			canvas.repaint()
+		FlatLightLaf.setup()
+		EventQueue.invokeLater {
+			try {
+				UIManager.setLookAndFeel(FlatGitHubDarkIJTheme())
+				val canvas = Canvas(faceList)
+				canvas.isVisible = true
+			} catch (e: Exception) {
+				e.printStackTrace()
+			}
 		}
 	}
 }

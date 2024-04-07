@@ -5,7 +5,7 @@ import javax.swing.JPanel
 
 class Canvas(faces: List<Face?>?) : JFrame() {
 	init {
-		title = "My frame"
+		title = "Renderer: Kotlin JVM"
 		defaultCloseOperation = EXIT_ON_CLOSE
 		setSize(Main.width, Main.height)
 
@@ -13,5 +13,7 @@ class Canvas(faces: List<Face?>?) : JFrame() {
 		drawingPanel.setSize(Main.width, Main.height)
 
 		add(drawingPanel)
+
+		setLocationRelativeTo(null)
 	}
 }
