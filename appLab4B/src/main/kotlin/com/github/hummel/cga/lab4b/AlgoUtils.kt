@@ -165,30 +165,30 @@ object AlgoUtils {
 						// cчитаем diffuse
 						var texVec = getCenteredVecForPoint(worldTriangle.textures, alpha, beta, gamma)
 						texVec = Vector4(texVec[0], 1.0 - texVec[1], 0.0)
-						var texX = (texVec[0] * Main.textureImage.width).toInt() % Main.textureImage.width
-						var texY = (texVec[1] * Main.textureImage.height).toInt() % Main.textureImage.height
+						var texX = (texVec[0] * Main.textureImage!!.width).toInt() % Main.textureImage!!.width
+						var texY = (texVec[1] * Main.textureImage!!.height).toInt() % Main.textureImage!!.height
 
-						if (texX > Main.textureImage.width - 1) {
-							texX = Main.textureImage.width - 1
+						if (texX > Main.textureImage!!.width - 1) {
+							texX = Main.textureImage!!.width - 1
 						}
 						if (texX < 0) {
 							texX = 0
 						}
-						if (texY > Main.textureImage.width - 1) {
-							texY = Main.textureImage.width - 1
+						if (texY > Main.textureImage!!.width - 1) {
+							texY = Main.textureImage!!.width - 1
 						}
 						if (texY < 0) {
 							texY = 0
 						}
 
-						val normalData = Main.normalMapImage.getRGB(texX, texY)
+						val normalData = Main.normalMapImage!!.getRGB(texX, texY)
 						val normal = Vector4(
 							(normalData shr 16 and 0x000000ff) / 256.0 * 2.0 - 1.0,
 							(normalData shr 8 and 0x000000ff) / 256.0 * 2.0 - 1.0,
 							(normalData and 0x000000ff) / 256.0 * 2.0 - 1.0
 						).mul(-1.0)
 
-						val mraoData = Main.mraoImage.getRGB(texX, texY)
+						val mraoData = Main.mraoImage!!.getRGB(texX, texY)
 						val mraoVec = Vector4(
 							(mraoData shr 16 and 0x000000ff) / 256.0,
 							(mraoData shr 8 and 0x000000ff) / 256.0,
@@ -219,7 +219,7 @@ object AlgoUtils {
 						val colorValCoeff =
 							ambientCoeff + diffuse * diffuseCoeff + specular * mraoVec[0] * specularCoeff
 
-						var texColor = Main.textureImage.getRGB(texX, texY)
+						var texColor = Main.textureImage!!.getRGB(texX, texY)
 						texColor = applyBrightness(texColor, colorValCoeff)
 
 						bufferedImage.setRGB(x, y, texColor)
