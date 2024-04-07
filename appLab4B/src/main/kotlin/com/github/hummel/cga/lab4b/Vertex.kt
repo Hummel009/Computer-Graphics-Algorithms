@@ -2,7 +2,7 @@ package com.github.hummel.cga.lab4b
 
 import kotlin.math.sqrt
 
-class Vector4 {
+class Vertex {
 	private val data: DoubleArray
 
 	constructor() {
@@ -31,33 +31,33 @@ class Vector4 {
 		return sqrt(data[0] * data[0] + data[1] * data[1] + data[2] * data[2])
 	}
 
-	fun normalize(): Vector4 {
+	fun normalize(): Vertex {
 		val len = len()
-		return Vector4(data[0] / len, data[1] / len, data[2] / len)
+		return Vertex(data[0] / len, data[1] / len, data[2] / len)
 	}
 
-	fun add(arg: Vector4): Vector4 {
-		return Vector4(data[0] + arg.data[0], data[1] + arg.data[1], data[2] + arg.data[2])
+	fun add(arg: Vertex): Vertex {
+		return Vertex(data[0] + arg.data[0], data[1] + arg.data[1], data[2] + arg.data[2])
 	}
 
-	fun subtract(arg: Vector4): Vector4 {
-		return Vector4(data[0] - arg.data[0], data[1] - arg.data[1], data[2] - arg.data[2])
+	fun subtract(arg: Vertex): Vertex {
+		return Vertex(data[0] - arg.data[0], data[1] - arg.data[1], data[2] - arg.data[2])
 	}
 
-	fun dot(arg: Vector4): Double {
+	fun dot(arg: Vertex): Double {
 		return data[0] * arg.data[0] + data[1] * arg.data[1] + data[2] * arg.data[2]
 	}
 
-	fun mul(arg: Double): Vector4 {
-		return Vector4(data[0] * arg, data[1] * arg, data[2] * arg)
+	fun mul(arg: Double): Vertex {
+		return Vertex(data[0] * arg, data[1] * arg, data[2] * arg)
 	}
 
-	fun div(arg: Double): Vector4 {
-		return Vector4(data[0] / arg, data[1] / arg, data[2] / arg)
+	fun div(arg: Double): Vertex {
+		return Vertex(data[0] / arg, data[1] / arg, data[2] / arg)
 	}
 
-	fun cross(arg: Vector4): Vector4 {
-		return Vector4(
+	fun cross(arg: Vertex): Vertex {
+		return Vertex(
 			data[1] * arg.data[2] - data[2] * arg.data[1],
 			data[2] * arg.data[0] - data[0] * arg.data[2],
 			data[0] * arg.data[1] - data[1] * arg.data[0]

@@ -33,7 +33,7 @@ object MatrixBuilder {
 		return buildView(camera.eye, camera.target, camera.up)
 	}
 
-	private fun buildView(eye: Vector4?, target: Vector4?, up: Vector4?): Matrix4 {
+	private fun buildView(eye: Vertex?, target: Vertex?, up: Vertex?): Matrix4 {
 		val viewMatrix = Matrix4()
 		val ZAxis = eye!!.subtract(target!!).normalize()
 		val XAxis = up!!.cross(ZAxis).normalize()

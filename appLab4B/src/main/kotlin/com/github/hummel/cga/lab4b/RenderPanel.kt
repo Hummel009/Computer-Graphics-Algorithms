@@ -15,7 +15,7 @@ import javax.swing.JPanel
 import kotlin.math.cos
 import kotlin.math.sin
 
-class RenderPanel(private val triangles: List<Triangle?>?) : JPanel() {
+class RenderPanel(private val faces: List<Face?>?) : JPanel() {
 	private val viewportMatrix = buildViewport(Main.width, Main.height)
 	private val projectionMatrix = buildProjection(1.75, 90.0)
 	private val camera: Camera
@@ -33,9 +33,9 @@ class RenderPanel(private val triangles: List<Triangle?>?) : JPanel() {
 		val dist = 5.0
 		camera = Camera()
 		camera.eye =
-			Vector4(dist * cos(rotateX) * cos(rotateY), dist * sin(rotateX), dist * cos(rotateX) * sin(rotateY))
-		camera.target = Vector4(0.0, 0.0, 0.0)
-		camera.up = Vector4(0.0, 1.0, 0.0)
+			Vertex(dist * cos(rotateX) * cos(rotateY), dist * sin(rotateX), dist * cos(rotateX) * sin(rotateY))
+		camera.target = Vertex(0.0, 0.0, 0.0)
+		camera.up = Vertex(0.0, 1.0, 0.0)
 		viewMatrix = buildView(camera)
 		bufferedImage = BufferedImage(Main.width, Main.height, BufferedImage.TYPE_INT_RGB)
 		imgGraphics = bufferedImage.createGraphics()
@@ -74,36 +74,36 @@ class RenderPanel(private val triangles: List<Triangle?>?) : JPanel() {
 
 		val dist = Main.dist
 		camera.eye =
-			Vector4(dist * cos(rotateX) * cos(rotateY), dist * sin(rotateX), dist * cos(rotateX) * sin(rotateY))
+			Vertex(dist * cos(rotateX) * cos(rotateY), dist * sin(rotateX), dist * cos(rotateX) * sin(rotateY))
 		viewMatrix = buildView(camera)
 		setupCamMatrix()
 
 		val finalMatrix = camMatrix
 
 		imgGraphics.clearRect(0, 0, Main.width, Main.height)
-		val filteredList = AlgoUtils.filterTriangles(triangles, camera)
+		val filteredList = AlgoUtils.filterTriangles(faces, camera)
 		val drawList = AlgoUtils.applyMatrix(filteredList, finalMatrix!!)
-		for (triangle in drawList) {
+		for (face in drawList) {
 			val i = AtomicInteger(0)
 			val depthArr = DoubleArray(3)
-			for (vector4 in triangle.vertices) {
-				depthArr[i.getAndIncrement()] = vector4[3]
-				vector4.divSelf(vector4[3])
+			for (vertex in face.vertices) {
+				depthArr[i.getAndIncrement()] = vertex[3]
+				vertex.divSelf(vertex[3])
 			}
-			triangle.depthArr = depthArr
+			face.depthArr = depthArr
 		}
 
-		val newList: MutableCollection<Array<Triangle?>> = ArrayList()
+		val newList: MutableCollection<Array<Face?>> = ArrayList()
 		for (i in filteredList.indices) {
 			newList.add(arrayOf(filteredList[i], drawList[i]))
 		}
 		Arrays.fill(zBuffer, Double.POSITIVE_INFINITY)
 
-		newList.parallelStream().forEach { trianglePair: Array<Triangle?> ->
+		newList.parallelStream().forEach { facePair: Array<Face?> ->
 			AlgoUtils.drawRasterTriangle(
 				bufferedImage,
-				trianglePair[0]!!,
-				trianglePair[1]!!,
+				facePair[0]!!,
+				facePair[1]!!,
 				zBuffer,
 				camera
 			)

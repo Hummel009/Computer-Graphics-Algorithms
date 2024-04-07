@@ -2,11 +2,11 @@ package com.github.hummel.cga.lab4b
 
 class Camera {
 	@JvmField
-	var eye: Vector4? = null
+	var eye: Vertex? = null
 
 	@JvmField
-	var target: Vector4? = null
+	var target: Vertex? = null
 
 	@JvmField
-	var up: Vector4? = null
+	var up: Vertex? = null
 }
