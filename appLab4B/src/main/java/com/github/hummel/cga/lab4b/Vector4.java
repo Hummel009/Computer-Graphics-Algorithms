@@ -1,7 +1,5 @@
 package com.github.hummel.cga.lab4b;
 
-import java.util.Arrays;
-
 public class Vector4 {
     private final double[] data;
 
@@ -13,10 +11,6 @@ public class Vector4 {
         data = new double[]{x, y, z, 1.0};
     }
 
-    public Vector4(double[] data) {
-        this.data = Arrays.copyOf(data, data.length);
-    }
-
     public double get(int i) {
         return data[i];
     }
@@ -26,7 +20,7 @@ public class Vector4 {
     }
 
     public void divSelf(double val) {
-        for (int i = 0; i < 3; i++) {
+        for (var i = 0; i < 3; i++) {
             data[i] /= val;
         }
     }
@@ -36,7 +30,7 @@ public class Vector4 {
     }
 
     public Vector4 normalize() {
-        double len = len();
+        var len = len();
         return new Vector4(data[0] / len, data[1] / len, data[2] / len);
     }
 

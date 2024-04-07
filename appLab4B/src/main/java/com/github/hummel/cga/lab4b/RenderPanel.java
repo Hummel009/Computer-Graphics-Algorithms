@@ -20,7 +20,6 @@ public class RenderPanel extends JPanel {
     private final double[] zBuffer;
     private final Graphics2D imgGraphics;
     private Matrix4 viewMatrix;
-    private Matrix4 modelMatrix;
     private Matrix4 camMatrix;
     private int prevMouseX;
     private int prevMouseY;
@@ -31,7 +30,7 @@ public class RenderPanel extends JPanel {
         this.triangles = triangles;
         viewportMatrix = MatrixBuilder.buildViewport(Main.width, Main.height);
         projectionMatrix = MatrixBuilder.buildProjection(1.75, 90.0);
-        double dist = 5.0;
+        var dist = 5.0;
         camera = new Camera();
         camera.eye = new Vector4(dist * Math.cos(rotateX) * Math.cos(rotateY), dist * Math.sin(rotateX), dist * Math.cos(rotateX) * Math.sin(rotateY));
         camera.target = new Vector4(0.0, 0.0, 0.0);
@@ -72,23 +71,23 @@ public class RenderPanel extends JPanel {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        Graphics2D g2d = (Graphics2D) g;
+        var g2d = (Graphics2D) g;
         g.setColor(Color.GREEN);
 
-        double dist = Main.dist;
+        var dist = Main.dist;
         camera.eye = new Vector4(dist * Math.cos(rotateX) * Math.cos(rotateY), dist * Math.sin(rotateX), dist * Math.cos(rotateX) * Math.sin(rotateY));
         viewMatrix = MatrixBuilder.buildView(camera);
         setupCamMatrix();
 
-        Matrix4 finalMatrix = camMatrix;
+        var finalMatrix = camMatrix;
 
         imgGraphics.clearRect(0, 0, Main.width, Main.height);
         var filteredList = AlgoUtils.filterTriangles(triangles, camera);
         var drawList = AlgoUtils.applyMatrix(filteredList, finalMatrix);
-        for (Triangle triangle : drawList) {
-            AtomicInteger i = new AtomicInteger(0);
-            double[] depthArr = new double[3];
-            for (Vector4 vector4 : triangle.vertices) {
+        for (var triangle : drawList) {
+            var i = new AtomicInteger(0);
+            var depthArr = new double[3];
+            for (var vector4 : triangle.vertices) {
                 depthArr[i.getAndIncrement()] = vector4.get(3);
                 vector4.divSelf(vector4.get(3));
             }
@@ -96,14 +95,12 @@ public class RenderPanel extends JPanel {
         }
 
         Collection<Triangle[]> newList = new ArrayList<>();
-        for (int i = 0; i < filteredList.size(); i++) {
+        for (var i = 0; i < filteredList.size(); i++) {
             newList.add(new Triangle[]{filteredList.get(i), drawList.get(i)});
         }
         Arrays.fill(zBuffer, Double.POSITIVE_INFINITY);
 
-        newList.parallelStream().forEach(trianglePair -> {
-            AlgoUtils.drawRasterTriangle(bufferedImage, trianglePair[0], trianglePair[1], zBuffer, camera);
-        });
+        newList.parallelStream().forEach(trianglePair -> AlgoUtils.drawRasterTriangle(bufferedImage, trianglePair[0], trianglePair[1], zBuffer, camera));
 
         g2d.drawImage(bufferedImage, 0, 0, Main.width, Main.height, null);
     }

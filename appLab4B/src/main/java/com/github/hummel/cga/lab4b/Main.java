@@ -13,8 +13,6 @@ import java.util.Objects;
 public class Main {
     public static final int width = 1400;
     public static final int height = 800;
-    public static final double xMin = 0.0;
-    public static final double yMin = 0.0;
     private static final String modelPath = "box.obj";
     private static final String texturePath = "box_texture.bmp";
     private static final String normalMapPath = "box_normal.bmp";
@@ -43,7 +41,7 @@ public class Main {
         List<Vector4> textureList = new ArrayList<>();
         List<Triangle> triangleList = new ArrayList<>();
 
-        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(modelPath))) {
+        try (var bufferedReader = new BufferedReader(new FileReader(modelPath))) {
             String line;
             while (Objects.nonNull(line = bufferedReader.readLine())) {
                 if (line.startsWith("v ")) {
@@ -58,7 +56,7 @@ public class Main {
             }
         }
 
-        Canvas canvas = new Canvas(triangleList);
+        var canvas = new Canvas(triangleList);
         canvas.setVisible(true);
 
         while (true) {

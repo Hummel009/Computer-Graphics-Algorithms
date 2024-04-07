@@ -5,7 +5,7 @@ public class MatrixBuilder {
     }
 
     public static Matrix4 buildViewport(int width, int height) {
-        Matrix4 viewport = new Matrix4();
+        var viewport = new Matrix4();
         viewport.set(0, 0, width / 2.0);
         viewport.set(1, 1, -height / 2.0);
         viewport.set(0, 3, width / 2.0);
@@ -14,10 +14,10 @@ public class MatrixBuilder {
     }
 
     public static Matrix4 buildProjection(double aspect, double FOV) {
-        double zNear = 0.01;
-        double zFar = 1.0;
+        var zNear = 0.01;
+        var zFar = 1.0;
 
-        Matrix4 projectionMatrix = new Matrix4();
+        var projectionMatrix = new Matrix4();
         projectionMatrix.set(0, 0, 1.0 / (aspect * Math.tan(FOV / 2.0 * 0.0174533)));
         projectionMatrix.set(1, 1, 1.0 / Math.tan(FOV / 2.0 * 0.0174533));
         projectionMatrix.set(2, 2, zFar / (zNear - zFar));
@@ -32,10 +32,10 @@ public class MatrixBuilder {
     }
 
     private static Matrix4 buildView(Vector4 eye, Vector4 target, Vector4 up) {
-        Matrix4 viewMatrix = new Matrix4();
-        Vector4 ZAxis = eye.subtract(target).normalize();
-        Vector4 XAxis = up.cross(ZAxis).normalize();
-        Vector4 YAxis = ZAxis.cross(XAxis);
+        var viewMatrix = new Matrix4();
+        var ZAxis = eye.subtract(target).normalize();
+        var XAxis = up.cross(ZAxis).normalize();
+        var YAxis = ZAxis.cross(XAxis);
 
         viewMatrix.set(0, 0, XAxis.get(0));
         viewMatrix.set(0, 1, XAxis.get(1));
@@ -55,21 +55,4 @@ public class MatrixBuilder {
         return viewMatrix;
     }
 
-    public static Matrix4 buildRotationY(double theta) {
-        Matrix4 result = new Matrix4();
-        result.set(0, 0, Math.cos(theta));
-        result.set(0, 2, Math.sin(theta));
-        result.set(2, 0, -Math.sin(theta));
-        result.set(2, 2, Math.cos(theta));
-        return result;
-    }
-
-    public static Matrix4 buildRotationX(double theta) {
-        Matrix4 result = new Matrix4();
-        result.set(1, 1, Math.cos(theta));
-        result.set(2, 1, Math.sin(theta));
-        result.set(1, 2, -Math.sin(theta));
-        result.set(2, 2, Math.cos(theta));
-        return result;
-    }
 }

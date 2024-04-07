@@ -12,20 +12,16 @@ public class Matrix4 {
         };
     }
 
-    public double getEntry(int i, int j) {
-        return data[i][j];
-    }
-
     public void set(int i, int j, double val) {
         data[i][j] = val;
     }
 
     public Matrix4 mul(Matrix4 arg) {
-        Matrix4 res = new Matrix4();
-        for (int i = 0; i < 4; i++) {
-            for (int j = 0; j < 4; j++) {
+        var res = new Matrix4();
+        for (var i = 0; i < 4; i++) {
+            for (var j = 0; j < 4; j++) {
                 res.data[i][j] = 0.0;
-                for (int k = 0; k < 4; k++) {
+                for (var k = 0; k < 4; k++) {
                     res.data[i][j] += data[i][k] * arg.data[k][j];
                 }
             }
@@ -34,10 +30,10 @@ public class Matrix4 {
     }
 
     public Vector4 mul(Vector4 arg) {
-        Vector4 res = new Vector4();
+        var res = new Vector4();
         res.set(3, 0.0);
-        for (int i = 0; i < 4; i++) {
-            for (int j = 0; j < 4; j++) {
+        for (var i = 0; i < 4; i++) {
+            for (var j = 0; j < 4; j++) {
                 res.set(i, res.get(i) + data[i][j] * arg.get(j));
             }
         }
