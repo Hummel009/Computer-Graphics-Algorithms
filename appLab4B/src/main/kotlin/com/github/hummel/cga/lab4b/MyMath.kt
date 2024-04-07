@@ -2,10 +2,10 @@ package com.github.hummel.cga.lab4b
 
 import kotlin.math.tan
 
-object MatrixBuilder {
+object MyMath {
 	@JvmStatic
-	fun buildViewport(width: Int, height: Int): Matrix4 {
-		val viewport = Matrix4()
+	fun buildViewport(width: Int, height: Int): MyMatrix {
+		val viewport = MyMatrix()
 		viewport.set(0, 0, width / 2.0)
 		viewport.set(1, 1, -height / 2.0)
 		viewport.set(0, 3, width / 2.0)
@@ -14,11 +14,11 @@ object MatrixBuilder {
 	}
 
 	@JvmStatic
-	fun buildProjection(aspect: Double, FOV: Double): Matrix4 {
+	fun buildProjection(aspect: Double, FOV: Double): MyMatrix {
 		val zNear = 0.01
 		val zFar = 1.0
 
-		val projectionMatrix = Matrix4()
+		val projectionMatrix = MyMatrix()
 		projectionMatrix.set(0, 0, 1.0 / (aspect * tan(FOV / 2.0 * 0.0174533)))
 		projectionMatrix.set(1, 1, 1.0 / tan(FOV / 2.0 * 0.0174533))
 		projectionMatrix.set(2, 2, zFar / (zNear - zFar))
@@ -29,12 +29,12 @@ object MatrixBuilder {
 	}
 
 	@JvmStatic
-	fun buildView(camera: Camera): Matrix4 {
+	fun buildView(camera: Camera): MyMatrix {
 		return buildView(camera.eye, camera.target, camera.up)
 	}
 
-	private fun buildView(eye: Vertex?, target: Vertex?, up: Vertex?): Matrix4 {
-		val viewMatrix = Matrix4()
+	private fun buildView(eye: Vertex?, target: Vertex?, up: Vertex?): MyMatrix {
+		val viewMatrix = MyMatrix()
 		val ZAxis = eye!!.subtract(target!!).normalize()
 		val XAxis = up!!.cross(ZAxis).normalize()
 		val YAxis = ZAxis.cross(XAxis)

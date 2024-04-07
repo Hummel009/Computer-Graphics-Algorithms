@@ -1,6 +1,6 @@
 package com.github.hummel.cga.lab4b
 
-class Matrix4 {
+class MyMatrix {
 	private val data = arrayOf(
 		doubleArrayOf(1.0, 0.0, 0.0, 0.0),
 		doubleArrayOf(0.0, 1.0, 0.0, 0.0),
@@ -12,8 +12,8 @@ class Matrix4 {
 		data[i][j] = `val`
 	}
 
-	fun mul(arg: Matrix4): Matrix4 {
-		val res = Matrix4()
+	fun mul(arg: MyMatrix): MyMatrix {
+		val res = MyMatrix()
 		for (i in 0..3) {
 			for (j in 0..3) {
 				res.data[i][j] = 0.0

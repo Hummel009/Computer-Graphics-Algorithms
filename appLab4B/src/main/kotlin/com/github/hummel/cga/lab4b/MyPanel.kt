@@ -1,8 +1,8 @@
 package com.github.hummel.cga.lab4b
 
-import com.github.hummel.cga.lab4b.MatrixBuilder.buildProjection
-import com.github.hummel.cga.lab4b.MatrixBuilder.buildView
-import com.github.hummel.cga.lab4b.MatrixBuilder.buildViewport
+import com.github.hummel.cga.lab4b.MyMath.buildProjection
+import com.github.hummel.cga.lab4b.MyMath.buildView
+import com.github.hummel.cga.lab4b.MyMath.buildViewport
 import java.awt.Color
 import java.awt.Graphics
 import java.awt.Graphics2D
@@ -15,15 +15,15 @@ import javax.swing.JPanel
 import kotlin.math.cos
 import kotlin.math.sin
 
-class RenderPanel(private val faces: List<Face?>?) : JPanel() {
+class MyPanel(private val faces: List<Face?>?) : JPanel() {
 	private val viewportMatrix = buildViewport(Main.width, Main.height)
 	private val projectionMatrix = buildProjection(1.75, 90.0)
 	private val camera: Camera
 	private val bufferedImage: BufferedImage
 	private val zBuffer: DoubleArray
 	private val imgGraphics: Graphics2D
-	private var viewMatrix: Matrix4
-	private var camMatrix: Matrix4? = null
+	private var viewMatrix: MyMatrix
+	private var camMatrix: MyMatrix? = null
 	private var prevMouseX = 0
 	private var prevMouseY = 0
 	private var rotateY = 0.0
@@ -83,8 +83,8 @@ class RenderPanel(private val faces: List<Face?>?) : JPanel() {
 		val finalMatrix = camMatrix
 
 		imgGraphics.clearRect(0, 0, Main.width, Main.height)
-		val filteredList = AlgoUtils.filterTriangles(faces, camera)
-		val drawList = AlgoUtils.applyMatrix(filteredList, finalMatrix!!)
+		val filteredList = MyGraphics.filterTriangles(faces, camera)
+		val drawList = MyGraphics.applyMatrix(filteredList, finalMatrix!!)
 		for (face in drawList) {
 			val i = AtomicInteger(0)
 			val depthArr = DoubleArray(3)
@@ -102,7 +102,7 @@ class RenderPanel(private val faces: List<Face?>?) : JPanel() {
 		Arrays.fill(zBuffer, Double.POSITIVE_INFINITY)
 
 		newList.parallelStream().forEach { facePair: Array<Face?> ->
-			AlgoUtils.drawRasterTriangle(
+			MyGraphics.drawRasterTriangle(
 				bufferedImage,
 				facePair[0]!!,
 				facePair[1]!!,

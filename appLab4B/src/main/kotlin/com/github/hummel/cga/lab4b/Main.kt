@@ -35,14 +35,14 @@ object Main {
 	@Throws(Exception::class)
 	@JvmStatic
 	fun main(args: Array<String>) {
-		val faceList = ParsingHelper.parse(modelPath)
+		val faceList = Parser.parse(modelPath)
 
 		FlatLightLaf.setup()
 		EventQueue.invokeLater {
 			try {
 				UIManager.setLookAndFeel(FlatGitHubDarkIJTheme())
-				val canvas = Canvas(faceList)
-				canvas.isVisible = true
+				val myFrame = MyFrame(faceList)
+				myFrame.isVisible = true
 			} catch (e: Exception) {
 				e.printStackTrace()
 			}

@@ -3,7 +3,7 @@ package com.github.hummel.cga.lab4b
 import java.io.File
 import java.util.concurrent.atomic.AtomicInteger
 
-object ParsingHelper {
+object Parser {
 	@JvmStatic
 	fun extractVertex(line: String): Vertex {
 		val list: MutableCollection<Double> = ArrayList()

@@ -5,9 +5,9 @@ import java.util.*
 import kotlin.math.max
 import kotlin.math.pow
 
-object AlgoUtils {
+object MyGraphics {
 	@JvmStatic
-	fun applyMatrix(faces: Collection<Face?>, matrix: Matrix4): List<Face> {
+	fun applyMatrix(faces: Collection<Face?>, matrix: MyMatrix): List<Face> {
 		return faces.parallelStream().map { face: Face? ->
 			val newFace = Face()
 			newFace.normals = face!!.normals
