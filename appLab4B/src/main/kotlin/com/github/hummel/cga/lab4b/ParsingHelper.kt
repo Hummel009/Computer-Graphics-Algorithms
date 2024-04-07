@@ -1,5 +1,6 @@
 package com.github.hummel.cga.lab4b
 
+import java.io.File
 import java.util.concurrent.atomic.AtomicInteger
 
 object ParsingHelper {
@@ -64,5 +65,31 @@ object ParsingHelper {
 			result.normals[nIndex.getAndIncrement()] = normals[idList[2] - 1].normalize().mul(-1.0)
 		}
 		return result
+	}
+
+	fun parse(modelPath: String): MutableList<Face?> {
+		val vertexList: MutableList<Vertex?> = java.util.ArrayList()
+		val normalList: MutableList<Vertex> = java.util.ArrayList()
+		val textureList: MutableList<Vertex?> = java.util.ArrayList()
+		val faceList: MutableList<Face?> = java.util.ArrayList()
+
+		File(modelPath).bufferedReader().use { reader ->
+			var line = reader.readLine()
+			while (line != null) {
+				if (line.startsWith("v ")) {
+					vertexList.add(extractVertex(line))
+				} else if (line.startsWith("vn ")) {
+					normalList.add(extractNormal(line))
+				} else if (line.startsWith("vt ")) {
+					textureList.add(extractTexture(line))
+				} else if (line.startsWith("f ")) {
+					faceList.add(extractTriangle(line, vertexList, textureList, normalList))
+				}
+
+				line = reader.readLine()
+			}
+		}
+
+		return faceList
 	}
 }

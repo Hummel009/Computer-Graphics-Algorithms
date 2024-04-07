@@ -1,9 +1,5 @@
 package com.github.hummel.cga.lab4b
 
-import com.github.hummel.cga.lab4b.ParsingHelper.extractNormal
-import com.github.hummel.cga.lab4b.ParsingHelper.extractTexture
-import com.github.hummel.cga.lab4b.ParsingHelper.extractTriangle
-import com.github.hummel.cga.lab4b.ParsingHelper.extractVertex
 import java.awt.image.BufferedImage
 import java.io.File
 import java.io.IOException
@@ -38,27 +34,8 @@ object Main {
 	@Throws(Exception::class)
 	@JvmStatic
 	fun main(args: Array<String>) {
-		val vertexList: MutableList<Vertex?> = ArrayList()
-		val normalList: MutableList<Vertex> = ArrayList()
-		val textureList: MutableList<Vertex?> = ArrayList()
-		val faceList: MutableList<Face?> = ArrayList()
+		val faceList = ParsingHelper.parse(modelPath)
 
-		File(modelPath).bufferedReader().use { reader ->
-			var line = reader.readLine()
-			while (line != null) {
-				if (line.startsWith("v ")) {
-					vertexList.add(extractVertex(line))
-				} else if (line.startsWith("vn ")) {
-					normalList.add(extractNormal(line))
-				} else if (line.startsWith("vt ")) {
-					textureList.add(extractTexture(line))
-				} else if (line.startsWith("f ")) {
-					faceList.add(extractTriangle(line, vertexList, textureList, normalList))
-				}
-
-				line = reader.readLine()
-			}
-		}
 		val canvas = Canvas(faceList)
 		canvas.isVisible = true
 
