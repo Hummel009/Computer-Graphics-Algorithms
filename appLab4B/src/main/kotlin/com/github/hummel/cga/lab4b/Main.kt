@@ -11,8 +11,8 @@ import javax.imageio.ImageIO
 import javax.swing.UIManager
 
 object Main {
-	const val width: Int = (1040.0f * 1.25f).toInt()
-	const val height: Int = (580.0f * 1.25f).toInt()
+	const val width: Int = (1040.0f).toInt()
+	const val height: Int = (580.0f).toInt()
 	private const val modelPath = "box.obj"
 	private const val texturePath = "box_texture.bmp"
 	private const val normalMapPath = "box_normal.bmp"
@@ -20,7 +20,7 @@ object Main {
 	var textureImage: BufferedImage? = null
 	var normalMapImage: BufferedImage? = null
 	var mraoImage: BufferedImage? = null
-	const val dist: Double = 3.0
+	const val dist: Double = 3.5
 
 	init {
 		try {
