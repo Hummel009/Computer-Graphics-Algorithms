@@ -35,7 +35,7 @@ fun renderObject(eye: Vertex) {
 	}
 }
 
-private fun tfDrawVertices(parameters: LPVOID?): DWORD {
+private inline fun tfDrawVertices(parameters: LPVOID?): DWORD {
 	val id = parameters?.reinterpret<IntVar>()?.pointed?.value!!
 
 	threadFaces[id].forEach { drawTriangle(it) }

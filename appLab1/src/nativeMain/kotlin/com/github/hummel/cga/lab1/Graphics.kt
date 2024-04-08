@@ -6,9 +6,9 @@ import kotlin.math.abs
 
 private val rgb: RGB = RGB(255, 255, 255)
 
-lateinit var displayMatrix: Array<FloatArray>
-lateinit var lightPos: Vertex
-lateinit var eyePos: Vertex
+private lateinit var displayMatrix: Array<FloatArray>
+private lateinit var lightPos: Vertex
+private lateinit var eyePos: Vertex
 
 fun renderObject(eye: Vertex) {
 	displayMatrix = getDisplayMatrix(eye)
@@ -35,7 +35,7 @@ fun renderObject(eye: Vertex) {
 	}
 }
 
-private fun tfDrawVertices(parameters: LPVOID?): DWORD {
+private inline fun tfDrawVertices(parameters: LPVOID?): DWORD {
 	val id = parameters?.reinterpret<IntVar>()?.pointed?.value!!
 
 	threadFaces[id].forEach { drawTriangle(it) }
