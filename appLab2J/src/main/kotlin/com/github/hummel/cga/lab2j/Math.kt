@@ -25,6 +25,3 @@ fun multiplyMatrixByMatrix(matrixA: Array<FloatArray>, matrixB: Array<FloatArray
 
 	return result
 }
-
-fun getCenteredVertex(set: Array<Vertex>, alpha: Float, beta: Float, gamma: Float): Vertex =
-	set[0] * alpha + set[1] * beta + set[2] * gamma
