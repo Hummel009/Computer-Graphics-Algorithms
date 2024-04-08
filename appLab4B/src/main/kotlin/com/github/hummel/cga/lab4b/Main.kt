@@ -32,18 +32,20 @@ lateinit var mraoImage: BufferedImage
 const val dist: Float = 3.5f
 const val modelName: String = "box"
 
+var faces: MutableList<Face> = mutableListOf()
+
 fun main() {
 	mraoImage = ImageIO.read(File("${modelName}_mrao.bmp"))
 	normalImage = ImageIO.read(File("${modelName}_normal.bmp"))
 	textureImage = ImageIO.read(File("${modelName}_texture.bmp"))
 
-	val faceList = Parser.parse("$modelName.obj")
+	parse("$modelName.obj")
 
 	FlatLightLaf.setup()
 	EventQueue.invokeLater {
 		try {
 			UIManager.setLookAndFeel(FlatGitHubDarkIJTheme())
-			val gui = GUI(faceList)
+			val gui = GUI()
 			gui.isVisible = true
 		} catch (e: Exception) {
 			e.printStackTrace()
@@ -51,7 +53,7 @@ fun main() {
 	}
 }
 
-class GUI(faces: List<Face?>?) : JFrame() {
+class GUI() : JFrame() {
 	init {
 		title = "Renderer: Kotlin JVM"
 		defaultCloseOperation = EXIT_ON_CLOSE

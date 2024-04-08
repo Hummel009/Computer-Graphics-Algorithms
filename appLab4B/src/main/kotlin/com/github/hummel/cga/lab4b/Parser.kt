@@ -1,86 +1,106 @@
 package com.github.hummel.cga.lab4b
 
 import java.io.File
-import java.util.concurrent.atomic.AtomicInteger
 
-object Parser {
-	@JvmStatic
-	fun extractVertex(line: String): Vertex {
-		val list: MutableCollection<Float> = ArrayList()
-		line.replace("v ", "").split(" ".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-			.mapTo(list) { it.toFloat() }
-		val dList = list.toTypedArray<Float>()
-		return Vertex(dList[0], dList[1], dList[2])
-	}
+private val vertices: MutableList<Vertex> = mutableListOf()
+private val textures: MutableList<Vertex> = mutableListOf()
+private val normals: MutableList<Vertex> = mutableListOf()
 
-	@JvmStatic
-	fun extractNormal(line: String): Vertex {
-		val list: MutableCollection<Float> = ArrayList()
-		line.replace("vn ", "").split(" ".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-			.mapTo(list) { it.toFloat() }
-		val dList = list.toTypedArray<Float>()
-		return Vertex(dList[0], dList[1], dList[2])
-	}
+fun parse(fileName: String) {
+	val file = File(fileName)
 
-	@JvmStatic
-	fun extractTexture(line: String): Vertex {
-		val list: MutableCollection<Float> = ArrayList()
-		line.replace("vt ", "").split(" ".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-			.mapTo(list) { it.toFloat() }
-		val dList = list.toTypedArray<Float>()
-		return Vertex(dList[0], dList[1], 0.0f)
-	}
+	file.bufferedReader().use { reader ->
+		var line = reader.readLine()
+		while (line != null) {
+			val array = line.trim().split("\\s+".toRegex()).toTypedArray()
 
-	@JvmStatic
-	fun extractTriangle(
-		line: String,
-		vertices: List<Vertex?>,
-		textures: List<Vertex?>,
-		normals: List<Vertex>
-	): Face {
-		val result = Face()
-		result.vertices = arrayOf(Vertex(), Vertex(), Vertex())
-		result.textures = arrayOf(Vertex(), Vertex(), Vertex())
-		result.normals = arrayOf(Vertex(), Vertex(), Vertex())
+			when (array[0]) {
+				"v" -> addVertex(array.drop(1).toTypedArray())
+				"vt" -> addVertexTexture(array.drop(1).toTypedArray())
+				"vn" -> addVertexNormal(array.drop(1).toTypedArray())
+				"f" -> addFace(array.drop(1).toTypedArray())
+			}
 
-		val line1 = line.replace("f ", "")
-		val vIndex = AtomicInteger(0)
-		val nIndex = AtomicInteger(0)
-		val tIndex = AtomicInteger(0)
-		for (group in line1.split(" ".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()) {
-			val list: MutableCollection<Int> = ArrayList()
-			group.split("/".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray().mapTo(list) { it.toInt() }
-			val idList = list.toTypedArray<Int>()
-			result.vertices[vIndex.getAndIncrement()] = vertices[idList[0] - 1]!!
-			result.textures[tIndex.getAndIncrement()] = textures[idList[1] - 1]!!
-			result.normals[nIndex.getAndIncrement()] = normals[idList[2] - 1].normalize().mul(-1.0f)
+			line = reader.readLine()
 		}
-		return result
 	}
+}
 
-	fun parse(modelPath: String): MutableList<Face?> {
-		val vertexList: MutableList<Vertex?> = java.util.ArrayList()
-		val normalList: MutableList<Vertex> = java.util.ArrayList()
-		val textureList: MutableList<Vertex?> = java.util.ArrayList()
-		val faceList: MutableList<Face?> = java.util.ArrayList()
+private fun addVertex(array: Array<String>) {
+	val coords = array.map { it.toFloat() }
 
-		File(modelPath).bufferedReader().use { reader ->
-			var line = reader.readLine()
-			while (line != null) {
-				if (line.startsWith("v ")) {
-					vertexList.add(extractVertex(line))
-				} else if (line.startsWith("vn ")) {
-					normalList.add(extractNormal(line))
-				} else if (line.startsWith("vt ")) {
-					textureList.add(extractTexture(line))
-				} else if (line.startsWith("f ")) {
-					faceList.add(extractTriangle(line, vertexList, textureList, normalList))
+	val vertex = when (coords.size) {
+		3 -> Vertex(coords[0], coords[1], coords[2])
+		else -> throw Exception("Vertex error: ${array.joinToString(" ")}")
+	}
+	vertices.add(vertex)
+}
+
+private fun addVertexTexture(array: Array<String>) {
+	val coords = array.map { it.toFloat() }
+
+	val vertex = when (coords.size) {
+		1 -> Vertex(coords[0], 0.0f, 0.0f)
+		2 -> Vertex(coords[0], coords[1], 0.0f)
+		3 -> Vertex(coords[0], coords[1], coords[2])
+		else -> throw Exception("Vertex texture error: ${array.joinToString(" ")}")
+	}
+	textures.add(vertex)
+}
+
+private fun addVertexNormal(array: Array<String>) {
+	val coords = array.map { it.toFloat() }
+
+	val vertex = when (coords.size) {
+		3 -> Vertex(coords[0], coords[1], coords[2])
+		else -> throw Exception("Vertex normal error: ${array.joinToString(" ")}")
+	}
+	normals.add(vertex)
+}
+
+private fun addFace(array: Array<String>) {
+	val vs = mutableListOf<Vertex>()
+	val vns = mutableListOf<Vertex>()
+	val vts = mutableListOf<Vertex>()
+
+	val coords = array.filter { it.isNotBlank() }
+
+	coords.forEach { coord ->
+		val elem = coord.split('/')
+
+		elem[0].toIntOrNull()?.let { vs.add(vertices[it - 1]) } ?: run {
+			vs.add(vertices[vertices.lastIndex])
+		}
+
+		if (elem.size > 1) {
+			elem[1].toIntOrNull()?.let { vts.add(textures[it - 1]) } ?: run {
+				elem[2].toIntOrNull()?.let { vns.add(normals[it - 1]) } ?: run {
+					vns.add(normals[normals.lastIndex])
 				}
-
-				line = reader.readLine()
 			}
 		}
 
-		return faceList
+		if (elem.size > 2) {
+			elem[2].toIntOrNull()?.let { vns.add(normals[it - 1]) } ?: run {
+				vns.add(normals[normals.lastIndex])
+			}
+		}
+	}
+
+	if (vs.size > 3) {
+		for (i in 1 until vs.size - 1) {
+			val face = Face()
+			face.vertices = arrayOf(vs[0], vs[i], vs[i + 1])
+			face.normals = arrayOf(vns[0], vns[i], vns[i + 1]).map { it.normalize().mul(-1.0f)}.toTypedArray()
+			face.textures = arrayOf(vts[0], vts[i], vts[i + 1])
+			faces.add(face)
+		}
+	} else {
+		val face = Face()
+		face.vertices = vs.toTypedArray()
+		face.normals = vns.toTypedArray().map { it.normalize().mul(-1.0f)}.toTypedArray()
+		face.textures = vts.toTypedArray()
+
+		faces.add(face)
 	}
 }
