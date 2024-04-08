@@ -39,11 +39,11 @@ data class Vertex(var x: Float, var y: Float, var z: Float, var w: Float = 1.0f)
 
 data class Face(
 	val realVertices: Array<Vertex>,
-	var viewVertices: Array<Vertex>,
+	var viewVertices: Array<Vertex> = Array(3) { Vertex(0.0f, 0.0f, 0.0f) },
 	val normals: Array<Vertex>,
 	val textels: Array<Vertex>,
 	var poliNormal: Vertex,
-	var depthArr: FloatArray?
+	var savedW: FloatArray = FloatArray(3)
 ) {
 	override fun equals(other: Any?): Boolean {
 		if (this === other) {
@@ -70,18 +70,9 @@ data class Face(
 		if (poliNormal != other.poliNormal) {
 			return false
 		}
-
-		if (depthArr != null) {
-			if (other.depthArr == null) {
-				return false
-			}
-			if (!depthArr.contentEquals(other.depthArr)) {
-				return false
-			}
-		} else if (other.depthArr != null) {
+		if (!savedW.contentEquals(other.savedW)) {
 			return false
 		}
-
 		return true
 	}
 
@@ -90,8 +81,8 @@ data class Face(
 		result = 31 * result + viewVertices.contentHashCode()
 		result = 31 * result + normals.contentHashCode()
 		result = 31 * result + textels.contentHashCode()
+		result = 31 * result + savedW.contentHashCode()
 		result = 31 * result + poliNormal.hashCode()
-		result = 31 * result + (depthArr?.contentHashCode() ?: 0)
 		return result
 	}
 

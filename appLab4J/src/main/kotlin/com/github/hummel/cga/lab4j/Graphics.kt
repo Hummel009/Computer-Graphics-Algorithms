@@ -28,15 +28,14 @@ private fun drawTriangle(face: Face) {
 	face.viewVertices[1] = multiplyVertexByMatrix(face.realVertices[1], displayMatrix)
 	face.viewVertices[2] = multiplyVertexByMatrix(face.realVertices[2], displayMatrix)
 
-	val depthArr = FloatArray(3)
-	val vertices = face.viewVertices
+	val savedW = FloatArray(3)
 
-	for (i in vertices.indices) {
-		depthArr[i] = vertices[i].w
-		vertices[i] divSelf vertices[i].w
+	for (i in face.viewVertices.indices) {
+		savedW[i] = face.viewVertices[i].w
+		face.viewVertices[i] divSelf face.viewVertices[i].w
 	}
 
-	face.depthArr = depthArr
+	face.savedW = savedW
 
 	var minY = Int.MAX_VALUE
 	var maxY = Int.MIN_VALUE
@@ -91,9 +90,9 @@ private fun drawTriangle(face: Face) {
 						var beta = coords[1]
 						var gamma = coords[2]
 
-						face.depthArr?.let { alpha /= it[0] }
-						face.depthArr?.let { beta /= it[1] }
-						face.depthArr?.let { gamma /= it[2] }
+						alpha /= face.savedW[0]
+						beta /= face.savedW[1]
+						gamma /= face.savedW[2]
 
 						val sum = alpha + beta + gamma
 
