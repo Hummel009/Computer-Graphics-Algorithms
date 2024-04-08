@@ -101,18 +101,18 @@ private inline fun addFace(array: Array<String>) {
 		for (i in 1 until vs.size - 1) {
 			faces.add(
 				Face(
-					arrayOf(vs[0], vs[i], vs[i + 1]),
-					arrayOf(vns[0], vns[i], vns[i + 1]),
-					arrayOf(vts[0], vts[i], vts[i + 1]),
-					null,
-					normal
+					realVertices = arrayOf(vs[0], vs[i], vs[i + 1]),
+					normals = arrayOf(vns[0], vns[i], vns[i + 1]),
+					textels = arrayOf(vts[0], vts[i], vts[i + 1])
 				)
 			)
 		}
 	} else {
 		faces.add(
 			Face(
-				vs.toTypedArray(), vns.toTypedArray(), vts.toTypedArray(), null, normal
+				realVertices = vs.toTypedArray(),
+				normals = vns.toTypedArray(),
+				textels = vts.toTypedArray()
 			)
 		)
 	}

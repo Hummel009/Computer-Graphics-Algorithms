@@ -44,20 +44,20 @@ private fun tfDrawVertices(parameters: LPVOID?): DWORD {
 }
 
 private inline fun drawTriangle(face: Face) {
-	val drawFace = Face(
-		arrayOf(
-			multiplyVertexByMatrix(face.vertices[0], displayMatrix),
-			multiplyVertexByMatrix(face.vertices[1], displayMatrix),
-			multiplyVertexByMatrix(face.vertices[2], displayMatrix)
-		), face.normals, face.textures, face.depthArr, face.poliNormal
-	)
+	face.viewVertices[0] = multiplyVertexByMatrix(face.realVertices[0], displayMatrix)
+	face.viewVertices[1] = multiplyVertexByMatrix(face.realVertices[1], displayMatrix)
+	face.viewVertices[2] = multiplyVertexByMatrix(face.realVertices[2], displayMatrix)
 
-	drawLine(drawFace.vertices[0], drawFace.vertices[1], rgb)
-	drawLine(drawFace.vertices[1], drawFace.vertices[2], rgb)
-	drawLine(drawFace.vertices[2], drawFace.vertices[0], rgb)
+	for (i in face.viewVertices.indices) {
+		face.viewVertices[i] divSelf face.viewVertices[i].w
+	}
+
+	drawLine(face.viewVertices[0], face.viewVertices[1], rgb)
+	drawLine(face.viewVertices[1], face.viewVertices[2], rgb)
+	drawLine(face.viewVertices[2], face.viewVertices[0], rgb)
 }
 
-private fun drawLine(v1: Vertex, v2: Vertex, rgb: RGB) {
+private inline fun drawLine(v1: Vertex, v2: Vertex, rgb: RGB) {
 	var x1 = v1.x.toInt()
 	val x2 = v2.x.toInt()
 	var y1 = v1.y.toInt()
