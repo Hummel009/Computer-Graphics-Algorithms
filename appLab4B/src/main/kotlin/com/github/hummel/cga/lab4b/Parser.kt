@@ -6,29 +6,29 @@ import java.util.concurrent.atomic.AtomicInteger
 object Parser {
 	@JvmStatic
 	fun extractVertex(line: String): Vertex {
-		val list: MutableCollection<Double> = ArrayList()
+		val list: MutableCollection<Float> = ArrayList()
 		line.replace("v ", "").split(" ".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-			.mapTo(list) { it.toDouble() }
-		val dList = list.toTypedArray<Double>()
+			.mapTo(list) { it.toFloat() }
+		val dList = list.toTypedArray<Float>()
 		return Vertex(dList[0], dList[1], dList[2])
 	}
 
 	@JvmStatic
 	fun extractNormal(line: String): Vertex {
-		val list: MutableCollection<Double> = ArrayList()
+		val list: MutableCollection<Float> = ArrayList()
 		line.replace("vn ", "").split(" ".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-			.mapTo(list) { it.toDouble() }
-		val dList = list.toTypedArray<Double>()
+			.mapTo(list) { it.toFloat() }
+		val dList = list.toTypedArray<Float>()
 		return Vertex(dList[0], dList[1], dList[2])
 	}
 
 	@JvmStatic
 	fun extractTexture(line: String): Vertex {
-		val list: MutableCollection<Double> = ArrayList()
+		val list: MutableCollection<Float> = ArrayList()
 		line.replace("vt ", "").split(" ".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-			.mapTo(list) { it.toDouble() }
-		val dList = list.toTypedArray<Double>()
-		return Vertex(dList[0], dList[1], 0.0)
+			.mapTo(list) { it.toFloat() }
+		val dList = list.toTypedArray<Float>()
+		return Vertex(dList[0], dList[1], 0.0f)
 	}
 
 	@JvmStatic
@@ -53,7 +53,7 @@ object Parser {
 			val idList = list.toTypedArray<Int>()
 			result.vertices[vIndex.getAndIncrement()] = vertices[idList[0] - 1]!!
 			result.textures[tIndex.getAndIncrement()] = textures[idList[1] - 1]!!
-			result.normals[nIndex.getAndIncrement()] = normals[idList[2] - 1].normalize().mul(-1.0)
+			result.normals[nIndex.getAndIncrement()] = normals[idList[2] - 1].normalize().mul(-1.0f)
 		}
 		return result
 	}

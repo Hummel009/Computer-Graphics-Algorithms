@@ -6,25 +6,25 @@ object MyMath {
 	@JvmStatic
 	fun buildViewport(width: Int, height: Int): MyMatrix {
 		val viewport = MyMatrix()
-		viewport[0, 0] = width / 2.0
-		viewport[1, 1] = -height / 2.0
-		viewport[0, 3] = width / 2.0
-		viewport[1, 3] = height / 2.0
+		viewport[0, 0] = width / 2.0f
+		viewport[1, 1] = -height / 2.0f
+		viewport[0, 3] = width / 2.0f
+		viewport[1, 3] = height / 2.0f
 		return viewport
 	}
 
 	@JvmStatic
-	fun buildProjection(aspect: Double, FOV: Double): MyMatrix {
-		val zNear = 0.01
-		val zFar = 1.0
+	fun buildProjection(aspect: Float, FOV: Float): MyMatrix {
+		val zNear = 0.01f
+		val zFar = 1.0f
 
 		val projectionMatrix = MyMatrix()
-		projectionMatrix[0, 0] = 1.0 / (aspect * tan(FOV / 2.0 * 0.0174533))
-		projectionMatrix[1, 1] = 1.0 / tan(FOV / 2.0 * 0.0174533)
+		projectionMatrix[0, 0] = 1.0f / (aspect * tan(FOV / 2.0f * 0.0174533f))
+		projectionMatrix[1, 1] = 1.0f / tan(FOV / 2.0f * 0.0174533f)
 		projectionMatrix[2, 2] = zFar / (zNear - zFar)
 		projectionMatrix[2, 3] = zFar * zNear / (zNear - zFar)
-		projectionMatrix[3, 2] = -1.0
-		projectionMatrix[3, 3] = 0.0
+		projectionMatrix[3, 2] = -1.0f
+		projectionMatrix[3, 3] = 0.0f
 		return projectionMatrix
 	}
 

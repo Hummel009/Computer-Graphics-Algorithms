@@ -30,7 +30,7 @@ object MyGraphics {
 				acc = normal
 			}
 		}
-		return (if (seen) Optional.of(acc!!) else Optional.empty()).map { vertex: Vertex? -> vertex!!.div(3.0) }.get()
+		return (if (seen) Optional.of(acc!!) else Optional.empty()).map { vertex: Vertex? -> vertex!!.div(3.0f) }.get()
 	}
 
 	@JvmStatic
@@ -45,12 +45,12 @@ object MyGraphics {
 	}
 
 	@JvmStatic
-	private fun getCenteredVecForPoint(vertices: Array<Vertex>, alpha: Double, beta: Double, gamma: Double): Vertex =
+	private fun getCenteredVecForPoint(vertices: Array<Vertex>, alpha: Float, beta: Float, gamma: Float): Vertex =
 		vertices[0].mul(alpha).add(vertices[1].mul(beta)).add(vertices[2].mul(gamma))
 
 	@JvmStatic
-	private fun calculateBarycentricCoordinates(face: Face, x: Double, y: Double): DoubleArray {
-		val barycentricCoordinates = DoubleArray(3)
+	private fun calculateBarycentricCoordinates(face: Face, x: Float, y: Float): FloatArray {
+		val barycentricCoordinates = FloatArray(3)
 
 		val x1 = face.vertices[0][0]
 		val y1 = face.vertices[0][1]
@@ -69,7 +69,7 @@ object MyGraphics {
 	}
 
 	@JvmStatic
-	private fun applyBrightness(color: Int, brightness: Double): Int {
+	private fun applyBrightness(color: Int, brightness: Float): Int {
 		var r = (color and 0x00ff0000) shr 16
 		var g = (color and 0x0000ff00) shr 8
 		var b = color and 0x000000ff
@@ -81,7 +81,7 @@ object MyGraphics {
 
 	@JvmStatic
 	fun drawRasterTriangle(
-		bufferedImage: BufferedImage, worldFace: Face, drawFace: Face, zBuffer: DoubleArray, camera: Camera
+		bufferedImage: BufferedImage, worldFace: Face, drawFace: Face, zBuffer: FloatArray, camera: Camera
 	) {
 		var minY = Int.MAX_VALUE
 		var maxY = Int.MIN_VALUE
@@ -106,7 +106,7 @@ object MyGraphics {
 				val y0 = v0[1].toInt()
 				val y1 = v1[1].toInt()
 				if (y in y0..<y1 || y in y1..<y0) {
-					val t = (y - y0) / (y1 - y0).toDouble()
+					val t = (y - y0) / (y1 - y0).toFloat()
 					val x = (v0[0] + t * (v1[0] - v0[0])).toInt()
 					xIntersections[intersectionCount] = x
 					intersectionCount++
@@ -129,7 +129,7 @@ object MyGraphics {
 					}
 
 					// Вычисление z-фрагмента
-					val barycCords = calculateBarycentricCoordinates(drawFace, x.toDouble(), y.toDouble())
+					val barycCords = calculateBarycentricCoordinates(drawFace, x.toFloat(), y.toFloat())
 
 					val v0 = drawFace.vertices[0]
 					val v1 = drawFace.vertices[1]
@@ -147,15 +147,15 @@ object MyGraphics {
 
 					val zFragment = alpha * v0[2] + beta * v1[2] + gamma * v2[2]
 
-					val ambientCoeff = 0.0
-					val diffuseCoeff = 0.4
-					val specularCoeff = 0.2
+					val ambientCoeff = 0.0f
+					val diffuseCoeff = 0.4f
+					val specularCoeff = 0.2f
 
 					// Проверка z-буфера
 					if (zBuffer[x * windowHeight + y] > zFragment) {
 						// cчитаем diffuse
 						var texVec = getCenteredVecForPoint(worldFace.textures, alpha, beta, gamma)
-						texVec = Vertex(texVec[0], 1.0 - texVec[1], 0.0)
+						texVec = Vertex(texVec[0], 1.0f - texVec[1], 0.0f)
 						var texX = (texVec[0] * textureImage.width).toInt() % textureImage.width
 						var texY = (texVec[1] * textureImage.height).toInt() % textureImage.height
 
@@ -174,33 +174,33 @@ object MyGraphics {
 
 						val normalData = normalImage.getRGB(texX, texY)
 						val normal = Vertex(
-							(normalData shr 16 and 0x000000ff) / 256.0 * 2.0 - 1.0,
-							(normalData shr 8 and 0x000000ff) / 256.0 * 2.0 - 1.0,
-							(normalData and 0x000000ff) / 256.0 * 2.0 - 1.0
-						).mul(-1.0)
+							(normalData shr 16 and 0x000000ff) / 256.0f * 2.0f - 1.0f,
+							(normalData shr 8 and 0x000000ff) / 256.0f * 2.0f - 1.0f,
+							(normalData and 0x000000ff) / 256.0f * 2.0f - 1.0f
+						).mul(-1.0f)
 
 						val mraoData = mraoImage.getRGB(texX, texY)
 						val mraoVec = Vertex(
-							(mraoData shr 16 and 0x000000ff) / 256.0,
-							(mraoData shr 8 and 0x000000ff) / 256.0,
-							(mraoData and 0x000000ff) / 256.0
+							(mraoData shr 16 and 0x000000ff) / 256.0f,
+							(mraoData shr 8 and 0x000000ff) / 256.0f,
+							(mraoData and 0x000000ff) / 256.0f
 						)
 
 						val pos = getCenteredVecForPoint(worldFace.vertices, alpha, beta, gamma)
 						camera.eye?.let { camera.target?.subtract(it)?.normalize() }
-						val lightPos = Vertex(5.0, 5.0, 5.0)
+						val lightPos = Vertex(5.0f, 5.0f, 5.0f)
 						val ray = pos.subtract(lightPos).normalize()
-						val diffuse = max(normal.dot(ray) * diffuseCoeff, 0.0)
+						val diffuse = max(normal.dot(ray) * diffuseCoeff, 0.0f)
 
 						// считаем specular
-						var specular = 0.0
+						var specular = 0.0f
 						val l = lightPos.subtract(pos)
-						val s = 10.0
+						val s = 10.0f
 						val angle = normal.dot(l)
 
-						val r = normal.mul(angle).mul(2.0).subtract(l)
+						val r = normal.mul(angle).mul(2.0f).subtract(l)
 						val v = camera.eye?.subtract(pos)
-						val rDotV = max(r.dot(v ?: return), 0.0)
+						val rDotV = max(r.dot(v ?: return), 0.0f)
 						if (rDotV > 0) {
 							specular = (rDotV / (r.len() * v.len())).pow(s)
 						}

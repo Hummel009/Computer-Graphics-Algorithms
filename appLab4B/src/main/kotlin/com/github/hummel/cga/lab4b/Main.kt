@@ -29,7 +29,7 @@ lateinit var textureImage: BufferedImage
 lateinit var normalImage: BufferedImage
 lateinit var mraoImage: BufferedImage
 
-const val dist: Double = 3.5
+const val dist: Float = 3.5f
 const val modelName: String = "box"
 
 fun main() {
@@ -59,20 +59,20 @@ class GUI(faces: List<Face?>?) : JFrame() {
 
 		val drawingPanel = object : JPanel() {
 			private val viewportMatrix = buildViewport(windowWidth, windowHeight)
-			private val projectionMatrix = buildProjection(1.75, 90.0)
+			private val projectionMatrix = buildProjection(1.75f, 90.0f)
 			private val camera: Camera
 			private val bufferedImage: BufferedImage
-			private val zBuffer: DoubleArray
+			private val zBuffer: FloatArray
 			private val imgGraphics: Graphics2D
 			private var viewMatrix: MyMatrix
 			private var camMatrix: MyMatrix? = null
 			private var prevMouseX = 0
 			private var prevMouseY = 0
-			private var rotateY = 0.0
-			private var rotateX = 0.0
+			private var rotateY = 0.0f
+			private var rotateX = 0.0f
 
 			init {
-				val dist = 5.0
+				val dist = 5.0f
 				camera = Camera()
 				camera.eye =
 					Vertex(
@@ -80,12 +80,12 @@ class GUI(faces: List<Face?>?) : JFrame() {
 						dist * sin(rotateX),
 						dist * cos(rotateX) * sin(rotateY)
 					)
-				camera.target = Vertex(0.0, 0.0, 0.0)
-				camera.up = Vertex(0.0, 1.0, 0.0)
+				camera.target = Vertex(0.0f, 0.0f, 0.0f)
+				camera.up = Vertex(0.0f, 1.0f, 0.0f)
 				viewMatrix = buildView(camera)
 				bufferedImage = BufferedImage(windowWidth, windowHeight, BufferedImage.TYPE_INT_RGB)
 				imgGraphics = bufferedImage.createGraphics()
-				zBuffer = DoubleArray(windowWidth * windowHeight)
+				zBuffer = FloatArray(windowWidth * windowHeight)
 				imgGraphics.background = Color(0, 0, 0, 0)
 
 				setupCamMatrix()
@@ -94,9 +94,9 @@ class GUI(faces: List<Face?>?) : JFrame() {
 						super.mouseDragged(e)
 
 						if (rotateX > Math.PI / 2 - 0.1f) {
-							rotateX = Math.PI / 2 - 0.05f
+							rotateX = Math.PI.toFloat() / 2 - 0.05f
 						} else if (rotateX < -Math.PI / 2 + 0.1f) {
-							rotateX = -Math.PI / 2 - 0.05f
+							rotateX = -Math.PI.toFloat() / 2 - 0.05f
 						}
 						rotateY += (e.x - prevMouseX) / 200.0f
 						rotateX += (e.y - prevMouseY) / 200.0f
@@ -137,7 +137,7 @@ class GUI(faces: List<Face?>?) : JFrame() {
 				val drawList = MyGraphics.applyMatrix(filteredList, finalMatrix ?: return)
 				for (face in drawList) {
 					val i = AtomicInteger(0)
-					val depthArr = DoubleArray(3)
+					val depthArr = FloatArray(3)
 					for (vertex in face.vertices) {
 						depthArr[i.getAndIncrement()] = vertex[3]
 						vertex.divSelf(vertex[3])
@@ -147,7 +147,7 @@ class GUI(faces: List<Face?>?) : JFrame() {
 
 				val newList: MutableCollection<Array<Face?>> =
 					filteredList.indices.mapTo(ArrayList()) { arrayOf(filteredList[it], drawList[it]) }
-				Arrays.fill(zBuffer, Double.POSITIVE_INFINITY)
+				Arrays.fill(zBuffer, Float.POSITIVE_INFINITY)
 
 				newList.parallelStream().forEach { facePair: Array<Face?> ->
 					MyGraphics.drawRasterTriangle(
