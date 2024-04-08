@@ -7,10 +7,8 @@ object Parser {
 	@JvmStatic
 	fun extractVertex(line: String): Vertex {
 		val list: MutableCollection<Double> = ArrayList()
-		for (s in line.replace("v ", "").split(" ".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()) {
-			val parseDouble = s.toDouble()
-			list.add(parseDouble)
-		}
+		line.replace("v ", "").split(" ".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+			.mapTo(list) { it.toDouble() }
 		val dList = list.toTypedArray<Double>()
 		return Vertex(dList[0], dList[1], dList[2])
 	}
@@ -18,10 +16,8 @@ object Parser {
 	@JvmStatic
 	fun extractNormal(line: String): Vertex {
 		val list: MutableCollection<Double> = ArrayList()
-		for (s in line.replace("vn ", "").split(" ".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()) {
-			val parseDouble = s.toDouble()
-			list.add(parseDouble)
-		}
+		line.replace("vn ", "").split(" ".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+			.mapTo(list) { it.toDouble() }
 		val dList = list.toTypedArray<Double>()
 		return Vertex(dList[0], dList[1], dList[2])
 	}
@@ -29,10 +25,8 @@ object Parser {
 	@JvmStatic
 	fun extractTexture(line: String): Vertex {
 		val list: MutableCollection<Double> = ArrayList()
-		for (s in line.replace("vt ", "").split(" ".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()) {
-			val parseDouble = s.toDouble()
-			list.add(parseDouble)
-		}
+		line.replace("vt ", "").split(" ".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+			.mapTo(list) { it.toDouble() }
 		val dList = list.toTypedArray<Double>()
 		return Vertex(dList[0], dList[1], 0.0)
 	}
@@ -55,10 +49,7 @@ object Parser {
 		val tIndex = AtomicInteger(0)
 		for (group in line1.split(" ".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()) {
 			val list: MutableCollection<Int> = ArrayList()
-			for (s in group.split("/".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()) {
-				val parseInt = s.toInt()
-				list.add(parseInt)
-			}
+			group.split("/".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray().mapTo(list) { it.toInt() }
 			val idList = list.toTypedArray<Int>()
 			result.vertices[vIndex.getAndIncrement()] = vertices[idList[0] - 1]!!
 			result.textures[tIndex.getAndIncrement()] = textures[idList[1] - 1]!!

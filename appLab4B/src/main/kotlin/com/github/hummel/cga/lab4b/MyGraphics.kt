@@ -11,11 +11,8 @@ object MyGraphics {
 		return faces.asSequence().map { face: Face? ->
 			val newFace = Face()
 			newFace.normals = face!!.normals
-			newFace.textures = face!!.textures
-			val list: MutableList<Vertex> = ArrayList()
-			for (vertex in face!!.vertices) {
-				list.add(matrix.mul(vertex))
-			}
+			newFace.textures = face.textures
+			val list: MutableList<Vertex> = face.vertices.mapTo(ArrayList()) { matrix.mul(it) }
 			newFace.vertices = list.toTypedArray<Vertex>()
 			newFace
 		}.toList()
@@ -33,8 +30,7 @@ object MyGraphics {
 				acc = normal
 			}
 		}
-		return (if (seen) Optional.of(acc!!) else Optional.empty()).map { vertex: Vertex? -> vertex!!.div(3.0) }
-			.get()
+		return (if (seen) Optional.of(acc!!) else Optional.empty()).map { vertex: Vertex? -> vertex!!.div(3.0) }.get()
 	}
 
 	@JvmStatic
@@ -49,9 +45,8 @@ object MyGraphics {
 	}
 
 	@JvmStatic
-	private fun getCenteredVecForPoint(vertices: Array<Vertex>, alpha: Double, beta: Double, gamma: Double): Vertex {
-		return vertices[0].mul(alpha).add(vertices[1].mul(beta)).add(vertices[2].mul(gamma))
-	}
+	private fun getCenteredVecForPoint(vertices: Array<Vertex>, alpha: Double, beta: Double, gamma: Double): Vertex =
+		vertices[0].mul(alpha).add(vertices[1].mul(beta)).add(vertices[2].mul(gamma))
 
 	@JvmStatic
 	private fun calculateBarycentricCoordinates(face: Face, x: Double, y: Double): DoubleArray {
@@ -86,11 +81,7 @@ object MyGraphics {
 
 	@JvmStatic
 	fun drawRasterTriangle(
-		bufferedImage: BufferedImage,
-		worldFace: Face,
-		drawFace: Face,
-		zBuffer: DoubleArray,
-		camera: Camera
+		bufferedImage: BufferedImage, worldFace: Face, drawFace: Face, zBuffer: DoubleArray, camera: Camera
 	) {
 		var minY = Int.MAX_VALUE
 		var maxY = Int.MIN_VALUE
@@ -114,7 +105,7 @@ object MyGraphics {
 				val v1 = drawFace.vertices[(i + 1) % 3]
 				val y0 = v0[1].toInt()
 				val y1 = v1[1].toInt()
-				if (y0 <= y && y < y1 || y1 <= y && y < y0) {
+				if (y in y0..<y1 || y in y1..<y0) {
 					val t = (y - y0) / (y1 - y0).toDouble()
 					val x = (v0[0] + t * (v1[0] - v0[0])).toInt()
 					xIntersections[intersectionCount] = x
@@ -132,8 +123,8 @@ object MyGraphics {
 			// Заполнить пиксели между пересечениями цветом треугольника
 			if (intersectionCount == 2) {
 				for (x in xIntersections[0]..xIntersections[1]) {
-					val id = x * Main.height + y
-					if (id < 0 || id >= Main.width * Main.height) {
+					val id = x * Main.windowHeight + y
+					if (id < 0 || id >= Main.windowWidth * Main.windowHeight) {
 						continue
 					}
 
@@ -161,34 +152,34 @@ object MyGraphics {
 					val specularCoeff = 0.2
 
 					// Проверка z-буфера
-					if (zBuffer[x * Main.height + y] > zFragment) {
+					if (zBuffer[x * Main.windowHeight + y] > zFragment) {
 						// cчитаем diffuse
 						var texVec = getCenteredVecForPoint(worldFace.textures, alpha, beta, gamma)
 						texVec = Vertex(texVec[0], 1.0 - texVec[1], 0.0)
-						var texX = (texVec[0] * Main.textureImage!!.width).toInt() % Main.textureImage!!.width
-						var texY = (texVec[1] * Main.textureImage!!.height).toInt() % Main.textureImage!!.height
+						var texX = (texVec[0] * Main.textureImage.width).toInt() % Main.textureImage.width
+						var texY = (texVec[1] * Main.textureImage.height).toInt() % Main.textureImage.height
 
-						if (texX > Main.textureImage!!.width - 1) {
-							texX = Main.textureImage!!.width - 1
+						if (texX > Main.textureImage.width - 1) {
+							texX = Main.textureImage.width - 1
 						}
 						if (texX < 0) {
 							texX = 0
 						}
-						if (texY > Main.textureImage!!.width - 1) {
-							texY = Main.textureImage!!.width - 1
+						if (texY > Main.textureImage.width - 1) {
+							texY = Main.textureImage.width - 1
 						}
 						if (texY < 0) {
 							texY = 0
 						}
 
-						val normalData = Main.normalMapImage!!.getRGB(texX, texY)
+						val normalData = Main.normalImage.getRGB(texX, texY)
 						val normal = Vertex(
 							(normalData shr 16 and 0x000000ff) / 256.0 * 2.0 - 1.0,
 							(normalData shr 8 and 0x000000ff) / 256.0 * 2.0 - 1.0,
 							(normalData and 0x000000ff) / 256.0 * 2.0 - 1.0
 						).mul(-1.0)
 
-						val mraoData = Main.mraoImage!!.getRGB(texX, texY)
+						val mraoData = Main.mraoImage.getRGB(texX, texY)
 						val mraoVec = Vertex(
 							(mraoData shr 16 and 0x000000ff) / 256.0,
 							(mraoData shr 8 and 0x000000ff) / 256.0,
@@ -209,17 +200,17 @@ object MyGraphics {
 
 						val r = normal.mul(angle).mul(2.0).subtract(l)
 						val v = camera.eye?.subtract(pos)
-						val rDotV = max(r.dot(v!!), 0.0)
+						val rDotV = max(r.dot(v ?: return), 0.0)
 						if (rDotV > 0) {
 							specular = (rDotV / (r.len() * v.len())).pow(s)
 						}
 
-						zBuffer[x * Main.height + y] = zFragment
+						zBuffer[x * Main.windowHeight + y] = zFragment
 
 						val colorValCoeff =
 							ambientCoeff + diffuse * diffuseCoeff + specular * mraoVec[0] * specularCoeff
 
-						var texColor = Main.textureImage!!.getRGB(texX, texY)
+						var texColor = Main.textureImage.getRGB(texX, texY)
 						texColor = applyBrightness(texColor, colorValCoeff)
 
 						bufferedImage.setRGB(x, y, texColor)

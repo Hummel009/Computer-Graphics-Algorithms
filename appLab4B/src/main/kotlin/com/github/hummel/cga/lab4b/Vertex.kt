@@ -13,9 +13,7 @@ class Vertex {
 		data = doubleArrayOf(x, y, z, 1.0)
 	}
 
-	operator fun get(i: Int): Double {
-		return data[i]
-	}
+	operator fun get(i: Int): Double = data[i]
 
 	operator fun set(i: Int, `val`: Double) {
 		data[i] = `val`
@@ -27,34 +25,22 @@ class Vertex {
 		}
 	}
 
-	fun len(): Double {
-		return sqrt(data[0] * data[0] + data[1] * data[1] + data[2] * data[2])
-	}
+	fun len(): Double = sqrt(data[0] * data[0] + data[1] * data[1] + data[2] * data[2])
 
 	fun normalize(): Vertex {
 		val len = len()
 		return Vertex(data[0] / len, data[1] / len, data[2] / len)
 	}
 
-	fun add(arg: Vertex): Vertex {
-		return Vertex(data[0] + arg.data[0], data[1] + arg.data[1], data[2] + arg.data[2])
-	}
+	fun add(arg: Vertex): Vertex = Vertex(data[0] + arg.data[0], data[1] + arg.data[1], data[2] + arg.data[2])
 
-	fun subtract(arg: Vertex): Vertex {
-		return Vertex(data[0] - arg.data[0], data[1] - arg.data[1], data[2] - arg.data[2])
-	}
+	fun subtract(arg: Vertex): Vertex = Vertex(data[0] - arg.data[0], data[1] - arg.data[1], data[2] - arg.data[2])
 
-	fun dot(arg: Vertex): Double {
-		return data[0] * arg.data[0] + data[1] * arg.data[1] + data[2] * arg.data[2]
-	}
+	fun dot(arg: Vertex): Double = data[0] * arg.data[0] + data[1] * arg.data[1] + data[2] * arg.data[2]
 
-	fun mul(arg: Double): Vertex {
-		return Vertex(data[0] * arg, data[1] * arg, data[2] * arg)
-	}
+	fun mul(arg: Double): Vertex = Vertex(data[0] * arg, data[1] * arg, data[2] * arg)
 
-	fun div(arg: Double): Vertex {
-		return Vertex(data[0] / arg, data[1] / arg, data[2] / arg)
-	}
+	operator fun div(arg: Double): Vertex = Vertex(data[0] / arg, data[1] / arg, data[2] / arg)
 
 	fun cross(arg: Vertex): Vertex {
 		return Vertex(

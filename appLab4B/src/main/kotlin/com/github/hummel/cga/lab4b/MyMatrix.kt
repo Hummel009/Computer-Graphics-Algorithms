@@ -8,7 +8,7 @@ class MyMatrix {
 		doubleArrayOf(0.0, 0.0, 0.0, 1.0)
 	)
 
-	fun set(i: Int, j: Int, `val`: Double) {
+	operator fun set(i: Int, j: Int, `val`: Double) {
 		data[i][j] = `val`
 	}
 

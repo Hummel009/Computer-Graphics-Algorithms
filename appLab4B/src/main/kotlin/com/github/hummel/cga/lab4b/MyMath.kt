@@ -29,9 +29,7 @@ object MyMath {
 	}
 
 	@JvmStatic
-	fun buildView(camera: Camera): MyMatrix {
-		return buildView(camera.eye, camera.target, camera.up)
-	}
+	fun buildView(camera: Camera): MyMatrix = buildView(camera.eye, camera.target, camera.up)
 
 	private fun buildView(eye: Vertex?, target: Vertex?, up: Vertex?): MyMatrix {
 		val viewMatrix = MyMatrix()
