@@ -73,6 +73,7 @@ data class Face(
 		if (!savedW.contentEquals(other.savedW)) {
 			return false
 		}
+
 		return true
 	}
 

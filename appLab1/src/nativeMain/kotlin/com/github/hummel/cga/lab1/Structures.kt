@@ -62,6 +62,7 @@ data class Face(
 		if (!textels.contentEquals(other.textels)) {
 			return false
 		}
+
 		return true
 	}
 
