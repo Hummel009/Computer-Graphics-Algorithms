@@ -2,6 +2,7 @@ package com.github.hummel.cga.lab5j
 
 import org.lwjgl.glfw.Callbacks
 import org.lwjgl.glfw.GLFW
+import org.lwjgl.glfw.GLFWErrorCallback
 import org.lwjgl.opengl.GL
 import org.lwjgl.opengl.GL11
 import org.lwjgl.system.MemoryUtil
@@ -20,6 +21,7 @@ class BlackWindow {
 	}
 
 	private fun init() {
+		GLFWErrorCallback.createPrint(System.err).set()
 		check(GLFW.glfwInit()) { "Unable to initialize GLFW" }
 
 		GLFW.glfwDefaultWindowHints()
@@ -49,12 +51,23 @@ class BlackWindow {
 
 	private fun loop() {
 		while (!GLFW.glfwWindowShouldClose(window)) {
-			GL11.glClearColor(1.0f, 0.0f, 0.0f, 1.0f) // Красный фон
-			GL11.glClear(GL11.GL_COLOR_BUFFER_BIT or GL11.GL_DEPTH_BUFFER_BIT)
-
+			drawSquare() // Рисуем квадрат
 			GLFW.glfwSwapBuffers(window)
 			GLFW.glfwPollEvents()
 		}
+	}
+
+	private fun drawSquare() {
+		GL11.glClearColor(0.0f, 0.0f, 0.0f, 1.0f)
+		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT or GL11.GL_DEPTH_BUFFER_BIT)
+
+		GL11.glBegin(GL11.GL_QUADS)
+		GL11.glColor3f(1.0f, 1.0f, 1.0f)
+		GL11.glVertex2f(-0.5f, -0.5f)
+		GL11.glVertex2f(0.5f, -0.5f)
+		GL11.glVertex2f(0.5f, 0.5f)
+		GL11.glVertex2f(-0.5f, 0.5f)
+		GL11.glEnd()
 	}
 
 	companion object {
