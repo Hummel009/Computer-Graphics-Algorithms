@@ -2,7 +2,7 @@ package com.github.hummel.cga.lab4j
 
 import kotlin.math.pow
 
-const val ambientIntencity: Float = 0.4f
+const val ambientIntencity: Float = 0.0f
 const val diffuseIntencity: Float = 0.4f
 const val specularIntencity: Float = 0.2f
 
@@ -14,7 +14,7 @@ fun getResultRgb(face: Face, alpha: Float, beta: Float, gamma: Float): RGB {
 	val point = getCenteredVertex(face.realVertices, alpha, beta, gamma)
 
 	val normalRgb = normalImage.getRGB(texX, texY).decompose()
-	val normal = -Vertex(
+	val normal = Vertex(
 		(normalRgb.r / 256.0f) * 2.0f - 1.0f,
 		(normalRgb.g / 256.0f) * 2.0f - 1.0f,
 		(normalRgb.b / 256.0f) * 2.0f - 1.0f
