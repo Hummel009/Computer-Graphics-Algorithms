@@ -8,7 +8,7 @@ import kotlin.math.pow
 object MyGraphics {
 	@JvmStatic
 	fun applyMatrix(faces: Collection<Face?>, matrix: MyMatrix): List<Face> {
-		return faces.parallelStream().map { face: Face? ->
+		return faces.asSequence().map { face: Face? ->
 			val newFace = Face()
 			newFace.normals = face!!.normals
 			newFace.textures = face!!.textures
@@ -39,7 +39,7 @@ object MyGraphics {
 
 	@JvmStatic
 	fun filterTriangles(faces: Collection<Face?>?, camera: Camera): List<Face?> {
-		return faces!!.parallelStream().filter { t: Face? ->
+		return faces!!.asSequence().filter { t: Face? ->
 			val viewDir = camera.eye?.let { t!!.vertices[0].subtract(it).normalize() }
 			val normal = getNormal(t!!)
 
