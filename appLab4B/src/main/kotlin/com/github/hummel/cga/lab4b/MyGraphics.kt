@@ -123,8 +123,8 @@ object MyGraphics {
 			// Заполнить пиксели между пересечениями цветом треугольника
 			if (intersectionCount == 2) {
 				for (x in xIntersections[0]..xIntersections[1]) {
-					val id = x * Main.windowHeight + y
-					if (id < 0 || id >= Main.windowWidth * Main.windowHeight) {
+					val id = x * windowHeight + y
+					if (id < 0 || id >= windowWidth * windowHeight) {
 						continue
 					}
 
@@ -152,34 +152,34 @@ object MyGraphics {
 					val specularCoeff = 0.2
 
 					// Проверка z-буфера
-					if (zBuffer[x * Main.windowHeight + y] > zFragment) {
+					if (zBuffer[x * windowHeight + y] > zFragment) {
 						// cчитаем diffuse
 						var texVec = getCenteredVecForPoint(worldFace.textures, alpha, beta, gamma)
 						texVec = Vertex(texVec[0], 1.0 - texVec[1], 0.0)
-						var texX = (texVec[0] * Main.textureImage.width).toInt() % Main.textureImage.width
-						var texY = (texVec[1] * Main.textureImage.height).toInt() % Main.textureImage.height
+						var texX = (texVec[0] * textureImage.width).toInt() % textureImage.width
+						var texY = (texVec[1] * textureImage.height).toInt() % textureImage.height
 
-						if (texX > Main.textureImage.width - 1) {
-							texX = Main.textureImage.width - 1
+						if (texX > textureImage.width - 1) {
+							texX = textureImage.width - 1
 						}
 						if (texX < 0) {
 							texX = 0
 						}
-						if (texY > Main.textureImage.width - 1) {
-							texY = Main.textureImage.width - 1
+						if (texY > textureImage.width - 1) {
+							texY = textureImage.width - 1
 						}
 						if (texY < 0) {
 							texY = 0
 						}
 
-						val normalData = Main.normalImage.getRGB(texX, texY)
+						val normalData = normalImage.getRGB(texX, texY)
 						val normal = Vertex(
 							(normalData shr 16 and 0x000000ff) / 256.0 * 2.0 - 1.0,
 							(normalData shr 8 and 0x000000ff) / 256.0 * 2.0 - 1.0,
 							(normalData and 0x000000ff) / 256.0 * 2.0 - 1.0
 						).mul(-1.0)
 
-						val mraoData = Main.mraoImage.getRGB(texX, texY)
+						val mraoData = mraoImage.getRGB(texX, texY)
 						val mraoVec = Vertex(
 							(mraoData shr 16 and 0x000000ff) / 256.0,
 							(mraoData shr 8 and 0x000000ff) / 256.0,
@@ -205,12 +205,12 @@ object MyGraphics {
 							specular = (rDotV / (r.len() * v.len())).pow(s)
 						}
 
-						zBuffer[x * Main.windowHeight + y] = zFragment
+						zBuffer[x * windowHeight + y] = zFragment
 
 						val colorValCoeff =
 							ambientCoeff + diffuse * diffuseCoeff + specular * mraoVec[0] * specularCoeff
 
-						var texColor = Main.textureImage.getRGB(texX, texY)
+						var texColor = textureImage.getRGB(texX, texY)
 						texColor = applyBrightness(texColor, colorValCoeff)
 
 						bufferedImage.setRGB(x, y, texColor)
