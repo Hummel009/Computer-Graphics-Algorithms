@@ -28,14 +28,10 @@ private fun drawTriangle(face: Face) {
 	face.viewVertices[1] = multiplyVertexByMatrix(face.realVertices[1], displayMatrix)
 	face.viewVertices[2] = multiplyVertexByMatrix(face.realVertices[2], displayMatrix)
 
-	val savedW = FloatArray(3)
-
 	for (i in face.viewVertices.indices) {
-		savedW[i] = face.viewVertices[i].w
+		face.savedW[i] = face.viewVertices[i].w
 		face.viewVertices[i] divSelf face.viewVertices[i].w
 	}
-
-	face.savedW = savedW
 
 	var minY = Int.MAX_VALUE
 	var maxY = Int.MIN_VALUE

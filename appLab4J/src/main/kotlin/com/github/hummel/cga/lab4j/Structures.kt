@@ -39,11 +39,11 @@ data class Vertex(var x: Float, var y: Float, var z: Float, var w: Float = 1.0f)
 
 data class Face(
 	val realVertices: Array<Vertex>,
-	var viewVertices: Array<Vertex> = Array(3) { Vertex(0.0f, 0.0f, 0.0f) },
+	val viewVertices: Array<Vertex> = Array(3) { Vertex(0.0f, 0.0f, 0.0f) },
 	val normals: Array<Vertex>,
 	val textels: Array<Vertex>,
-	var poliNormal: Vertex,
-	var savedW: FloatArray = FloatArray(3)
+	val poliNormal: Vertex,
+	val savedW: FloatArray = FloatArray(3)
 ) {
 	override fun equals(other: Any?): Boolean {
 		if (this === other) {
