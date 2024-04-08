@@ -44,25 +44,26 @@ private fun tfDrawVertices(parameters: LPVOID?): DWORD {
 }
 
 private inline fun drawTriangle(face: Face) {
-	val viewDir = -face.vertices[0] + eyePos
-	val cosAngle = (face.poliNormal / face.normals.size.toFloat()) scalarMul viewDir
+	val viewDir = -face.realVertices[0] + eyePos
+	val cosAngle = face.poliNormal scalarMul viewDir
 
 	if (cosAngle <= 0) {
 		return
 	}
 
-	val drawFace = Face(
-		arrayOf(
-			multiplyVertexByMatrix(face.vertices[0], displayMatrix),
-			multiplyVertexByMatrix(face.vertices[1], displayMatrix),
-			multiplyVertexByMatrix(face.vertices[2], displayMatrix)
-		), face.normals, face.textures, face.depthArr, face.poliNormal
-	)
+	face.viewVertices[0] = multiplyVertexByMatrix(face.realVertices[0], displayMatrix)
+	face.viewVertices[1] = multiplyVertexByMatrix(face.realVertices[1], displayMatrix)
+	face.viewVertices[2] = multiplyVertexByMatrix(face.realVertices[2], displayMatrix)
+
+	for (i in face.viewVertices.indices) {
+		face.savedW[i] = face.viewVertices[i].w
+		face.viewVertices[i] divSelf face.viewVertices[i].w
+	}
 
 	var minY = Int.MAX_VALUE
 	var maxY = Int.MIN_VALUE
 
-	drawFace.vertices.forEach {
+	face.viewVertices.forEach {
 		val y = it.y.toInt()
 		if (y < minY) {
 			minY = y
@@ -79,8 +80,8 @@ private inline fun drawTriangle(face: Face) {
 			val xIntersections = IntArray(2)
 			var intersectionCount = 0
 			for (i in 0..2) {
-				val v0 = drawFace.vertices[i]
-				val v1 = drawFace.vertices[(i + 1) % 3]
+				val v0 = face.viewVertices[i]
+				val v1 = face.viewVertices[(i + 1) % 3]
 				val y0 = v0.y.toInt()
 				val y1 = v1.y.toInt()
 				if (y in y0 until y1 || y in y1 until y0) {
@@ -102,19 +103,19 @@ private inline fun drawTriangle(face: Face) {
 			if (intersectionCount == 2) {
 				for (x in xIntersections[0]..xIntersections[1]) {
 					if (x in 0 until windowWidth) {
-						val v0 = drawFace.vertices[0]
-						val v1 = drawFace.vertices[1]
-						val v2 = drawFace.vertices[2]
+						val v0 = face.viewVertices[0]
+						val v1 = face.viewVertices[1]
+						val v2 = face.viewVertices[2]
 
-						val coords = drawFace.getBarycentricCoords(x, y)
+						val coords = face.getBarycentricCoords(x, y)
 
 						var alpha = coords[0]
 						var beta = coords[1]
 						var gamma = coords[2]
 
-						drawFace.depthArr?.let { alpha /= it[0] }
-						drawFace.depthArr?.let { beta /= it[1] }
-						drawFace.depthArr?.let { gamma /= it[2] }
+						alpha /= face.savedW[0]
+						beta /= face.savedW[1]
+						gamma /= face.savedW[2]
 
 						val sum = alpha + beta + gamma
 

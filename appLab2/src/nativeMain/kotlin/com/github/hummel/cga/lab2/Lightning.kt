@@ -4,7 +4,7 @@ const val ambientIntencity: Float = 0.0f
 const val diffuseIntencity: Float = 0.8f
 
 inline fun getResultRgb(face: Face): RGB {
-	val point = face.vertices[0]
+	val point = face.realVertices[0]
 	val normal = face.poliNormal
 
 	val brightness = getBrightness(point, normal)
