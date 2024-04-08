@@ -32,17 +32,17 @@ class Vertex {
 		return Vertex(data[0] / len, data[1] / len, data[2] / len)
 	}
 
-	fun add(arg: Vertex): Vertex = Vertex(data[0] + arg.data[0], data[1] + arg.data[1], data[2] + arg.data[2])
+	operator fun plus(arg: Vertex): Vertex = Vertex(data[0] + arg.data[0], data[1] + arg.data[1], data[2] + arg.data[2])
 
-	fun subtract(arg: Vertex): Vertex = Vertex(data[0] - arg.data[0], data[1] - arg.data[1], data[2] - arg.data[2])
+	operator fun minus(arg: Vertex): Vertex = Vertex(data[0] - arg.data[0], data[1] - arg.data[1], data[2] - arg.data[2])
 
-	fun dot(arg: Vertex): Float = data[0] * arg.data[0] + data[1] * arg.data[1] + data[2] * arg.data[2]
+	infix fun scalarMul(arg: Vertex): Float = data[0] * arg.data[0] + data[1] * arg.data[1] + data[2] * arg.data[2]
 
-	fun mul(arg: Float): Vertex = Vertex(data[0] * arg, data[1] * arg, data[2] * arg)
+	operator fun times(arg: Float): Vertex = Vertex(data[0] * arg, data[1] * arg, data[2] * arg)
 
 	operator fun div(arg: Float): Vertex = Vertex(data[0] / arg, data[1] / arg, data[2] / arg)
 
-	fun cross(arg: Vertex): Vertex {
+	infix fun vectorMul(arg: Vertex): Vertex {
 		return Vertex(
 			data[1] * arg.data[2] - data[2] * arg.data[1],
 			data[2] * arg.data[0] - data[0] * arg.data[2],

@@ -33,24 +33,24 @@ object MyMath {
 
 	private fun buildView(eye: Vertex?, target: Vertex?, up: Vertex?): MyMatrix {
 		val viewMatrix = MyMatrix()
-		val ZAxis = eye!!.subtract(target!!).normalize()
-		val XAxis = up!!.cross(ZAxis).normalize()
-		val YAxis = ZAxis.cross(XAxis)
+		val ZAxis = eye!!.minus(target!!).normalize()
+		val XAxis = up!!.vectorMul(ZAxis).normalize()
+		val YAxis = ZAxis.vectorMul(XAxis)
 
 		viewMatrix[0, 0] = XAxis[0]
 		viewMatrix[0, 1] = XAxis[1]
 		viewMatrix[0, 2] = XAxis[2]
-		viewMatrix[0, 3] = -XAxis.dot(eye)
+		viewMatrix[0, 3] = -XAxis.scalarMul(eye)
 
 		viewMatrix[1, 0] = YAxis[0]
 		viewMatrix[1, 1] = YAxis[1]
 		viewMatrix[1, 2] = YAxis[2]
-		viewMatrix[1, 3] = -YAxis.dot(eye)
+		viewMatrix[1, 3] = -YAxis.scalarMul(eye)
 
 		viewMatrix[2, 0] = ZAxis[0]
 		viewMatrix[2, 1] = ZAxis[1]
 		viewMatrix[2, 2] = ZAxis[2]
-		viewMatrix[2, 3] = -ZAxis.dot(eye)
+		viewMatrix[2, 3] = -ZAxis.scalarMul(eye)
 
 		return viewMatrix
 	}

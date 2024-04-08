@@ -53,7 +53,7 @@ fun main() {
 	}
 }
 
-class GUI() : JFrame() {
+class GUI : JFrame() {
 	init {
 		title = "Renderer: Kotlin JVM"
 		defaultCloseOperation = EXIT_ON_CLOSE

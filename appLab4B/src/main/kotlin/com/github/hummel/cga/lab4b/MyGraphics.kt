@@ -24,7 +24,7 @@ object MyGraphics {
 		var acc: Vertex? = null
 		for (normal in t.normals) {
 			if (seen) {
-				acc = acc!!.add(normal)
+				acc = acc!!.plus(normal)
 			} else {
 				seen = true
 				acc = normal
@@ -36,17 +36,17 @@ object MyGraphics {
 	@JvmStatic
 	fun filterTriangles(faces: Collection<Face?>?, camera: Camera): List<Face?> {
 		return faces!!.asSequence().filter { t: Face? ->
-			val viewDir = camera.eye?.let { t!!.vertices[0].subtract(it).normalize() }
+			val viewDir = camera.eye?.let { t!!.vertices[0].minus(it).normalize() }
 			val normal = getNormal(t!!)
 
-			val cos = viewDir?.let { normal.dot(it) }
+			val cos = viewDir?.let { normal.scalarMul(it) }
 			cos!! > 0
 		}.toList()
 	}
 
 	@JvmStatic
 	private fun getCenteredVecForPoint(vertices: Array<Vertex>, alpha: Float, beta: Float, gamma: Float): Vertex =
-		vertices[0].mul(alpha).add(vertices[1].mul(beta)).add(vertices[2].mul(gamma))
+		vertices[0].times(alpha).plus(vertices[1].times(beta)).plus(vertices[2].times(gamma))
 
 	@JvmStatic
 	private fun calculateBarycentricCoordinates(face: Face, x: Float, y: Float): FloatArray {
@@ -177,7 +177,7 @@ object MyGraphics {
 							(normalData shr 16 and 0x000000ff) / 256.0f * 2.0f - 1.0f,
 							(normalData shr 8 and 0x000000ff) / 256.0f * 2.0f - 1.0f,
 							(normalData and 0x000000ff) / 256.0f * 2.0f - 1.0f
-						).mul(-1.0f)
+						).times(-1.0f)
 
 						val mraoData = mraoImage.getRGB(texX, texY)
 						val mraoVec = Vertex(
@@ -187,20 +187,20 @@ object MyGraphics {
 						)
 
 						val pos = getCenteredVecForPoint(worldFace.vertices, alpha, beta, gamma)
-						camera.eye?.let { camera.target?.subtract(it)?.normalize() }
+						camera.eye?.let { camera.target?.minus(it)?.normalize() }
 						val lightPos = Vertex(5.0f, 5.0f, 5.0f)
-						val ray = pos.subtract(lightPos).normalize()
-						val diffuse = max(normal.dot(ray) * diffuseCoeff, 0.0f)
+						val ray = pos.minus(lightPos).normalize()
+						val diffuse = max(normal.scalarMul(ray) * diffuseCoeff, 0.0f)
 
 						// считаем specular
 						var specular = 0.0f
-						val l = lightPos.subtract(pos)
+						val l = lightPos.minus(pos)
 						val s = 10.0f
-						val angle = normal.dot(l)
+						val angle = normal.scalarMul(l)
 
-						val r = normal.mul(angle).mul(2.0f).subtract(l)
-						val v = camera.eye?.subtract(pos)
-						val rDotV = max(r.dot(v ?: return), 0.0f)
+						val r = normal.times(angle).times(2.0f).minus(l)
+						val v = camera.eye?.minus(pos)
+						val rDotV = max(r.scalarMul(v ?: return), 0.0f)
 						if (rDotV > 0) {
 							specular = (rDotV / (r.len() * v.len())).pow(s)
 						}

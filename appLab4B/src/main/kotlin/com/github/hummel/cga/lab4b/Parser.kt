@@ -91,14 +91,14 @@ private fun addFace(array: Array<String>) {
 		for (i in 1 until vs.size - 1) {
 			val face = Face()
 			face.vertices = arrayOf(vs[0], vs[i], vs[i + 1])
-			face.normals = arrayOf(vns[0], vns[i], vns[i + 1]).map { it.normalize().mul(-1.0f)}.toTypedArray()
+			face.normals = arrayOf(vns[0], vns[i], vns[i + 1]).map { it.normalize().times(-1.0f)}.toTypedArray()
 			face.textures = arrayOf(vts[0], vts[i], vts[i + 1])
 			faces.add(face)
 		}
 	} else {
 		val face = Face()
 		face.vertices = vs.toTypedArray()
-		face.normals = vns.toTypedArray().map { it.normalize().mul(-1.0f)}.toTypedArray()
+		face.normals = vns.toTypedArray().map { it.normalize().times(-1.0f)}.toTypedArray()
 		face.textures = vts.toTypedArray()
 
 		faces.add(face)
