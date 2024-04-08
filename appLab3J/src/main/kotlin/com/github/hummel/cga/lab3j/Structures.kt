@@ -19,6 +19,12 @@ data class Vertex(var x: Float, var y: Float, var z: Float, var w: Float = 1.0f)
 
 	operator fun unaryMinus(): Vertex = Vertex(-x, -y, -z)
 
+	infix fun divSelf(float: Float) {
+		x /= float
+		y /= float
+		z /= float
+	}
+
 	infix fun vectorMul(other: Vertex): Vertex {
 		val crossX = y * other.z - z * other.y
 		val crossY = z * other.x - x * other.z
@@ -32,32 +38,47 @@ data class Vertex(var x: Float, var y: Float, var z: Float, var w: Float = 1.0f)
 }
 
 data class Face(
-	val vertices: Array<Vertex>,
+	val realVertices: Array<Vertex>,
+	var viewVertices: Array<Vertex>,
 	val normals: Array<Vertex>,
-	val textures: Array<Vertex>,
-	var depthArr: FloatArray?,
-	var poliNormal: Vertex
+	val textels: Array<Vertex>,
+	var poliNormal: Vertex,
+	var depthArr: FloatArray?
 ) {
 	override fun equals(other: Any?): Boolean {
 		if (this === other) {
 			return true
 		}
+		if (javaClass != other?.javaClass) {
+			return false
+		}
 
 		other as Face
 
-		if (!vertices.contentEquals(other.vertices)) {
+		if (!realVertices.contentEquals(other.realVertices)) {
+			return false
+		}
+		if (!viewVertices.contentEquals(other.viewVertices)) {
 			return false
 		}
 		if (!normals.contentEquals(other.normals)) {
 			return false
 		}
-		if (!textures.contentEquals(other.textures)) {
-			return false
-		}
-		if (!depthArr.contentEquals(other.depthArr)) {
+		if (!textels.contentEquals(other.textels)) {
 			return false
 		}
 		if (poliNormal != other.poliNormal) {
+			return false
+		}
+
+		if (depthArr != null) {
+			if (other.depthArr == null) {
+				return false
+			}
+			if (!depthArr.contentEquals(other.depthArr)) {
+				return false
+			}
+		} else if (other.depthArr != null) {
 			return false
 		}
 
@@ -65,23 +86,24 @@ data class Face(
 	}
 
 	override fun hashCode(): Int {
-		var result = vertices.contentHashCode()
+		var result = realVertices.contentHashCode()
+		result = 31 * result + viewVertices.contentHashCode()
 		result = 31 * result + normals.contentHashCode()
-		result = 31 * result + textures.contentHashCode()
-		result = 31 * result + depthArr.contentHashCode()
+		result = 31 * result + textels.contentHashCode()
 		result = 31 * result + poliNormal.hashCode()
+		result = 31 * result + (depthArr?.contentHashCode() ?: 0)
 		return result
 	}
 
 	fun getBarycentricCoords(x: Int, y: Int): FloatArray {
 		val barycentricCoordinates = FloatArray(3)
 
-		val x1 = vertices[0].x
-		val y1 = vertices[0].y
-		val x2 = vertices[1].x
-		val y2 = vertices[1].y
-		val x3 = vertices[2].x
-		val y3 = vertices[2].y
+		val x1 = viewVertices[0].x
+		val y1 = viewVertices[0].y
+		val x2 = viewVertices[1].x
+		val y2 = viewVertices[1].y
+		val x3 = viewVertices[2].x
+		val y3 = viewVertices[2].y
 
 		val denominator = ((y2 - y3) * (x1 - x3) + (x3 - x2) * (y1 - y3))
 

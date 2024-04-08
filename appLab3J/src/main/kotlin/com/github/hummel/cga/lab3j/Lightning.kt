@@ -7,7 +7,7 @@ const val diffuseIntencity: Float = 0.8f
 const val specularIntencity: Float = 0.8f
 
 fun getResultRgb(face: Face, alpha: Float, beta: Float, gamma: Float): RGB {
-	val point = getCenteredVertex(face.vertices, alpha, beta, gamma)
+	val point = getCenteredVertex(face.realVertices, alpha, beta, gamma)
 	val normal = getCenteredVertex(face.normals, alpha, beta, gamma).normalize()
 
 	val brightness = getBrightness(point, normal)

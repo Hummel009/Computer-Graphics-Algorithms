@@ -35,17 +35,26 @@ var imgSize: Int by Delegates.notNull()
 
 var faces: MutableList<Face> = mutableListOf()
 
-const val dist: Float = 7.0f
-const val modelName: String = "box"
+private var dist: Float = 20.0f
 
 fun main() {
-	mraoImage = ImageIO.read(File("${modelName}_mrao.bmp"))
-	normalImage = ImageIO.read(File("${modelName}_normal.bmp"))
-	textureImage = ImageIO.read(File("${modelName}_texture.bmp"))
+	print("Enter model name (box|knight): ")
+
+	val name = readln()
+
+	dist = when (name) {
+		"box" -> 7.0f
+		"knight" -> 20.0f
+		else -> 50.0f
+	}
+
+	mraoImage = ImageIO.read(File("${name}_mrao.bmp"))
+	normalImage = ImageIO.read(File("${name}_normal.bmp"))
+	textureImage = ImageIO.read(File("${name}_texture.bmp"))
 
 	imgSize = textureImage.width
 
-	parse("$modelName.obj")
+	parse("$name.obj")
 
 	FlatLightLaf.setup()
 	EventQueue.invokeLater {
