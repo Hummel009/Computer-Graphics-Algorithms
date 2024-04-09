@@ -1,5 +1,8 @@
 package com.github.hummel.cga.lab5j
 
+import org.lwjgl.opengl.GL11.glColor3f
+import org.lwjgl.opengl.GL11.glVertex2f
+
 private val zBuffer: FloatArray = FloatArray(windowWidth * windowHeight)
 
 lateinit var displayMatrix: Array<FloatArray>
@@ -101,9 +104,11 @@ private fun drawTriangle(face: Face) {
 						if (zBuffer[x * windowHeight + y] > zFragment) {
 							zBuffer[x * windowHeight + y] = zFragment
 
-							val rgb = getResultRgb(face, alpha, beta, gamma).compose()
+							val rgb = getResultRgb(face, alpha, beta, gamma).toGL()
 
-							bufferedImage.setRGB(x, y, rgb)
+							glColor3f(rgb.r, rgb.g, rgb.b)
+
+							glVertex2f(x.toFloat(), y.toFloat())
 						}
 					}
 				}

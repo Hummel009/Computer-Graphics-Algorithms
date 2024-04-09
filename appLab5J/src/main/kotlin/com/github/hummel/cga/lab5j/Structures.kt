@@ -108,3 +108,5 @@ data class Face(
 }
 
 data class RGB(val r: Int, val g: Int, val b: Int)
+
+data class GLRGB(val r: Float, val g: Float, val b: Float)
