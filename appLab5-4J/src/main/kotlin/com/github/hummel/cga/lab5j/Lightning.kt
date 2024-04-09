@@ -2,8 +2,8 @@ package com.github.hummel.cga.lab5j
 
 import kotlin.math.pow
 
-const val ambientIntencity: Float = 0.0f
-const val diffuseIntencity: Float = 0.4f
+const val ambientIntencity: Float = 0.4f
+const val diffuseIntencity: Float = 0.0f
 const val specularIntencity: Float = 0.2f
 
 fun getResultRgb(face: Face, alpha: Float, beta: Float, gamma: Float): RGB {
