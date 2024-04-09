@@ -28,15 +28,8 @@ private fun drawTriangle(face: Face) {
 	glColor3f(rgb.r, rgb.g, rgb.b)
 
 	glBegin(GL_LINES)
-
-	glVertex3f(face.viewVertices[0].x, face.viewVertices[0].y, face.viewVertices[0].z)
-	glVertex3f(face.viewVertices[1].x, face.viewVertices[1].y, face.viewVertices[1].z)
-
-	glVertex3f(face.viewVertices[1].x, face.viewVertices[1].y, face.viewVertices[1].z)
-	glVertex3f(face.viewVertices[2].x, face.viewVertices[2].y, face.viewVertices[2].z)
-
-	glVertex3f(face.viewVertices[2].x, face.viewVertices[2].y, face.viewVertices[2].z)
-	glVertex3f(face.viewVertices[0].x, face.viewVertices[0].y, face.viewVertices[0].z)
-
+	for ((x, y, z, _) in face.viewVertices) {
+		glVertex3f(x, y, z)
+	}
 	glEnd()
 }
