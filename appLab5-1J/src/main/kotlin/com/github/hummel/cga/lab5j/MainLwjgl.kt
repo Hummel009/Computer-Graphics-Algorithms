@@ -72,7 +72,8 @@ object OpenGL {
 		val xPos = (screenWidth - windowWidth) / 2
 		val yPos = (screenHeight - windowHeight) / 2
 
-		window = glfwCreateWindow(windowWidth, windowHeight, "GPU Renderer: Kotlin JVM", MemoryUtil.NULL, MemoryUtil.NULL)
+		window =
+			glfwCreateWindow(windowWidth, windowHeight, "GPU Renderer: Kotlin JVM", MemoryUtil.NULL, MemoryUtil.NULL)
 		if (window == MemoryUtil.NULL) {
 			throw RuntimeException("Failed to create the GLFW window")
 		}
