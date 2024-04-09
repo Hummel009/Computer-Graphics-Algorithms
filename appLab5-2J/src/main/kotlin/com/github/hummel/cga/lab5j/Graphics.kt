@@ -1,10 +1,5 @@
 package com.github.hummel.cga.lab5j
 
-import org.lwjgl.BufferUtils
-import org.lwjgl.opengl.GL
-import org.lwjgl.opengl.GL11.*
-import org.lwjgl.opengl.GL15.*
-import org.lwjgl.opengl.GL20.*
 import org.lwjgl.opengl.GL30.*
 
 lateinit var displayMatrix: Array<FloatArray>
