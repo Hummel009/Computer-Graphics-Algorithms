@@ -7,7 +7,11 @@ import org.lwjgl.opengl.GL
 import org.lwjgl.opengl.GL11
 import org.lwjgl.system.MemoryUtil
 
-class BlackWindow {
+fun main() {
+	OpenGL.run()
+}
+
+object OpenGL {
 	private var window: Long = 0
 
 	fun run() {
@@ -21,22 +25,29 @@ class BlackWindow {
 	}
 
 	private fun init() {
-		GLFWErrorCallback.createPrint(System.err).set()
+		GLFW.glfwSetErrorCallback(GLFWErrorCallback.createPrint(System.err))
+
 		check(GLFW.glfwInit()) { "Unable to initialize GLFW" }
 
 		GLFW.glfwDefaultWindowHints()
 		GLFW.glfwWindowHint(GLFW.GLFW_VISIBLE, GLFW.GLFW_FALSE)
-		GLFW.glfwWindowHint(GLFW.GLFW_RESIZABLE, GLFW.GLFW_TRUE)
+		GLFW.glfwWindowHint(GLFW.GLFW_RESIZABLE, GLFW.GLFW_FALSE)
 
-		window = GLFW.glfwCreateWindow(800, 600, "Black Window", MemoryUtil.NULL, MemoryUtil.NULL)
+		val videoMode = GLFW.glfwGetVideoMode(GLFW.glfwGetPrimaryMonitor()) ?: return
+		val screenWidth = videoMode.width()
+		val screenHeight = videoMode.height()
 
+		val xPos = (screenWidth - windowWidth) / 2
+		val yPos = (screenHeight - windowHeight) / 2
+
+		window = GLFW.glfwCreateWindow(windowWidth, windowHeight, "Black Window", MemoryUtil.NULL, MemoryUtil.NULL)
 		if (window == MemoryUtil.NULL) {
 			throw RuntimeException("Failed to create the GLFW window")
 		}
 
-		GLFW.glfwSetKeyCallback(
-			window
-		) { window: Long, key: Int, _: Int, action: Int, _: Int ->
+		GLFW.glfwSetWindowPos(window, xPos, yPos)
+
+		GLFW.glfwSetKeyCallback(window) { window: Long, key: Int, _: Int, action: Int, _: Int ->
 			if (key == GLFW.GLFW_KEY_ESCAPE && action == GLFW.GLFW_RELEASE) {
 				GLFW.glfwSetWindowShouldClose(window, true)
 			}
@@ -68,12 +79,5 @@ class BlackWindow {
 		GL11.glVertex2f(0.5f, 0.5f)
 		GL11.glVertex2f(-0.5f, 0.5f)
 		GL11.glEnd()
-	}
-
-	companion object {
-		@JvmStatic
-		fun main(args: Array<String>) {
-			BlackWindow().run()
-		}
 	}
 }
