@@ -25,8 +25,9 @@ private fun drawTriangle(face: Face) {
 		face.viewVertices[i] divSelf face.viewVertices[i].w
 	}
 
-	glBegin(GL_LINES)
 	glColor3f(rgb.r, rgb.g, rgb.b)
+
+	glBegin(GL_LINES)
 
 	glVertex3f(face.viewVertices[0].x, face.viewVertices[0].y, face.viewVertices[0].z)
 	glVertex3f(face.viewVertices[1].x, face.viewVertices[1].y, face.viewVertices[1].z)
