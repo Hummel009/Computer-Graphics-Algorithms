@@ -22,7 +22,7 @@ var faces: MutableList<Face> = mutableListOf()
 private var dist: Float = 20.0f
 
 fun main() {
-	print("Enter model name (tie|mace|knight|car): ")
+	print("Enter model name (tie|knight|car): ")
 
 	val name = readln()
 
