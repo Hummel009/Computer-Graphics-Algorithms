@@ -129,6 +129,13 @@ object OpenGL {
 				prevMouseY = posY.toInt()
 			}
 
+			if (glfwGetKey(window, GLFW_KEY_Z) == GLFW_PRESS) {
+				rotateX += 0.01f
+			}
+			if (glfwGetKey(window, GLFW_KEY_X) == GLFW_PRESS) {
+				rotateY += 0.01f
+			}
+
 			if (rotateX != prevRotateX || rotateY != prevRotateY) {
 				val time = measureTime {
 					drawScene()
