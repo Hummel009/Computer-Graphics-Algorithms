@@ -98,7 +98,8 @@ private fun addFace(array: Array<String>) {
 				Face(
 					realVertices = arrayOf(vs[0], vs[i], vs[i + 1]),
 					normals = arrayOf(vns[0], vns[i], vns[i + 1]),
-					textels = arrayOf(vts[0], vts[i], vts[i + 1])
+					textels = arrayOf(vts[0], vts[i], vts[i + 1]),
+					poliNormal = normal / vns.size.toFloat()
 				)
 			)
 		}
@@ -107,7 +108,8 @@ private fun addFace(array: Array<String>) {
 			Face(
 				realVertices = vs.toTypedArray(),
 				normals = vns.toTypedArray(),
-				textels = vts.toTypedArray()
+				textels = vts.toTypedArray(),
+				poliNormal = normal / vns.size.toFloat()
 			)
 		)
 	}

@@ -165,7 +165,6 @@ object OpenGL {
 		glLoadIdentity()
 
 		glBegin(GL_POINTS)
-		glColor3f(1.0f, 1.0f, 1.0f)
 
 		val eye = Vertex(
 			dist * cos(rotateX) * cos(rotateY), dist * sin(rotateX), dist * cos(rotateX) * sin(rotateY)
