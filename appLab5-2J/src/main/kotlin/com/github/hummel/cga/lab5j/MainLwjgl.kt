@@ -4,7 +4,7 @@ import org.lwjgl.glfw.Callbacks
 import org.lwjgl.glfw.GLFW.*
 import org.lwjgl.glfw.GLFWErrorCallback
 import org.lwjgl.opengl.GL
-import org.lwjgl.opengl.GL11.*
+import org.lwjgl.opengl.GL46.*
 import org.lwjgl.system.MemoryUtil
 import kotlin.math.cos
 import kotlin.math.sin

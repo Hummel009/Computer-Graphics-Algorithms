@@ -1,6 +1,6 @@
 package com.github.hummel.cga.lab5j
 
-import org.lwjgl.opengl.GL11.*
+import org.lwjgl.opengl.GL46.*
 
 private val zBuffer: FloatArray = FloatArray(windowWidth * windowHeight)
 

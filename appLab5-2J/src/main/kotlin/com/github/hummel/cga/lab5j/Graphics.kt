@@ -1,6 +1,6 @@
 package com.github.hummel.cga.lab5j
 
-import org.lwjgl.opengl.GL30.*
+import org.lwjgl.opengl.GL46.*
 
 lateinit var displayMatrix: Array<FloatArray>
 lateinit var lightPos: Vertex
