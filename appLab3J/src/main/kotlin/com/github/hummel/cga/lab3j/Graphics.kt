@@ -17,13 +17,6 @@ fun renderObject(eye: Vertex) {
 }
 
 private fun drawTriangle(face: Face) {
-	val viewDir = -face.realVertices[0] + eyePos
-	val cosAngle = face.poliNormal scalarMul viewDir
-
-	if (cosAngle <= 0) {
-		return
-	}
-
 	face.viewVertices[0] = multiplyVertexByMatrix(face.realVertices[0], displayMatrix)
 	face.viewVertices[1] = multiplyVertexByMatrix(face.realVertices[1], displayMatrix)
 	face.viewVertices[2] = multiplyVertexByMatrix(face.realVertices[2], displayMatrix)
