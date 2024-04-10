@@ -2,6 +2,8 @@ package com.github.hummel.cga.lab5j
 
 import org.lwjgl.opengl.GL11.*
 
+private val rgb: GLRGB = RGB(255, 255, 255).toGL()
+
 private lateinit var displayMatrix: Array<FloatArray>
 private lateinit var lightPos: Vertex
 private lateinit var eyePos: Vertex
@@ -11,11 +13,7 @@ fun renderObject(eye: Vertex) {
 	lightPos = getLightPos(eye)
 	eyePos = eye
 
-	glBegin(GL_LINES)
-
 	faces.forEach { drawTriangle(it) }
-
-	glEnd()
 }
 
 private fun drawTriangle(face: Face) {
@@ -31,11 +29,13 @@ private fun drawTriangle(face: Face) {
 		face.viewVertices[i] divSelf face.viewVertices[i].w
 	}
 
-	val rgb = RGB(255, 255, 255).toGL()
+	glBegin(GL_LINES)
 
 	glColor3f(rgb.r, rgb.g, rgb.b)
 
 	for ((x, y, z, _) in face.viewVertices) {
 		glVertex3f(x, y, z)
 	}
+
+	glEnd()
 }

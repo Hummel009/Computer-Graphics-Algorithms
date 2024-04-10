@@ -17,11 +17,7 @@ fun renderObject(eye: Vertex) {
 	glEnable(GL_CULL_FACE)
 	glCullFace(GL_BACK)
 
-	glBegin(GL_TRIANGLES)
-
 	faces.forEach { drawTriangle(it) }
-
-	glEnd()
 }
 
 private fun drawTriangle(face: Face) {
@@ -39,9 +35,13 @@ private fun drawTriangle(face: Face) {
 
 	val rgb = getResultRgb(face).toGL()
 
+	glBegin(GL_TRIANGLES)
+
 	glColor3f(rgb.r, rgb.g, rgb.b)
 
 	for ((x, y, z, _) in face.viewVertices) {
 		glVertex3f(x, y, z)
 	}
+
+	glEnd()
 }
