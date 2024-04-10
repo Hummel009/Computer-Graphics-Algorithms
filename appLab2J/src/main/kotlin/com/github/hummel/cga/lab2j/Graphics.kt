@@ -33,18 +33,8 @@ private fun drawTriangle(face: Face) {
 		face.viewVertices[i] divSelf face.viewVertices[i].w
 	}
 
-	var minY = Int.MAX_VALUE
-	var maxY = Int.MIN_VALUE
-
-	face.viewVertices.forEach {
-		val y = it.y.toInt()
-		if (y < minY) {
-			minY = y
-		}
-		if (y > maxY) {
-			maxY = y
-		}
-	}
+	val minY = face.viewVertices.minOfOrNull { it.y.toInt() } ?: Int.MAX_VALUE
+	val maxY = face.viewVertices.maxOfOrNull { it.y.toInt() } ?: Int.MIN_VALUE
 
 	// Создать цикл по каждой строке изображения
 	for (y in minY..maxY) {
