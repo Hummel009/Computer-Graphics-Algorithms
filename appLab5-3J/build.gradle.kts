@@ -16,13 +16,13 @@ dependencies {
 
 	embed("org.jetbrains.kotlin:kotlin-stdlib:1.9.23")
 
-	embed("com.formdev:flatlaf:3.2.5")
-	embed("com.formdev:flatlaf-intellij-themes:3.2.5")
+	embed("com.formdev:flatlaf:3.4.1")
+	embed("com.formdev:flatlaf-intellij-themes:3.4.1")
 
 	implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
 
-	implementation("com.formdev:flatlaf:3.2.5")
-	implementation("com.formdev:flatlaf-intellij-themes:3.2.5")
+	implementation("com.formdev:flatlaf:3.4.1")
+	implementation("com.formdev:flatlaf-intellij-themes:3.4.1")
 }
 
 java {
