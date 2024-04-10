@@ -2,7 +2,7 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 plugins {
-	id("org.jetbrains.kotlin.jvm") version "1.9.22"
+	id("org.jetbrains.kotlin.jvm") version "1.9.23"
 	id("application")
 }
 
@@ -14,7 +14,7 @@ val embed: Configuration by configurations.creating
 dependencies {
 	embed(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
 
-	embed("org.jetbrains.kotlin:kotlin-stdlib:1.9.22")
+	embed("org.jetbrains.kotlin:kotlin-stdlib:1.9.23")
 
 	embed("com.formdev:flatlaf:3.2.5")
 	embed("com.formdev:flatlaf-intellij-themes:3.2.5")
