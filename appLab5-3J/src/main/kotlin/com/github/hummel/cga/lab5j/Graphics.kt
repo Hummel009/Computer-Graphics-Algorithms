@@ -1,7 +1,6 @@
 package com.github.hummel.cga.lab5j
 
-import org.lwjgl.opengl.GL11.glColor3f
-import org.lwjgl.opengl.GL11.glVertex2f
+import org.lwjgl.opengl.GL11.*
 
 private val zBuffer: FloatArray = FloatArray(windowWidth * windowHeight)
 
@@ -16,7 +15,11 @@ fun renderObject(eye: Vertex) {
 
 	zBuffer.fill(Float.POSITIVE_INFINITY)
 
+	glBegin(GL_POINTS)
+
 	faces.forEach { drawTriangle(it) }
+
+	glEnd()
 }
 
 private fun drawTriangle(face: Face) {

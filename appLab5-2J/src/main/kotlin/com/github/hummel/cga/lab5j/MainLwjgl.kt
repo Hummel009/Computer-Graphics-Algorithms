@@ -159,14 +159,10 @@ object OpenGL {
 		glMatrixMode(GL_MODELVIEW)
 		glLoadIdentity()
 
-		glBegin(GL_POINTS)
-
 		val eye = Vertex(
 			dist * cos(rotateX) * cos(rotateY), dist * sin(rotateX), dist * cos(rotateX) * sin(rotateY)
 		)
 
 		renderObject(eye)
-
-		glEnd()
 	}
 }

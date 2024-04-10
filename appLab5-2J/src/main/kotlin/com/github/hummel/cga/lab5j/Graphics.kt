@@ -11,7 +11,17 @@ fun renderObject(eye: Vertex) {
 	lightPos = getLightPos(eye)
 	eyePos = eye
 
+	glEnable(GL_DEPTH_TEST)
+	glDepthFunc(GL_LEQUAL)
+
+	glEnable(GL_CULL_FACE)
+	glCullFace(GL_BACK)
+
+	glBegin(GL_TRIANGLES)
+
 	faces.forEach { drawTriangle(it) }
+
+	glEnd()
 }
 
 private fun drawTriangle(face: Face) {
@@ -31,15 +41,7 @@ private fun drawTriangle(face: Face) {
 
 	glColor3f(rgb.r, rgb.g, rgb.b)
 
-	glEnable(GL_DEPTH_TEST)
-	glDepthFunc(GL_LEQUAL)
-
-	glEnable(GL_CULL_FACE)
-	glCullFace(GL_BACK)
-
-	glBegin(GL_TRIANGLES)
 	for ((x, y, z, _) in face.viewVertices) {
 		glVertex3f(x, y, z)
 	}
-	glEnd()
 }

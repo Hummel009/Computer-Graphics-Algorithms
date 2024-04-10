@@ -6,12 +6,8 @@ import org.lwjgl.glfw.GLFWErrorCallback
 import org.lwjgl.opengl.GL
 import org.lwjgl.opengl.GL11.*
 import org.lwjgl.system.MemoryUtil
-import java.awt.image.BufferedImage
-import java.io.File
-import javax.imageio.ImageIO
 import kotlin.math.cos
 import kotlin.math.sin
-import kotlin.properties.Delegates
 import kotlin.time.measureTime
 
 private val execTimes: MutableList<Long> = mutableListOf()
@@ -26,7 +22,7 @@ var faces: MutableList<Face> = mutableListOf()
 private var dist: Float = 20.0f
 
 fun main() {
-	print("Enter model name (tie|mace|knight|car): ")
+	print("Enter model name (tie|knight|car): ")
 
 	val name = readln()
 
@@ -163,14 +159,10 @@ object OpenGL {
 		glMatrixMode(GL_MODELVIEW)
 		glLoadIdentity()
 
-		glBegin(GL_POINTS)
-
 		val eye = Vertex(
 			dist * cos(rotateX) * cos(rotateY), dist * sin(rotateX), dist * cos(rotateX) * sin(rotateY)
 		)
 
 		renderObject(eye)
-
-		glEnd()
 	}
 }
