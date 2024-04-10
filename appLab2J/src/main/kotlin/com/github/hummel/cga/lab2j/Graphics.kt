@@ -29,10 +29,6 @@ private fun drawTriangle(face: Face) {
 	face.viewVertices[2] = multiplyVertexByMatrix(face.realVertices[2], displayMatrix)
 
 	for (i in face.viewVertices.indices) {
-		face.viewVertices[i].z *= -1
-	}
-
-	for (i in face.viewVertices.indices) {
 		face.savedW[i] = face.viewVertices[i].w
 		face.viewVertices[i] divSelf face.viewVertices[i].w
 	}
