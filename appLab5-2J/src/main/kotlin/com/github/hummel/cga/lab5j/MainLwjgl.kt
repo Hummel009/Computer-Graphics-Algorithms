@@ -43,7 +43,7 @@ object OpenGL {
 	private var window: Long = 0
 	private var prevMouseX = 0
 	private var prevMouseY = 0
-	private var rotateY = 180.0f
+	private var rotateY = 0.0f
 	private var rotateX = 0.0f
 
 	fun run() {
