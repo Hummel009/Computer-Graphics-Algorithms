@@ -2,7 +2,7 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 plugins {
-	id("org.jetbrains.kotlin.jvm") version "2.0.0"
+	id("org.jetbrains.kotlin.jvm") version "latest.release"
 	id("application")
 }
 
@@ -14,15 +14,15 @@ val embed: Configuration by configurations.creating
 dependencies {
 	embed(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
 
-	embed("org.jetbrains.kotlin:kotlin-stdlib:2.0.0")
+	embed("org.jetbrains.kotlin:kotlin-stdlib:latest.release")
 
-	embed("com.formdev:flatlaf:3.4.1")
-	embed("com.formdev:flatlaf-intellij-themes:3.4.1")
+	embed("com.formdev:flatlaf:latest.release")
+	embed("com.formdev:flatlaf-intellij-themes:latest.release")
 
 	implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
 
-	implementation("com.formdev:flatlaf:3.4.1")
-	implementation("com.formdev:flatlaf-intellij-themes:3.4.1")
+	implementation("com.formdev:flatlaf:latest.release")
+	implementation("com.formdev:flatlaf-intellij-themes:latest.release")
 }
 
 java {
