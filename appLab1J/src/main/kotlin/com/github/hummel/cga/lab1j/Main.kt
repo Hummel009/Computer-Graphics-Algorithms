@@ -1,7 +1,7 @@
 package com.github.hummel.cga.lab1j
 
 import com.formdev.flatlaf.FlatLightLaf
-import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatGitHubDarkIJTheme
+import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatMTGitHubDarkIJTheme
 import java.awt.Color
 import java.awt.EventQueue
 import java.awt.Graphics
@@ -47,7 +47,7 @@ fun main() {
 	FlatLightLaf.setup()
 	EventQueue.invokeLater {
 		try {
-			UIManager.setLookAndFeel(FlatGitHubDarkIJTheme())
+			UIManager.setLookAndFeel(FlatMTGitHubDarkIJTheme())
 			val frame = GUI()
 			frame.isVisible = true
 		} catch (e: Exception) {
