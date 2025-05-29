@@ -41,10 +41,10 @@ fun main() {
 
 object OpenGL {
 	private var window: Long = 0
-	private var prevMouseX = 0
-	private var prevMouseY = 0
-	private var rotateY = 0.0f
-	private var rotateX = 0.0f
+	private var prevMouseX: Int = 0
+	private var prevMouseY: Int = 0
+	private var rotateY: Float = 0.0f
+	private var rotateX: Float = 0.0f
 
 	fun run() {
 		init()

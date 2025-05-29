@@ -86,25 +86,6 @@ data class Face(
 		result = 31 * result + poliNormal.hashCode()
 		return result
 	}
-
-	fun getBarycentricCoords(x: Int, y: Int): FloatArray {
-		val barycentricCoordinates = FloatArray(3)
-
-		val x1 = viewVertices[0].x
-		val y1 = viewVertices[0].y
-		val x2 = viewVertices[1].x
-		val y2 = viewVertices[1].y
-		val x3 = viewVertices[2].x
-		val y3 = viewVertices[2].y
-
-		val denominator = ((y2 - y3) * (x1 - x3) + (x3 - x2) * (y1 - y3))
-
-		barycentricCoordinates[0] = ((y2 - y3) * (x - x3) + (x3 - x2) * (y - y3)) / denominator
-		barycentricCoordinates[1] = ((y3 - y1) * (x - x3) + (x1 - x3) * (y - y3)) / denominator
-		barycentricCoordinates[2] = 1 - barycentricCoordinates[0] - barycentricCoordinates[1]
-
-		return barycentricCoordinates
-	}
 }
 
 data class RGB(val r: Int, val g: Int, val b: Int)

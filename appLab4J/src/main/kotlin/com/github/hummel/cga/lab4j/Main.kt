@@ -116,7 +116,7 @@ class GUI : JFrame() {
 					super.paintComponent(g)
 
 					val g2d = g as Graphics2D
-					g.setColor(Color.GREEN)
+					g.color = Color.GREEN
 
 					imgGraphics.clearRect(0, 0, windowWidth, windowHeight)
 

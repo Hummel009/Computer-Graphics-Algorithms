@@ -7,7 +7,7 @@ private val target: Vertex = Vertex(0.0f, 0.0f, 0.0f)
 private val up: Vertex = Vertex(0.0f, 1.0f, 0.0f)
 
 private var fov: Float = PI.toFloat() / 4.0f
-private var aspect = windowWidth.toFloat() / windowHeight.toFloat()
+private var aspect: Float = windowWidth.toFloat() / windowHeight.toFloat()
 
 private var zNear: Float = 1.0f
 private var zFar: Float = 100.0f
