@@ -1,3 +1,5 @@
+@file:Suppress("NOTHING_TO_INLINE")
+
 package com.github.hummel.cga.lab2
 
 const val ambientIntencity: Float = 0.0f
